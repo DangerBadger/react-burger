@@ -1,34 +1,25 @@
-import { useState } from 'react';
+/* eslint-disable react/no-array-index-key */
 import {
   ConstructorElement,
   CurrencyIcon,
-  LockIcon,
   DragIcon,
-  DeleteIcon,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { exampleData } from '../../utils/data';
 
-import burgerConstructor from './BurgerConstructor.module.css';
+import stylesBurgerConstructor from './BurgerConstructor.module.css';
+
+import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorItem';
 
 function BurgerConstructor() {
-  function mainItem({ name, price, image }, index) {
-    return (
-      <li key={index} className={`${burgerConstructor.mainItem} mt-4 pr-2`}>
-        <DragIcon />
-        <ConstructorElement text={name} price={price} thumbnail={image} />
-      </li>
-    );
-  }
-
   const total = exampleData.reduce(
     (accumulator, currentValue) => accumulator + currentValue.price,
     0
   );
 
   return (
-    <div className={`${burgerConstructor.constructorContainer} mt-25`}>
-      <div className={`${burgerConstructor.topContainer} mb-4 pl-4 pr-4`}>
+    <div className={`${stylesBurgerConstructor.constructorContainer} mt-25`}>
+      <div className={`${stylesBurgerConstructor.topContainer} mb-4 pl-4 pr-4`}>
         <ConstructorElement
           type="top"
           isLocked
@@ -37,15 +28,16 @@ function BurgerConstructor() {
           thumbnail={exampleData[0].image}
         />
       </div>
-      <ul className={burgerConstructor.mainList}>
+      <ul className={stylesBurgerConstructor.mainList}>
         {exampleData.map(
           (ingredient, index) =>
             index > 0 &&
-            index < exampleData.length - 1 &&
-            mainItem(ingredient, index)
+            index < exampleData.length - 1 && (
+              <BurgerConstructorItem key={index} ingredientInfo={ingredient} />
+            )
         )}
       </ul>
-      <div className={`${burgerConstructor.topContainer} mt-4 pl-4 pr-4`}>
+      <div className={`${stylesBurgerConstructor.topContainer} mt-4 pl-4 pr-4`}>
         <ConstructorElement
           type="bottom"
           isLocked
@@ -54,10 +46,10 @@ function BurgerConstructor() {
           thumbnail={exampleData[exampleData.length - 1].image}
         />
       </div>
-      <div className={`${burgerConstructor.orderContainer} mt-10 pr-4`}>
+      <div className={`${stylesBurgerConstructor.orderContainer} mt-10 pr-4`}>
         <span className="mr-10">
           <span
-            className={`${burgerConstructor.totaNumbers} text text_type_digits-medium mr-2`}
+            className={`${stylesBurgerConstructor.totaNumbers} text text_type_digits-medium mr-2`}
           >
             {total}
           </span>

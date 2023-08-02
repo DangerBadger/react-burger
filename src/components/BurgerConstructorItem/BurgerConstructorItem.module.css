@@ -1,0 +1,11 @@
+.mainItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 568px;
+  scroll-snap-align: end;
+}
+
+.mainItem:first-child {
+  margin: 0;
+}

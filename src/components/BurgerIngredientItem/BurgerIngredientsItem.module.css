@@ -1,0 +1,26 @@
+.ingredient {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  scroll-snap-align: end;
+}
+
+.price {
+  display: flex;
+}
+
+.image {
+  width: 240px;
+  height: 120px;
+}
+
+.priceText {
+  margin-right: 8px;
+}
+
+.name {
+  height: 48px;
+  width: 272px;
+  text-align: center;
+}

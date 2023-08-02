@@ -6,49 +6,45 @@ import {
   ListIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import appHeader from './AppHeader.module.css';
+import stylesHeader from './AppHeader.module.css';
 
 function AppHeader() {
   const { pathname } = useLocation();
 
   const linkActivator = (navStatus) =>
-    navStatus.isActive ? appHeader.navLinkActive : appHeader.navLink;
+    navStatus.isActive ? stylesHeader.navLinkActive : stylesHeader.navLink;
 
   return (
-    <header className={appHeader.header}>
-      <div className={appHeader.content}>
-        <nav className={appHeader.navigation}>
-          <ul className={appHeader.navList}>
-            <li className={appHeader.navItem}>
+    <header className={stylesHeader.header}>
+      <div className={`${stylesHeader.content} pt-4 pb-4`}>
+        <nav className={stylesHeader.navigation}>
+          <ul className={stylesHeader.navList}>
+            <li className={`${stylesHeader.navItem} mr-2`}>
               <NavLink to="/" className={linkActivator}>
                 <BurgerIcon type={pathname === '/' ? 'primary' : 'secondary'} />
-                <p
-                  className={`text text_type_main-default ${appHeader.navText}`}
-                >
-                  Конструктор
-                </p>
+                <p className="text text_type_main-default ml-2">Конструктор</p>
               </NavLink>
             </li>
-            <li className={appHeader.navItem}>
-              <NavLink to="*" className={linkActivator}>
-                <ListIcon type={pathname !== '/' ? 'primary' : 'secondary'} />
-                <p
-                  className={`text text_type_main-default ${appHeader.navText}`}
-                >
+            <li className={stylesHeader.navItem}>
+              <NavLink to="feed" className={linkActivator}>
+                <ListIcon
+                  type={pathname === '/feed' ? 'primary' : 'secondary'}
+                />
+                <p className="text text_type_main-default ml-2">
                   Лента заказов
                 </p>
               </NavLink>
             </li>
           </ul>
         </nav>
-        <div className={appHeader.logoContainer}>
+        <div className={stylesHeader.logoContainer}>
           <Logo />
         </div>
-        <NavLink to="*" className={linkActivator}>
-          <ProfileIcon type={pathname !== '/' ? 'primary' : 'secondary'} />
-          <p className={`text text_type_main-default ${appHeader.navText}`}>
-            Личный кабинет
-          </p>
+        <NavLink to="profile" className={linkActivator}>
+          <ProfileIcon
+            type={pathname === '/profile' ? 'primary' : 'secondary'}
+          />
+          <p className="text text_type_main-default ml-2">Личный кабинет</p>
         </NavLink>
       </div>
     </header>

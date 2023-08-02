@@ -1,74 +1,76 @@
 import { useState } from 'react';
-import {
-  Counter,
-  CurrencyIcon,
-  Tab,
-} from '@ya.praktikum/react-developer-burger-ui-components';
+import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { burgerData } from '../../utils/data';
+import tabs from '../../utils/constants';
 
-import burgerIngredients from './BurgerIngredients.module.css';
+import stylesBurgerIngredients from './BurgerIngredients.module.css';
+
+import BurgerIngredientsItem from '../BurgerIngredientItem/BurgerIngredientsItem';
 
 function BurgerIngredients() {
   const [current, setCurrent] = useState('bun');
 
-  function ingredientItem({ _id, name, price, image }) {
-    return (
-      <li key={_id} className={burgerIngredients.ingredient}>
-        <img
-          src={image}
-          className={burgerIngredients.ingredientImage}
-          alt={name}
-        />
-        <span className={`${burgerIngredients.ingredientPrice} mt-2 mb-2`}>
-          <p
-            className={`${burgerIngredients.ingredientPriceText} text text_type_digits-default`}
-          >
-            {price}
-          </p>
-          <CurrencyIcon type="primary" />
-        </span>
-        <h3 className={`${burgerIngredients.name} text text_type_main-default`}>
-          {name}
-        </h3>
-        <Counter count={1} size="default" />
-      </li>
-    );
-  }
-
   return (
-    <div className={burgerIngredients.contentContainer}>
+    <div className={stylesBurgerIngredients.contentContainer}>
       <h1 className="text text_type_main-large mt-10">Соберите бургер</h1>
-      <div className={`${burgerIngredients.tabContainer} mt-5`}>
-        <Tab value="bun" active={current === 'bun'} onClick={setCurrent}>
+      <div className={`${stylesBurgerIngredients.tabContainer} mt-5`}>
+        <Tab
+          value={tabs.BUN}
+          active={current === tabs.BUN}
+          onClick={setCurrent}
+        >
           Булки
         </Tab>
-        <Tab value="sauce" active={current === 'sauce'} onClick={setCurrent}>
+        <Tab
+          value={tabs.SAUCE}
+          active={current === tabs.SAUCE}
+          onClick={setCurrent}
+        >
           Соусы
         </Tab>
-        <Tab value="main" active={current === 'main'} onClick={setCurrent}>
+        <Tab
+          value={tabs.MAIN}
+          active={current === tabs.MAIN}
+          onClick={setCurrent}
+        >
           Начинки
         </Tab>
       </div>
-      <div className={`${burgerIngredients.constructorContainer} mt-10`}>
+      <div className={`${stylesBurgerIngredients.constructorContainer} mt-10`}>
         <h2 className="text text_type_main-medium mb-6">Булки</h2>
-        <ul className={`${burgerIngredients.ingredientsList} pl-4 pr-4`}>
+        <ul className={`${stylesBurgerIngredients.ingredientsList} pl-4 pr-4`}>
           {burgerData.map(
             (ingredient) =>
-              ingredient.type === 'bun' && ingredientItem(ingredient)
+              ingredient.type === 'bun' && (
+                <BurgerIngredientsItem
+                  key={ingredient._id}
+                  ingredientData={ingredient}
+                />
+              )
           )}
         </ul>
         <h2 className="text text_type_main-medium mt-10 mb-6">Соусы</h2>
-        <ul className={`${burgerIngredients.ingredientsList} pl-4 pr-4`}>
+        <ul className={`${stylesBurgerIngredients.ingredientsList} pl-4 pr-4`}>
           {burgerData.map(
             (ingredient) =>
-              ingredient.type === 'sauce' && ingredientItem(ingredient)
+              ingredient.type === 'sauce' && (
+                <BurgerIngredientsItem
+                  key={ingredient._id}
+                  ingredientData={ingredient}
+                />
+              )
           )}
         </ul>
         <h2 className="text text_type_main-medium mt-10 mb-6">Начинки</h2>
-        <ul className={`${burgerIngredients.ingredientsList} pl-4 pr-4`}>
+        <ul className={`${stylesBurgerIngredients.ingredientsList} pl-4 pr-4`}>
           {burgerData.map(
             (ingredient) =>
-              ingredient.type === 'main' && ingredientItem(ingredient)
+              ingredient.type === 'main' && (
+                <BurgerIngredientsItem
+                  key={ingredient._id}
+                  ingredientData={ingredient}
+                />
+              )
           )}
         </ul>
       </div>
