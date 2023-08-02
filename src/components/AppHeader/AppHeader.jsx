@@ -1,74 +1,58 @@
-import { Link, NavLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { NavLink, useLocation } from 'react-router-dom';
+import {
+  Logo,
+  BurgerIcon,
+  ProfileIcon,
+  ListIcon,
+} from '@ya.praktikum/react-developer-burger-ui-components';
 
 import appHeader from './AppHeader.module.css';
 
-import accountImage from '../../images/account.png';
+function AppHeader() {
+  const { pathname } = useLocation();
 
-function AppHeader({ isOpened, openBurger, onClose }) {
   const linkActivator = (navStatus) =>
-    navStatus.isActive ? 'burger__link burger__link_active' : 'burger__link';
+    navStatus.isActive ? appHeader.navLinkActive : appHeader.navLink;
 
   return (
     <header className={appHeader.header}>
-      <div className={isOpened ? 'burger burger_opened' : 'burger'}>
-        <button
-          className="burger__button"
-          type="button"
-          onClick={isOpened ? onClose : openBurger}
-        >
-          <span className="burger__button-line" />
-          <span className="burger__button-line" />
-          <span className="burger__button-line" />
-        </button>
-        <div
-          className="burger__nav-overlay"
-          onMouseDown={(evt) => {
-            if (evt.currentTarget === evt.target) {
-              onClose();
-            }
-          }}
-        />
-        <nav className="burger__menu-login">
-          <ul className="burger__lines">
-            <li className="burger__line burger__line_mainpage">
-              <NavLink to="/" onClick={onClose} className={linkActivator}>
-                Главная
+      <div className={appHeader.content}>
+        <nav className={appHeader.navigation}>
+          <ul className={appHeader.navList}>
+            <li className={appHeader.navItem}>
+              <NavLink to="/" className={linkActivator}>
+                <BurgerIcon type={pathname === '/' ? 'primary' : 'secondary'} />
+                <p
+                  className={`text text_type_main-default ${appHeader.navText}`}
+                >
+                  Конструктор
+                </p>
               </NavLink>
             </li>
-            <li className="burger__line">
-              <NavLink to="movies" onClick={onClose} className={linkActivator}>
-                Фильмы
-              </NavLink>
-            </li>
-            <li className="burger__line">
-              <NavLink
-                to="saved-movies"
-                onClick={onClose}
-                className={linkActivator}
-              >
-                Сохранённые фильмы
+            <li className={appHeader.navItem}>
+              <NavLink to="*" className={linkActivator}>
+                <ListIcon type={pathname !== '/' ? 'primary' : 'secondary'} />
+                <p
+                  className={`text text_type_main-default ${appHeader.navText}`}
+                >
+                  Лента заказов
+                </p>
               </NavLink>
             </li>
           </ul>
-          <Link to="/profile" className="burger__account-btn" onClick={onClose}>
-            <img
-              className="burger__account-img"
-              alt="Иконка кнопки профиль"
-              src={accountImage}
-            />
-            <p className="burger__account-btn-text">Аккаунт</p>
-          </Link>
         </nav>
+        <div className={appHeader.logoContainer}>
+          <Logo />
+        </div>
+        <NavLink to="*" className={linkActivator}>
+          <ProfileIcon type={pathname !== '/' ? 'primary' : 'secondary'} />
+          <p className={`text text_type_main-default ${appHeader.navText}`}>
+            Личный кабинет
+          </p>
+        </NavLink>
       </div>
     </header>
   );
 }
 
 export default AppHeader;
-
-AppHeader.propTypes = {
-  isOpened: PropTypes.bool.isRequired,
-  openBurger: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-};
