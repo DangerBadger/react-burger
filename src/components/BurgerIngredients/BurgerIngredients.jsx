@@ -1,13 +1,13 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import { burgerData } from '../../utils/data';
-import tabs from '../../utils/constants';
+import { tabs } from '../../utils/constants';
 
 import stylesBurgerIngredients from './BurgerIngredients.module.css';
 
-import BurgerIngredientsItem from '../BurgerIngredientItem/BurgerIngredientsItem';
+import BurgerIngredientsList from '../BurgerIngredientsList/BurgerIngredientsList';
 
-function BurgerIngredients() {
+function BurgerIngredients({ ingredientsData }) {
   const [current, setCurrent] = useState('bun');
 
   return (
@@ -37,45 +37,42 @@ function BurgerIngredients() {
         </Tab>
       </div>
       <div className={`${stylesBurgerIngredients.constructorContainer} mt-10`}>
-        <h2 className="text text_type_main-medium mb-6">Булки</h2>
-        <ul className={`${stylesBurgerIngredients.ingredientsList} pl-4 pr-4`}>
-          {burgerData.map(
-            (ingredient) =>
-              ingredient.type === 'bun' && (
-                <BurgerIngredientsItem
-                  key={ingredient._id}
-                  ingredientData={ingredient}
-                />
-              )
-          )}
-        </ul>
-        <h2 className="text text_type_main-medium mt-10 mb-6">Соусы</h2>
-        <ul className={`${stylesBurgerIngredients.ingredientsList} pl-4 pr-4`}>
-          {burgerData.map(
-            (ingredient) =>
-              ingredient.type === 'sauce' && (
-                <BurgerIngredientsItem
-                  key={ingredient._id}
-                  ingredientData={ingredient}
-                />
-              )
-          )}
-        </ul>
-        <h2 className="text text_type_main-medium mt-10 mb-6">Начинки</h2>
-        <ul className={`${stylesBurgerIngredients.ingredientsList} pl-4 pr-4`}>
-          {burgerData.map(
-            (ingredient) =>
-              ingredient.type === 'main' && (
-                <BurgerIngredientsItem
-                  key={ingredient._id}
-                  ingredientData={ingredient}
-                />
-              )
-          )}
-        </ul>
+        <BurgerIngredientsList
+          type="bun"
+          tabName="Булки"
+          ingredientsData={ingredientsData}
+        />
+        <BurgerIngredientsList
+          type="sauce"
+          tabName="Соусы"
+          ingredientsData={ingredientsData}
+        />
+        <BurgerIngredientsList
+          type="main"
+          tabName="Начинки"
+          ingredientsData={ingredientsData}
+        />
       </div>
     </div>
   );
 }
 
 export default BurgerIngredients;
+
+BurgerIngredients.propTypes = {
+  ingredientsData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
+      proteins: PropTypes.number.isRequired,
+      carbohydrates: PropTypes.number.isRequired,
+      calories: PropTypes.number.isRequired,
+      price: PropTypes.number.isRequired,
+      image: PropTypes.string.isRequired,
+      image_mobile: PropTypes.string.isRequired,
+      image_large: PropTypes.string.isRequired,
+      __v: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+};
