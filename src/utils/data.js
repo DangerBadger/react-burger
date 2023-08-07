@@ -1,4 +1,4 @@
-const exampleDataId = [
+export const exampleDataId = [
   '643d69a5c3f7b9001cfa093c',
   '643d69a5c3f7b9001cfa0944',
   '643d69a5c3f7b9001cfa093f',
@@ -9,4 +9,7 @@ const exampleDataId = [
   '643d69a5c3f7b9001cfa093c',
 ];
 
-export default exampleDataId;
+export const currentOrderData = {
+  number: '034536',
+  preparationStage: 'cooking',
+};

@@ -7,7 +7,11 @@ import stylesBurgerIngredients from './BurgerIngredients.module.css';
 
 import BurgerIngredientsList from '../BurgerIngredientsList/BurgerIngredientsList';
 
-function BurgerIngredients({ ingredientsData }) {
+function BurgerIngredients({
+  ingredientsData,
+  ingredientOpen,
+  setCurrentIngredient,
+}) {
   const [current, setCurrent] = useState('bun');
 
   return (
@@ -41,16 +45,22 @@ function BurgerIngredients({ ingredientsData }) {
           type="bun"
           tabName="Булки"
           ingredientsData={ingredientsData}
+          setCurrentIngredient={setCurrentIngredient}
+          ingredientOpen={ingredientOpen}
         />
         <BurgerIngredientsList
           type="sauce"
           tabName="Соусы"
           ingredientsData={ingredientsData}
+          setCurrentIngredient={setCurrentIngredient}
+          ingredientOpen={ingredientOpen}
         />
         <BurgerIngredientsList
           type="main"
           tabName="Начинки"
           ingredientsData={ingredientsData}
+          setCurrentIngredient={setCurrentIngredient}
+          ingredientOpen={ingredientOpen}
         />
       </div>
     </div>
@@ -60,6 +70,8 @@ function BurgerIngredients({ ingredientsData }) {
 export default BurgerIngredients;
 
 BurgerIngredients.propTypes = {
+  ingredientOpen: PropTypes.func.isRequired,
+  setCurrentIngredient: PropTypes.func.isRequired,
   ingredientsData: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,

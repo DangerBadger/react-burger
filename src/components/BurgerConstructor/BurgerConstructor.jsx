@@ -7,7 +7,7 @@ import {
   CurrencyIcon,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import exampleDataId from '../../utils/data';
+import { exampleDataId } from '../../utils/data';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 

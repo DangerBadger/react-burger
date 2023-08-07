@@ -4,8 +4,34 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 720px;
-  height: 718px;
+  /* height: 718px; */
   background-color: #1c1c21;
   border-radius: 40px;
   z-index: 10;
+}
+
+.titleContainer {
+  width: 640px;
+  height: 64px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: center;
+  padding: 0;
+}
+
+.title {
+  display: flex;
+  width: 580px;
+}
+
+.closeButton {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  transition: opacity 0.1s linear 0.05s;
+}
+
+.closeButton:hover {
+  opacity: 0.7;
 }

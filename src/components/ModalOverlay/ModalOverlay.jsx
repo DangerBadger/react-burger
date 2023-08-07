@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 import stylesModalOverlay from './ModalOverlay.module.css';
 
-function ModalOverlay({ onClose }) {
+function ModalOverlay({ closeModal }) {
   return (
     <div
       className={stylesModalOverlay.overlay}
       onMouseDown={(e) => {
         if (e.currentTarget === e.target) {
-          onClose();
+          closeModal();
         }
       }}
     />
@@ -19,5 +19,5 @@ function ModalOverlay({ onClose }) {
 export default ModalOverlay;
 
 ModalOverlay.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
 };

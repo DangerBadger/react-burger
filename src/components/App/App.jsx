@@ -8,39 +8,14 @@ import AppHeader from '../AppHeader/AppHeader';
 import Main from '../Main/Main';
 import Modal from '../Modal/Modal';
 import OrderDetails from '../OrderDetails/OrderDetails';
+import IngredientDetails from '../IngredientDetails/IngredientDetails';
 
 function App() {
   const [ingredientsData, setIngredientsData] = useState([]);
   const [isOrderDetailsOpened, setIsOrderDetailsOpened] = useState(false);
   const [isIngredientDetailsOpened, setIngredientDetailsOpened] =
     useState(false);
-
-  // Есть ли открытый попап для навешивания слушателя?
-  const isPopupOpened = isOrderDetailsOpened || isIngredientDetailsOpened;
-
-  // Закрытие всех модалок
-  const closeAllPopups = () => {
-    setIsOrderDetailsOpened(false);
-    setIngredientDetailsOpened(false);
-  };
-
-  // Закрытие модалки по esc
-  const closeByEsc = (evt) => {
-    if (evt.key === 'Escape') {
-      closeAllPopups();
-    }
-  };
-
-  // Навешивание слушателя для закрытия модалки по esc
-  useEffect(() => {
-    if (isPopupOpened) {
-      document.addEventListener('keydown', closeByEsc);
-    }
-
-    return () => {
-      document.removeEventListener('keydown', closeByEsc);
-    };
-  }, [isPopupOpened]);
+  const [currentIngredient, setCurrentIngredient] = useState({});
 
   useEffect(() => {
     api
@@ -51,19 +26,35 @@ function App() {
       .catch((err) => console.warn(err));
   }, []);
 
+  // Открытие модалки заказа
   const orderOpen = () => {
     setIsOrderDetailsOpened(true);
+  };
+
+  // Открытие модалки ингредиента
+  const ingredientOpen = () => {
+    setIngredientDetailsOpened(true);
   };
 
   return (
     <>
       <div className={styles.app}>
         <AppHeader />
-        <Main ingredientsData={ingredientsData} orderOpen={orderOpen} />
+        <Main
+          ingredientsData={ingredientsData}
+          setCurrentIngredient={setCurrentIngredient}
+          orderOpen={orderOpen}
+          ingredientOpen={ingredientOpen}
+        />
       </div>
       {isOrderDetailsOpened && (
-        <Modal onClose={closeAllPopups}>
+        <Modal setOpen={setIsOrderDetailsOpened}>
           <OrderDetails />
+        </Modal>
+      )}
+      {isIngredientDetailsOpened && (
+        <Modal title="Детали ингредиента" setOpen={setIngredientDetailsOpened}>
+          <IngredientDetails currentIngredient={currentIngredient} />
         </Modal>
       )}
     </>

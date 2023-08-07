@@ -4,7 +4,13 @@ import stylesBurgerIngredientsList from './BurgerIngredientsList.module.css';
 
 import BurgerIngredientsItem from '../BurgerIngredientItem/BurgerIngredientsItem';
 
-function BurgerIngredientsList({ tabName, ingredientsData, type }) {
+function BurgerIngredientsList({
+  tabName,
+  ingredientsData,
+  setCurrentIngredient,
+  type,
+  ingredientOpen,
+}) {
   return (
     <>
       <h2 className="text text_type_main-medium mb-6">{tabName}</h2>
@@ -17,6 +23,8 @@ function BurgerIngredientsList({ tabName, ingredientsData, type }) {
               <BurgerIngredientsItem
                 key={ingredient._id}
                 ingredientData={ingredient}
+                setCurrentIngredient={setCurrentIngredient}
+                ingredientOpen={ingredientOpen}
               />
             )
         )}
@@ -30,6 +38,8 @@ export default BurgerIngredientsList;
 BurgerIngredientsList.propTypes = {
   type: PropTypes.string.isRequired,
   tabName: PropTypes.string.isRequired,
+  ingredientOpen: PropTypes.func.isRequired,
+  setCurrentIngredient: PropTypes.func.isRequired,
   ingredientsData: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
