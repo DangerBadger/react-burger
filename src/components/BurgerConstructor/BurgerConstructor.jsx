@@ -1,3 +1,10 @@
+/* eslint-disable no-loop-func */
+/* eslint-disable no-useless-return */
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-unreachable-loop */
+/* eslint-disable consistent-return */
+/* eslint-disable no-plusplus */
+/* eslint-disable array-callback-return */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
@@ -14,14 +21,20 @@ import stylesBurgerConstructor from './BurgerConstructor.module.css';
 import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorItem';
 
 function BurgerConstructor({ ingredientsData, orderOpen }) {
+  // const orderedBurger = useMemo(() => {
+  //   const burgerSetup = [];
+  //   exampleDataId.forEach((id) => {
+  //     ingredientsData.forEach((ingredient) => {
+  //       ingredient._id === id && burgerSetup.push(ingredient);
+  //     });
+  //   });
+  //   return burgerSetup;
+  // }, [ingredientsData]);
+
   const orderedBurger = useMemo(() => {
-    const burgerSetup = [];
-    exampleDataId.forEach((id) => {
-      ingredientsData.forEach((ingredient) => {
-        ingredient._id === id && burgerSetup.push(ingredient);
-      });
-    });
-    return burgerSetup;
+    return ingredientsData.length
+      ? exampleDataId.map(id => ingredientsData.find(ingredient => ingredient._id === id))
+      : [];
   }, [ingredientsData]);
 
   const total = orderedBurger.reduce(
