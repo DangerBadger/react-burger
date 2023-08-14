@@ -1,7 +1,9 @@
+/* eslint-disable arrow-body-style */
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { tabs } from '../../utils/constants';
+import { ingredientPropTypes } from '../../utils/propShapes';
 
 import stylesBurgerIngredients from './BurgerIngredients.module.css';
 
@@ -13,6 +15,10 @@ function BurgerIngredients({
   setCurrentIngredient,
 }) {
   const [current, setCurrent] = useState('bun');
+
+  const ingredientFilter = (type) => {
+    return ingredientsData.filter((ingredient) => ingredient.type === type);
+  };
 
   return (
     <div className={stylesBurgerIngredients.contentContainer}>
@@ -42,23 +48,20 @@ function BurgerIngredients({
       </div>
       <div className={`${stylesBurgerIngredients.constructorContainer} mt-10`}>
         <BurgerIngredientsList
-          type="bun"
           tabName="Булки"
-          ingredientsData={ingredientsData}
+          ingredientsDataType={ingredientFilter('bun')}
           setCurrentIngredient={setCurrentIngredient}
           ingredientOpen={ingredientOpen}
         />
         <BurgerIngredientsList
-          type="sauce"
           tabName="Соусы"
-          ingredientsData={ingredientsData}
+          ingredientsDataType={ingredientFilter('sauce')}
           setCurrentIngredient={setCurrentIngredient}
           ingredientOpen={ingredientOpen}
         />
         <BurgerIngredientsList
-          type="main"
           tabName="Начинки"
-          ingredientsData={ingredientsData}
+          ingredientsDataType={ingredientFilter('main')}
           setCurrentIngredient={setCurrentIngredient}
           ingredientOpen={ingredientOpen}
         />
@@ -72,19 +75,5 @@ export default BurgerIngredients;
 BurgerIngredients.propTypes = {
   ingredientOpen: PropTypes.func.isRequired,
   setCurrentIngredient: PropTypes.func.isRequired,
-  ingredientsData: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-      proteins: PropTypes.number.isRequired,
-      carbohydrates: PropTypes.number.isRequired,
-      calories: PropTypes.number.isRequired,
-      price: PropTypes.number.isRequired,
-      image: PropTypes.string.isRequired,
-      image_mobile: PropTypes.string.isRequired,
-      image_large: PropTypes.string.isRequired,
-      __v: PropTypes.number.isRequired,
-    })
-  ).isRequired,
+  ingredientsData: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired,
 };

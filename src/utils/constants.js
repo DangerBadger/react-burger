@@ -1,5 +1,5 @@
 export const apiSettings = {
-  url: 'https://norma.nomoreparties.space/api/ingredients',
+  url: 'https://norma.nomoreparties.space/api',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',

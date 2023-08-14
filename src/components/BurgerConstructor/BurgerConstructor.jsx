@@ -1,11 +1,4 @@
-/* eslint-disable no-loop-func */
-/* eslint-disable no-useless-return */
 /* eslint-disable arrow-body-style */
-/* eslint-disable no-unreachable-loop */
-/* eslint-disable consistent-return */
-/* eslint-disable no-plusplus */
-/* eslint-disable array-callback-return */
-/* eslint-disable no-unused-expressions */
 /* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
 import { useMemo } from 'react';
@@ -15,25 +8,18 @@ import {
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { exampleDataId } from '../../utils/data';
+import { ingredientPropTypes } from '../../utils/propShapes';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 
 import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorItem';
 
 function BurgerConstructor({ ingredientsData, orderOpen }) {
-  // const orderedBurger = useMemo(() => {
-  //   const burgerSetup = [];
-  //   exampleDataId.forEach((id) => {
-  //     ingredientsData.forEach((ingredient) => {
-  //       ingredient._id === id && burgerSetup.push(ingredient);
-  //     });
-  //   });
-  //   return burgerSetup;
-  // }, [ingredientsData]);
-
   const orderedBurger = useMemo(() => {
     return ingredientsData.length
-      ? exampleDataId.map(id => ingredientsData.find(ingredient => ingredient._id === id))
+      ? exampleDataId.map((id) =>
+          ingredientsData.find((ingredient) => ingredient._id === id)
+        )
       : [];
   }, [ingredientsData]);
 
@@ -106,19 +92,5 @@ export default BurgerConstructor;
 
 BurgerConstructor.propTypes = {
   orderOpen: PropTypes.func.isRequired,
-  ingredientsData: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-      proteins: PropTypes.number.isRequired,
-      carbohydrates: PropTypes.number.isRequired,
-      calories: PropTypes.number.isRequired,
-      price: PropTypes.number.isRequired,
-      image: PropTypes.string.isRequired,
-      image_mobile: PropTypes.string.isRequired,
-      image_large: PropTypes.string.isRequired,
-      __v: PropTypes.number.isRequired,
-    })
-  ).isRequired,
+  ingredientsData: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired,
 };

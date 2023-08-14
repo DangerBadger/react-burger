@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 
+import { ingredientPropTypes } from '../../utils/propShapes';
+
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 
@@ -34,19 +36,5 @@ Main.propTypes = {
   orderOpen: PropTypes.func.isRequired,
   ingredientOpen: PropTypes.func.isRequired,
   setCurrentIngredient: PropTypes.func.isRequired,
-  ingredientsData: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      type: PropTypes.string.isRequired,
-      proteins: PropTypes.number.isRequired,
-      carbohydrates: PropTypes.number.isRequired,
-      calories: PropTypes.number.isRequired,
-      price: PropTypes.number.isRequired,
-      image: PropTypes.string.isRequired,
-      image_mobile: PropTypes.string.isRequired,
-      image_large: PropTypes.string.isRequired,
-      __v: PropTypes.number.isRequired,
-    })
-  ).isRequired,
+  ingredientsData: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired,
 };
