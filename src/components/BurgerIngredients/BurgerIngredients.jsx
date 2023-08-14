@@ -1,14 +1,24 @@
+/* eslint-disable arrow-body-style */
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import { burgerData } from '../../utils/data';
-import tabs from '../../utils/constants';
+import { tabs } from '../../utils/constants';
+import { ingredientPropTypes } from '../../utils/propShapes';
 
 import stylesBurgerIngredients from './BurgerIngredients.module.css';
 
-import BurgerIngredientsItem from '../BurgerIngredientItem/BurgerIngredientsItem';
+import BurgerIngredientsList from '../BurgerIngredientsList/BurgerIngredientsList';
 
-function BurgerIngredients() {
+function BurgerIngredients({
+  ingredientsData,
+  ingredientOpen,
+  setCurrentIngredient,
+}) {
   const [current, setCurrent] = useState('bun');
+
+  const ingredientFilter = (type) => {
+    return ingredientsData.filter((ingredient) => ingredient.type === type);
+  };
 
   return (
     <div className={stylesBurgerIngredients.contentContainer}>
@@ -37,45 +47,33 @@ function BurgerIngredients() {
         </Tab>
       </div>
       <div className={`${stylesBurgerIngredients.constructorContainer} mt-10`}>
-        <h2 className="text text_type_main-medium mb-6">Булки</h2>
-        <ul className={`${stylesBurgerIngredients.ingredientsList} pl-4 pr-4`}>
-          {burgerData.map(
-            (ingredient) =>
-              ingredient.type === 'bun' && (
-                <BurgerIngredientsItem
-                  key={ingredient._id}
-                  ingredientData={ingredient}
-                />
-              )
-          )}
-        </ul>
-        <h2 className="text text_type_main-medium mt-10 mb-6">Соусы</h2>
-        <ul className={`${stylesBurgerIngredients.ingredientsList} pl-4 pr-4`}>
-          {burgerData.map(
-            (ingredient) =>
-              ingredient.type === 'sauce' && (
-                <BurgerIngredientsItem
-                  key={ingredient._id}
-                  ingredientData={ingredient}
-                />
-              )
-          )}
-        </ul>
-        <h2 className="text text_type_main-medium mt-10 mb-6">Начинки</h2>
-        <ul className={`${stylesBurgerIngredients.ingredientsList} pl-4 pr-4`}>
-          {burgerData.map(
-            (ingredient) =>
-              ingredient.type === 'main' && (
-                <BurgerIngredientsItem
-                  key={ingredient._id}
-                  ingredientData={ingredient}
-                />
-              )
-          )}
-        </ul>
+        <BurgerIngredientsList
+          tabName="Булки"
+          ingredientsDataType={ingredientFilter('bun')}
+          setCurrentIngredient={setCurrentIngredient}
+          ingredientOpen={ingredientOpen}
+        />
+        <BurgerIngredientsList
+          tabName="Соусы"
+          ingredientsDataType={ingredientFilter('sauce')}
+          setCurrentIngredient={setCurrentIngredient}
+          ingredientOpen={ingredientOpen}
+        />
+        <BurgerIngredientsList
+          tabName="Начинки"
+          ingredientsDataType={ingredientFilter('main')}
+          setCurrentIngredient={setCurrentIngredient}
+          ingredientOpen={ingredientOpen}
+        />
       </div>
     </div>
   );
 }
 
 export default BurgerIngredients;
+
+BurgerIngredients.propTypes = {
+  ingredientOpen: PropTypes.func.isRequired,
+  setCurrentIngredient: PropTypes.func.isRequired,
+  ingredientsData: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired,
+};

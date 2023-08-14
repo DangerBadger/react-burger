@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import PropTypes from 'prop-types';
 import {
   Counter,
@@ -6,9 +8,22 @@ import {
 
 import stylesBurgerIngredientsItem from './BurgerIngredientsItem.module.css';
 
-function BurgerIngredientsItem({ ingredientData }) {
+function BurgerIngredientsItem({
+  ingredientData,
+  ingredientOpen,
+  setCurrentIngredient,
+}) {
+  const selectIngredient = () => {
+    setCurrentIngredient(ingredientData);
+    ingredientOpen();
+  };
+
   return (
-    <li className={stylesBurgerIngredientsItem.ingredient}>
+    <li
+      data-id={ingredientData._id}
+      className={stylesBurgerIngredientsItem.ingredient}
+      onClick={selectIngredient}
+    >
       <img
         src={ingredientData.image}
         className={stylesBurgerIngredientsItem.image}
@@ -35,7 +50,10 @@ function BurgerIngredientsItem({ ingredientData }) {
 export default BurgerIngredientsItem;
 
 BurgerIngredientsItem.propTypes = {
+  ingredientOpen: PropTypes.func.isRequired,
+  setCurrentIngredient: PropTypes.func.isRequired,
   ingredientData: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
     image: PropTypes.string.isRequired,
