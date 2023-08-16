@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import api from '../../utils/Api';
+import IngredientsContext from '../../services/ingredientsContext';
+import BurgerConstructorContext from '../../services/burgerConstructor';
+import AddedIngredientsContext from '../../services/addedIngredients';
 
 import styles from './App.module.css';
 
@@ -12,6 +15,8 @@ import IngredientDetails from '../IngredientDetails/IngredientDetails';
 
 function App() {
   const [ingredientsData, setIngredientsData] = useState([]);
+  const [addedIngredients, setAddedIngredients] = useState([]);
+  const [constructorData, setContructorData] = useState([]);
   const [isOrderDetailsOpened, setIsOrderDetailsOpened] = useState(false);
   const [isIngredientDetailsOpened, setIngredientDetailsOpened] =
     useState(false);
@@ -37,27 +42,34 @@ function App() {
   };
 
   return (
-    <>
-      <div className={styles.app}>
-        <AppHeader />
-        <Main
-          ingredientsData={ingredientsData}
-          setCurrentIngredient={setCurrentIngredient}
-          orderOpen={orderOpen}
-          ingredientOpen={ingredientOpen}
-        />
-      </div>
-      {isOrderDetailsOpened && (
-        <Modal setOpen={setIsOrderDetailsOpened}>
-          <OrderDetails />
-        </Modal>
-      )}
-      {isIngredientDetailsOpened && (
-        <Modal title="Детали ингредиента" setOpen={setIngredientDetailsOpened}>
-          <IngredientDetails currentIngredient={currentIngredient} />
-        </Modal>
-      )}
-    </>
+    <IngredientsContext.Provider value={ingredientsData}>
+      <BurgerConstructorContext.Provider value={constructorData}>
+        <AddedIngredientsContext.Provider value={addedIngredients}>
+          <div className={styles.app}>
+            <AppHeader />
+            <Main
+              setCurrentIngredient={setCurrentIngredient}
+              orderOpen={orderOpen}
+              ingredientOpen={ingredientOpen}
+              setAddedIngredients={setAddedIngredients}
+            />
+          </div>
+          {isOrderDetailsOpened && (
+            <Modal setOpen={setIsOrderDetailsOpened}>
+              <OrderDetails />
+            </Modal>
+          )}
+          {isIngredientDetailsOpened && (
+            <Modal
+              title="Детали ингредиента"
+              setOpen={setIngredientDetailsOpened}
+            >
+              <IngredientDetails currentIngredient={currentIngredient} />
+            </Modal>
+          )}
+        </AddedIngredientsContext.Provider>
+      </BurgerConstructorContext.Provider>
+    </IngredientsContext.Provider>
   );
 }
 

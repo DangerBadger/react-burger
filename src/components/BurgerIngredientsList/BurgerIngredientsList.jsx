@@ -8,15 +8,17 @@ import BurgerIngredientsItem from '../BurgerIngredientItem/BurgerIngredientsItem
 
 function BurgerIngredientsList({
   tabName,
+  id,
   ingredientsDataType,
   setCurrentIngredient,
   ingredientOpen,
+  setAddedIngredients,
 }) {
-  console.log(ingredientsDataType);
-
   return (
     <>
-      <h2 className="text text_type_main-medium mb-6">{tabName}</h2>
+      <h2 className="text text_type_main-medium mb-6" id={id}>
+        {tabName}
+      </h2>
       <ul
         className={`${stylesBurgerIngredientsList.ingredientsList} pl-4 pr-4`}
       >
@@ -27,6 +29,7 @@ function BurgerIngredientsList({
               ingredientData={ingredient}
               setCurrentIngredient={setCurrentIngredient}
               ingredientOpen={ingredientOpen}
+              setAddedIngredients={setAddedIngredients}
             />
           );
         })}
@@ -38,7 +41,9 @@ function BurgerIngredientsList({
 export default BurgerIngredientsList;
 
 BurgerIngredientsList.propTypes = {
+  setAddedIngredients: PropTypes.func.isRequired,
   tabName: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   ingredientOpen: PropTypes.func.isRequired,
   setCurrentIngredient: PropTypes.func.isRequired,
   ingredientsDataType: PropTypes.arrayOf(ingredientPropTypes.isRequired)

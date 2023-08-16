@@ -8,23 +8,20 @@ import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import mainStyle from './Main.module.css';
 
 function Main({
-  ingredientsData,
   setCurrentIngredient,
   orderOpen,
   ingredientOpen,
+  setAddedIngredients,
 }) {
   return (
     <main className={mainStyle.main}>
       <section className={mainStyle.section}>
         <BurgerIngredients
-          ingredientsData={ingredientsData}
           setCurrentIngredient={setCurrentIngredient}
           ingredientOpen={ingredientOpen}
+          setAddedIngredients={setAddedIngredients}
         />
-        <BurgerConstructor
-          ingredientsData={ingredientsData}
-          orderOpen={orderOpen}
-        />
+        <BurgerConstructor orderOpen={orderOpen} />
       </section>
     </main>
   );
@@ -33,8 +30,8 @@ function Main({
 export default Main;
 
 Main.propTypes = {
+  setAddedIngredients: PropTypes.func.isRequired,
   orderOpen: PropTypes.func.isRequired,
   ingredientOpen: PropTypes.func.isRequired,
   setCurrentIngredient: PropTypes.func.isRequired,
-  ingredientsData: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired,
 };

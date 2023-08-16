@@ -1,20 +1,22 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
-import { useMemo } from 'react';
+import { useMemo, useContext } from 'react';
 import {
   ConstructorElement,
   CurrencyIcon,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { exampleDataId } from '../../utils/data';
-import { ingredientPropTypes } from '../../utils/propShapes';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 
 import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorItem';
+import IngredientsContext from '../../services/ingredientsContext';
 
-function BurgerConstructor({ ingredientsData, orderOpen }) {
+function BurgerConstructor({ orderOpen }) {
+  const ingredientsData = useContext(IngredientsContext);
+
   const orderedBurger = useMemo(() => {
     return ingredientsData.length
       ? exampleDataId.map((id) =>
@@ -92,5 +94,4 @@ export default BurgerConstructor;
 
 BurgerConstructor.propTypes = {
   orderOpen: PropTypes.func.isRequired,
-  ingredientsData: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired,
 };
