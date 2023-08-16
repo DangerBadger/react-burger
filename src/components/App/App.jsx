@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import api from '../../utils/Api';
 import IngredientsContext from '../../services/ingredientsContext';
-import BurgerConstructorContext from '../../services/burgerConstructor';
+import OrderContext from '../../services/orderContext';
 import AddedIngredientsContext from '../../services/addedIngredients';
 
 import styles from './App.module.css';
@@ -16,20 +16,11 @@ import IngredientDetails from '../IngredientDetails/IngredientDetails';
 function App() {
   const [ingredientsData, setIngredientsData] = useState([]);
   const [addedIngredients, setAddedIngredients] = useState([]);
-  const [constructorData, setContructorData] = useState([]);
+  const [orderData, setOrderData] = useState({});
   const [isOrderDetailsOpened, setIsOrderDetailsOpened] = useState(false);
   const [isIngredientDetailsOpened, setIngredientDetailsOpened] =
     useState(false);
   const [currentIngredient, setCurrentIngredient] = useState({});
-
-  useEffect(() => {
-    api
-      .getIngredients()
-      .then((ingredients) => {
-        setIngredientsData(ingredients.data);
-      })
-      .catch((err) => console.warn(err));
-  }, []);
 
   // Открытие модалки заказа
   const orderOpen = () => {
@@ -41,17 +32,36 @@ function App() {
     setIngredientDetailsOpened(true);
   };
 
+  useEffect(() => {
+    api
+      .getIngredients()
+      .then((ingredients) => {
+        setIngredientsData(ingredients.data);
+      })
+      .catch((err) => console.warn(err));
+  }, []);
+
+  const sendOrderHandler = (ingredientsId) => {
+    api
+      .sendOrder(ingredientsId)
+      .then((res) => {
+        setOrderData(res);
+        orderOpen();
+      })
+      .catch((err) => console.warn(err));
+  };
+
   return (
     <IngredientsContext.Provider value={ingredientsData}>
-      <BurgerConstructorContext.Provider value={constructorData}>
-        <AddedIngredientsContext.Provider value={addedIngredients}>
+      <AddedIngredientsContext.Provider value={addedIngredients}>
+        <OrderContext.Provider value={orderData}>
           <div className={styles.app}>
             <AppHeader />
             <Main
               setCurrentIngredient={setCurrentIngredient}
-              orderOpen={orderOpen}
               ingredientOpen={ingredientOpen}
               setAddedIngredients={setAddedIngredients}
+              sendOrderHandler={sendOrderHandler}
             />
           </div>
           {isOrderDetailsOpened && (
@@ -67,8 +77,8 @@ function App() {
               <IngredientDetails currentIngredient={currentIngredient} />
             </Modal>
           )}
-        </AddedIngredientsContext.Provider>
-      </BurgerConstructorContext.Provider>
+        </OrderContext.Provider>
+      </AddedIngredientsContext.Provider>
     </IngredientsContext.Provider>
   );
 }

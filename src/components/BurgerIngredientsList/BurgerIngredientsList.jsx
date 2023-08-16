@@ -1,4 +1,3 @@
-/* eslint-disable arrow-body-style */
 import PropTypes from 'prop-types';
 import { ingredientPropTypes } from '../../utils/propShapes';
 
@@ -22,17 +21,15 @@ function BurgerIngredientsList({
       <ul
         className={`${stylesBurgerIngredientsList.ingredientsList} pl-4 pr-4`}
       >
-        {ingredientsDataType.map((ingredient) => {
-          return (
-            <BurgerIngredientsItem
-              key={ingredient._id}
-              ingredientData={ingredient}
-              setCurrentIngredient={setCurrentIngredient}
-              ingredientOpen={ingredientOpen}
-              setAddedIngredients={setAddedIngredients}
-            />
-          );
-        })}
+        {ingredientsDataType.map((ingredient) => (
+          <BurgerIngredientsItem
+            key={ingredient._id}
+            ingredientData={ingredient}
+            setCurrentIngredient={setCurrentIngredient}
+            ingredientOpen={ingredientOpen}
+            setAddedIngredients={setAddedIngredients}
+          />
+        ))}
       </ul>
     </>
   );

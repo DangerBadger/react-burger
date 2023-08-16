@@ -1,5 +1,5 @@
 import { createContext } from 'react';
 
-const BurgerConstructorContext = createContext([]);
+const BurgerConstructorContext = createContext({});
 
 export default BurgerConstructorContext;

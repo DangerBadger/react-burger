@@ -6,6 +6,11 @@
   align-items: flex-end;
 }
 
+.bunContainer {
+  width: 568px;
+  transform: translateX(30px);
+}
+
 .mainList {
   list-style: none;
   margin: 0;

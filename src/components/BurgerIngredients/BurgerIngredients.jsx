@@ -1,4 +1,3 @@
-/* eslint-disable arrow-body-style */
 import PropTypes from 'prop-types';
 import { useState, useContext } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -7,6 +6,7 @@ import { tabs } from '../../utils/constants';
 import stylesBurgerIngredients from './BurgerIngredients.module.css';
 
 import BurgerIngredientsList from '../BurgerIngredientsList/BurgerIngredientsList';
+
 import IngredientsContext from '../../services/ingredientsContext';
 
 function BurgerIngredients({
@@ -25,9 +25,8 @@ function BurgerIngredients({
       .scrollIntoView({ block: 'start', behavior: 'smooth' });
   };
 
-  const ingredientFilter = (type) => {
-    return ingredientsData.filter((ingredient) => ingredient.type === type);
-  };
+  const ingredientFilter = (type) =>
+    ingredientsData.filter((ingredient) => ingredient.type === type);
 
   return (
     <div>

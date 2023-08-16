@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
 
-import { ingredientPropTypes } from '../../utils/propShapes';
-
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 
@@ -9,9 +7,9 @@ import mainStyle from './Main.module.css';
 
 function Main({
   setCurrentIngredient,
-  orderOpen,
   ingredientOpen,
   setAddedIngredients,
+  sendOrderHandler,
 }) {
   return (
     <main className={mainStyle.main}>
@@ -21,7 +19,10 @@ function Main({
           ingredientOpen={ingredientOpen}
           setAddedIngredients={setAddedIngredients}
         />
-        <BurgerConstructor orderOpen={orderOpen} />
+        <BurgerConstructor
+          setAddedIngredients={setAddedIngredients}
+          sendOrderHandler={sendOrderHandler}
+        />
       </section>
     </main>
   );
@@ -30,8 +31,8 @@ function Main({
 export default Main;
 
 Main.propTypes = {
+  sendOrderHandler: PropTypes.func.isRequired,
   setAddedIngredients: PropTypes.func.isRequired,
-  orderOpen: PropTypes.func.isRequired,
   ingredientOpen: PropTypes.func.isRequired,
   setCurrentIngredient: PropTypes.func.isRequired,
 };

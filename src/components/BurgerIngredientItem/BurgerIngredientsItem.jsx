@@ -1,6 +1,3 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable prefer-const */
-/* eslint-disable no-plusplus */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import PropTypes from 'prop-types';
@@ -34,11 +31,11 @@ function BurgerIngredientsItem({
     );
     const addedBunIndex = addedIngredients.indexOf(addedBun);
 
-    // Замене булки на новую
+    // Замена булки на новую
     if (ingredientData.type === 'bun' && addedBun) {
       const addedIngredientsDuplicate = addedIngredients.slice();
       addedIngredientsDuplicate.splice(addedBunIndex, 1, ingredientData);
-      setAddedIngredients([...addedIngredientsDuplicate]);
+      setAddedIngredients(addedIngredientsDuplicate);
     } else {
       setAddedIngredients([...addedIngredients, ingredientData]);
     }
