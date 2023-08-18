@@ -1,11 +1,12 @@
 /* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
-import { useContext, useState, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import {
   ConstructorElement,
   CurrencyIcon,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { foundBunPropTypes } from '../../utils/propShapes';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 
@@ -13,11 +14,14 @@ import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorIte
 import IngredientsContext from '../../services/ingredientsContext';
 import AddedIngredientsContext from '../../services/addedIngredients';
 
-function BurgerConstructor({ setAddedIngredients, sendOrderHandler }) {
+function BurgerConstructor({
+  setAddedIngredients,
+  sendOrderHandler,
+  foundBun,
+  setFoundBun,
+}) {
   const ingredientsData = useContext(IngredientsContext);
   const addedIngredients = useContext(AddedIngredientsContext);
-
-  const [foundBun, setFoundBun] = useState([]);
 
   const total = useMemo(
     () =>
@@ -103,6 +107,7 @@ function BurgerConstructor({ setAddedIngredients, sendOrderHandler }) {
         </span>
         <Button
           onClick={orderClickHandler}
+          disabled={!addedIngredients.length}
           htmlType="button"
           type="primary"
           size="large"
@@ -117,6 +122,8 @@ function BurgerConstructor({ setAddedIngredients, sendOrderHandler }) {
 export default BurgerConstructor;
 
 BurgerConstructor.propTypes = {
+  foundBun: foundBunPropTypes.isRequired,
+  setFoundBun: PropTypes.func.isRequired,
   setAddedIngredients: PropTypes.func.isRequired,
   sendOrderHandler: PropTypes.func.isRequired,
 };
