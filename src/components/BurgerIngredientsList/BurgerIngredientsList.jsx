@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import PropTypes from 'prop-types';
 import { ingredientPropTypes } from '../../utils/propShapes';
 
@@ -10,7 +11,7 @@ function BurgerIngredientsList({
   id,
   ingredientsDataType,
   setCurrentIngredient,
-  ingredientOpen,
+  openIngredientDetails,
   setAddedIngredients,
 }) {
   return (
@@ -26,7 +27,7 @@ function BurgerIngredientsList({
             key={ingredient._id}
             ingredientData={ingredient}
             setCurrentIngredient={setCurrentIngredient}
-            ingredientOpen={ingredientOpen}
+            openIngredientDetails={openIngredientDetails}
             setAddedIngredients={setAddedIngredients}
           />
         ))}
@@ -41,7 +42,7 @@ BurgerIngredientsList.propTypes = {
   setAddedIngredients: PropTypes.func.isRequired,
   tabName: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  ingredientOpen: PropTypes.func.isRequired,
+  openIngredientDetails: PropTypes.func,
   setCurrentIngredient: PropTypes.func.isRequired,
   ingredientsDataType: PropTypes.arrayOf(ingredientPropTypes.isRequired)
     .isRequired,

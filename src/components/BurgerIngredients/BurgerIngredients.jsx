@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import PropTypes from 'prop-types';
 import { useState, useContext } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -12,7 +13,7 @@ import IngredientsContext from '../../services/ingredientsContext';
 import IsLoadingContext from '../../services/isLoadigContext';
 
 function BurgerIngredients({
-  ingredientOpen,
+  openIngredientDetails,
   setCurrentIngredient,
   setAddedIngredients,
 }) {
@@ -69,7 +70,7 @@ function BurgerIngredients({
               id={tabs.BUN}
               ingredientsDataType={ingredientFilter(tabs.BUN)}
               setCurrentIngredient={setCurrentIngredient}
-              ingredientOpen={ingredientOpen}
+              openIngredientDetails={openIngredientDetails}
               setAddedIngredients={setAddedIngredients}
             />
             <BurgerIngredientsList
@@ -77,7 +78,7 @@ function BurgerIngredients({
               id={tabs.SAUCE}
               ingredientsDataType={ingredientFilter(tabs.SAUCE)}
               setCurrentIngredient={setCurrentIngredient}
-              ingredientOpen={ingredientOpen}
+              openIngredientDetails={openIngredientDetails}
               setAddedIngredients={setAddedIngredients}
             />
             <BurgerIngredientsList
@@ -85,7 +86,7 @@ function BurgerIngredients({
               id={tabs.MAIN}
               ingredientsDataType={ingredientFilter(tabs.MAIN)}
               setCurrentIngredient={setCurrentIngredient}
-              ingredientOpen={ingredientOpen}
+              openIngredientDetails={openIngredientDetails}
               setAddedIngredients={setAddedIngredients}
             />
           </>
@@ -99,6 +100,6 @@ export default BurgerIngredients;
 
 BurgerIngredients.propTypes = {
   setAddedIngredients: PropTypes.func.isRequired,
-  ingredientOpen: PropTypes.func.isRequired,
+  openIngredientDetails: PropTypes.func,
   setCurrentIngredient: PropTypes.func.isRequired,
 };

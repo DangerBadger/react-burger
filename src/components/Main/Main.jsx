@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import PropTypes from 'prop-types';
 import { foundBunPropTypes } from '../../utils/propShapes';
 
@@ -8,7 +9,7 @@ import mainStyle from './Main.module.css';
 
 function Main({
   setCurrentIngredient,
-  ingredientOpen,
+  openIngredientDetails,
   setAddedIngredients,
   sendOrderHandler,
   foundBun,
@@ -19,7 +20,7 @@ function Main({
       <section className={mainStyle.section}>
         <BurgerIngredients
           setCurrentIngredient={setCurrentIngredient}
-          ingredientOpen={ingredientOpen}
+          openIngredientDetails={openIngredientDetails}
           setAddedIngredients={setAddedIngredients}
         />
         <BurgerConstructor
@@ -40,6 +41,6 @@ Main.propTypes = {
   setFoundBun: PropTypes.func.isRequired,
   sendOrderHandler: PropTypes.func.isRequired,
   setAddedIngredients: PropTypes.func.isRequired,
-  ingredientOpen: PropTypes.func.isRequired,
+  openIngredientDetails: PropTypes.func,
   setCurrentIngredient: PropTypes.func.isRequired,
 };

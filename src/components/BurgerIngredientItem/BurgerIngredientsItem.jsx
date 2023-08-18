@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import PropTypes from 'prop-types';
@@ -12,7 +13,7 @@ import AddedIngredientsContext from '../../services/addedIngredients';
 
 function BurgerIngredientsItem({
   ingredientData,
-  ingredientOpen,
+  openIngredientDetails,
   setCurrentIngredient,
   setAddedIngredients,
 }) {
@@ -22,7 +23,7 @@ function BurgerIngredientsItem({
 
   const ingredientOpenHandler = () => {
     setCurrentIngredient(ingredientData);
-    ingredientOpen();
+    openIngredientDetails();
   };
 
   const ingredientAddHandler = () => {
@@ -86,7 +87,7 @@ export default BurgerIngredientsItem;
 
 BurgerIngredientsItem.propTypes = {
   setAddedIngredients: PropTypes.func.isRequired,
-  ingredientOpen: PropTypes.func.isRequired,
+  openIngredientDetails: PropTypes.func,
   setCurrentIngredient: PropTypes.func.isRequired,
   ingredientData: PropTypes.shape({
     _id: PropTypes.string.isRequired,

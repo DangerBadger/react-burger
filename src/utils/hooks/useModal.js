@@ -12,9 +12,5 @@ export const useModal = () => {
     setIsModalOpen(false);
   }, []);
 
-  return {
-    isModalOpen,
-    openModal,
-    closeModal,
-  };
+  return [isModalOpen, openModal, closeModal];
 };

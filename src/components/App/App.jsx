@@ -5,6 +5,7 @@ import IngredientsContext from '../../services/ingredientsContext';
 import OrderContext from '../../services/orderContext';
 import AddedIngredientsContext from '../../services/addedIngredients';
 import IsLoadingContext from '../../services/isLoadigContext';
+import { useModal } from '../../utils/hooks/useModal';
 
 import styles from './App.module.css';
 
@@ -18,23 +19,17 @@ function App() {
   const [ingredientsData, setIngredientsData] = useState([]);
   const [addedIngredients, setAddedIngredients] = useState([]);
   const [orderData, setOrderData] = useState({});
-  const [isOrderDetailsOpened, setIsOrderDetailsOpened] = useState(false);
-  const [isIngredientDetailsOpened, setIngredientDetailsOpened] =
-    useState(false);
+  const [isOrderDetailsOpened, openOrderDetails, closeOrderDetails] =
+    useModal();
+  const [
+    isIngredientDetailsOpened,
+    openIngredientDetails,
+    closeIngredientDetails,
+  ] = useModal();
   const [currentIngredient, setCurrentIngredient] = useState({});
   const [foundBun, setFoundBun] = useState({});
   const [isIngredientLoading, setIsIngredientIsLoading] = useState(false);
   const [isOrderLoading, setIsOrderLoading] = useState(false);
-
-  // Открытие модалки заказа
-  const orderOpen = () => {
-    setIsOrderDetailsOpened(true);
-  };
-
-  // Открытие модалки ингредиента
-  const ingredientOpen = () => {
-    setIngredientDetailsOpened(true);
-  };
 
   useEffect(() => {
     api
@@ -57,7 +52,7 @@ function App() {
       .then((res) => {
         setIsOrderLoading(true);
         setOrderData(res);
-        orderOpen();
+        openOrderDetails();
         setAddedIngredients([]);
         setFoundBun({});
       })
@@ -78,7 +73,7 @@ function App() {
               <AppHeader />
               <Main
                 setCurrentIngredient={setCurrentIngredient}
-                ingredientOpen={ingredientOpen}
+                openIngredientDetails={openIngredientDetails}
                 setAddedIngredients={setAddedIngredients}
                 sendOrderHandler={sendOrderHandler}
                 foundBun={foundBun}
@@ -86,14 +81,14 @@ function App() {
               />
             </div>
             {isOrderDetailsOpened && (
-              <Modal setOpen={setIsOrderDetailsOpened}>
+              <Modal onClose={closeOrderDetails}>
                 <OrderDetails isOrderLoading={isOrderLoading} />
               </Modal>
             )}
             {isIngredientDetailsOpened && (
               <Modal
                 title="Детали ингредиента"
-                setOpen={setIngredientDetailsOpened}
+                onClose={closeIngredientDetails}
               >
                 <IngredientDetails currentIngredient={currentIngredient} />
               </Modal>
