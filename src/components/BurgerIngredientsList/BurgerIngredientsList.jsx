@@ -1,4 +1,4 @@
-/* eslint-disable arrow-body-style */
+/* eslint-disable react/require-default-props */
 import PropTypes from 'prop-types';
 import { ingredientPropTypes } from '../../utils/propShapes';
 
@@ -8,28 +8,29 @@ import BurgerIngredientsItem from '../BurgerIngredientItem/BurgerIngredientsItem
 
 function BurgerIngredientsList({
   tabName,
+  id,
   ingredientsDataType,
   setCurrentIngredient,
-  ingredientOpen,
+  openIngredientDetails,
+  setAddedIngredients,
 }) {
-  console.log(ingredientsDataType);
-
   return (
     <>
-      <h2 className="text text_type_main-medium mb-6">{tabName}</h2>
+      <h2 className="text text_type_main-medium mb-6" id={id}>
+        {tabName}
+      </h2>
       <ul
         className={`${stylesBurgerIngredientsList.ingredientsList} pl-4 pr-4`}
       >
-        {ingredientsDataType.map((ingredient) => {
-          return (
-            <BurgerIngredientsItem
-              key={ingredient._id}
-              ingredientData={ingredient}
-              setCurrentIngredient={setCurrentIngredient}
-              ingredientOpen={ingredientOpen}
-            />
-          );
-        })}
+        {ingredientsDataType.map((ingredient) => (
+          <BurgerIngredientsItem
+            key={ingredient._id}
+            ingredientData={ingredient}
+            setCurrentIngredient={setCurrentIngredient}
+            openIngredientDetails={openIngredientDetails}
+            setAddedIngredients={setAddedIngredients}
+          />
+        ))}
       </ul>
     </>
   );
@@ -38,8 +39,10 @@ function BurgerIngredientsList({
 export default BurgerIngredientsList;
 
 BurgerIngredientsList.propTypes = {
+  setAddedIngredients: PropTypes.func.isRequired,
   tabName: PropTypes.string.isRequired,
-  ingredientOpen: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  openIngredientDetails: PropTypes.func,
   setCurrentIngredient: PropTypes.func.isRequired,
   ingredientsDataType: PropTypes.arrayOf(ingredientPropTypes.isRequired)
     .isRequired,

@@ -23,6 +23,28 @@ class Api {
       headers: this._headers,
     });
   }
+
+  sendOrder(ingredientsId) {
+    return this._request('/orders', {
+      method: 'POST',
+      headers: this._headers,
+      body: JSON.stringify({ ingredients: ingredientsId }),
+    });
+  }
+
+  // sendIngredients(ingredientsIds) {
+  //   const burgerData = {
+  //     'ingredients': ingredientsIds
+  //   }
+
+  //   return fetch(`${this._baseUrl}/orders`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json;charset=utf-8'
+  //     },
+  //     body: JSON.stringify(burgerData)
+  //   }).then((res) => this._requestResult(res));
+  // }
 }
 
 const api = new Api(apiSettings);

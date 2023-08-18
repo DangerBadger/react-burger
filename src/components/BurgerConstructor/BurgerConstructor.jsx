@@ -1,68 +1,98 @@
-/* eslint-disable arrow-body-style */
 /* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
-import { useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import {
   ConstructorElement,
   CurrencyIcon,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { exampleDataId } from '../../utils/data';
-import { ingredientPropTypes } from '../../utils/propShapes';
+import { foundBunPropTypes } from '../../utils/propShapes';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 
 import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorItem';
+import IngredientsContext from '../../services/ingredientsContext';
+import AddedIngredientsContext from '../../services/addedIngredients';
 
-function BurgerConstructor({ ingredientsData, orderOpen }) {
-  const orderedBurger = useMemo(() => {
-    return ingredientsData.length
-      ? exampleDataId.map((id) =>
-          ingredientsData.find((ingredient) => ingredient._id === id)
-        )
-      : [];
-  }, [ingredientsData]);
+function BurgerConstructor({
+  setAddedIngredients,
+  sendOrderHandler,
+  foundBun,
+  setFoundBun,
+}) {
+  const ingredientsData = useContext(IngredientsContext);
+  const addedIngredients = useContext(AddedIngredientsContext);
 
-  const total = orderedBurger.reduce(
-    (accumulator, currentValue) => accumulator + currentValue.price,
-    0
+  const total = useMemo(
+    () =>
+      addedIngredients.reduce(
+        (accumulator, currentValue) =>
+          currentValue.type === 'bun'
+            ? accumulator + currentValue.price * 2
+            : accumulator + currentValue.price,
+        0
+      ),
+    [addedIngredients]
   );
+
+  const deleteIngredientHandler = (item) => {
+    const addedIngredientIndex = addedIngredients.indexOf(item);
+    const addedIngredientsDuplicate = addedIngredients.slice();
+    addedIngredientsDuplicate.splice(addedIngredientIndex, 1);
+    setAddedIngredients(addedIngredientsDuplicate);
+  };
+
+  useEffect(() => {
+    if (
+      addedIngredients.length &&
+      addedIngredients.find((ingredient) => ingredient.type === 'bun')
+    ) {
+      setFoundBun(
+        addedIngredients.find((ingredient) => ingredient.type === 'bun')
+      );
+    }
+  }, [addedIngredients, foundBun]);
+
+  const orderClickHandler = () => {
+    const orderIdArray = addedIngredients.map((ingredient) => ingredient._id);
+    sendOrderHandler(orderIdArray);
+  };
 
   return (
     <div className={`${stylesBurgerConstructor.constructorContainer} mt-25`}>
-      <div className={`${stylesBurgerConstructor.topContainer} mb-4 pl-4 pr-4`}>
+      <div className={`${stylesBurgerConstructor.bunContainer} mb-4 pl-4 pr-4`}>
         <ConstructorElement
           type="top"
           isLocked
-          text={`${orderedBurger[0] && orderedBurger[0].name} (верх)`}
-          price={orderedBurger[0] && orderedBurger[0].price}
-          thumbnail={orderedBurger[0] && orderedBurger[0].image}
+          text={`${foundBun.name ?? 'Выберите булку'} (верх)`}
+          price={foundBun.price ?? '0'}
+          thumbnail={
+            foundBun.image ??
+            (ingredientsData.length && ingredientsData[0].image)
+          }
         />
       </div>
       <ul className={stylesBurgerConstructor.mainList}>
-        {orderedBurger.map(
+        {addedIngredients.map(
           (ingredient, index) =>
-            index > 0 &&
-            index < orderedBurger.length - 1 && (
-              <BurgerConstructorItem key={index} ingredientInfo={ingredient} />
+            ingredient.type !== 'bun' && (
+              <BurgerConstructorItem
+                key={index}
+                ingredientInfo={ingredient}
+                onDelete={deleteIngredientHandler}
+              />
             )
         )}
       </ul>
-      <div className={`${stylesBurgerConstructor.topContainer} mt-4 pl-4 pr-4`}>
+      <div className={`${stylesBurgerConstructor.bunContainer} mt-4 pl-4 pr-4`}>
         <ConstructorElement
           type="bottom"
           isLocked
-          text={`${
-            orderedBurger[orderedBurger.length - 1] &&
-            orderedBurger[orderedBurger.length - 1].name
-          } (низ)`}
-          price={
-            orderedBurger[orderedBurger.length - 1] &&
-            orderedBurger[orderedBurger.length - 1].price
-          }
+          text={`${foundBun.name ?? 'Выберите булку'} (низ)`}
+          price={foundBun.price ?? '0'}
           thumbnail={
-            orderedBurger[orderedBurger.length - 1] &&
-            orderedBurger[orderedBurger.length - 1].image
+            foundBun.image ??
+            (ingredientsData.length && ingredientsData[0].image)
           }
         />
       </div>
@@ -76,7 +106,8 @@ function BurgerConstructor({ ingredientsData, orderOpen }) {
           <CurrencyIcon />
         </span>
         <Button
-          onClick={orderOpen}
+          onClick={orderClickHandler}
+          disabled={!addedIngredients.length}
           htmlType="button"
           type="primary"
           size="large"
@@ -91,6 +122,8 @@ function BurgerConstructor({ ingredientsData, orderOpen }) {
 export default BurgerConstructor;
 
 BurgerConstructor.propTypes = {
-  orderOpen: PropTypes.func.isRequired,
-  ingredientsData: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired,
+  foundBun: foundBunPropTypes.isRequired,
+  setFoundBun: PropTypes.func.isRequired,
+  setAddedIngredients: PropTypes.func.isRequired,
+  sendOrderHandler: PropTypes.func.isRequired,
 };

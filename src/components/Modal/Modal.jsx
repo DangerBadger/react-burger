@@ -8,17 +8,13 @@ import stylesModal from './Modal.module.css';
 
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
-function Modal({ setOpen, children, title = '' }) {
+function Modal({ onClose, children, title = '' }) {
   const modalRoot = document.getElementById('react-modals');
-
-  const closeModal = () => {
-    setOpen(false);
-  };
 
   // Закрытие модалки по esc
   const closeByEsc = (evt) => {
     if (evt.key === 'Escape') {
-      closeModal();
+      onClose();
     }
   };
 
@@ -41,14 +37,14 @@ function Modal({ setOpen, children, title = '' }) {
           <button
             type="button"
             className={`${stylesModal.closeButton} ml-9`}
-            onClick={closeModal}
+            onClick={onClose}
           >
             <CloseIcon />
           </button>
         </div>
         {children}
       </div>
-      <ModalOverlay closeModal={closeModal} />
+      <ModalOverlay onClose={onClose} />
     </>,
     modalRoot
   );
@@ -57,7 +53,7 @@ function Modal({ setOpen, children, title = '' }) {
 export default Modal;
 
 Modal.propTypes = {
-  setOpen: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
 };
