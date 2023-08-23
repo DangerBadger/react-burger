@@ -1,27 +1,29 @@
 /* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
-import { useContext, useEffect, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ConstructorElement,
   CurrencyIcon,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { foundBunPropTypes } from '../../utils/propShapes';
+import { deleteIngredient } from '../../services/actions/ingredients';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 
 import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorItem';
-import IngredientsContext from '../../services/ingredientsContext';
-import AddedIngredientsContext from '../../services/addedIngredients';
 
-function BurgerConstructor({
-  setAddedIngredients,
-  sendOrderHandler,
-  foundBun,
-  setFoundBun,
-}) {
-  const ingredientsData = useContext(IngredientsContext);
-  const addedIngredients = useContext(AddedIngredientsContext);
+function BurgerConstructor({ sendOrderHandler }) {
+  const dispatch = useDispatch();
+
+  const [foundBun, setFoundBun] = useState({});
+
+  const ingredientsData = useSelector(
+    (store) => store.ingredientsData.ingredients
+  );
+  const addedIngredients = useSelector(
+    (store) => store.ingredientsData.addedIngredients
+  );
 
   const total = useMemo(
     () =>
@@ -39,7 +41,7 @@ function BurgerConstructor({
     const addedIngredientIndex = addedIngredients.indexOf(item);
     const addedIngredientsDuplicate = addedIngredients.slice();
     addedIngredientsDuplicate.splice(addedIngredientIndex, 1);
-    setAddedIngredients(addedIngredientsDuplicate);
+    dispatch(deleteIngredient(addedIngredientsDuplicate));
   };
 
   useEffect(() => {
@@ -122,8 +124,5 @@ function BurgerConstructor({
 export default BurgerConstructor;
 
 BurgerConstructor.propTypes = {
-  foundBun: foundBunPropTypes.isRequired,
-  setFoundBun: PropTypes.func.isRequired,
-  setAddedIngredients: PropTypes.func.isRequired,
   sendOrderHandler: PropTypes.func.isRequired,
 };

@@ -10,9 +10,7 @@ function BurgerIngredientsList({
   tabName,
   id,
   ingredientsDataType,
-  setCurrentIngredient,
   openIngredientDetails,
-  setAddedIngredients,
 }) {
   return (
     <>
@@ -26,9 +24,7 @@ function BurgerIngredientsList({
           <BurgerIngredientsItem
             key={ingredient._id}
             ingredientData={ingredient}
-            setCurrentIngredient={setCurrentIngredient}
             openIngredientDetails={openIngredientDetails}
-            setAddedIngredients={setAddedIngredients}
           />
         ))}
       </ul>
@@ -39,11 +35,9 @@ function BurgerIngredientsList({
 export default BurgerIngredientsList;
 
 BurgerIngredientsList.propTypes = {
-  setAddedIngredients: PropTypes.func.isRequired,
   tabName: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   openIngredientDetails: PropTypes.func,
-  setCurrentIngredient: PropTypes.func.isRequired,
   ingredientsDataType: PropTypes.arrayOf(ingredientPropTypes.isRequired)
     .isRequired,
 };

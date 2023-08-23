@@ -1,5 +1,6 @@
 /* eslint-disable react/require-default-props */
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { useState, useContext } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { tabs } from '../../utils/constants';
@@ -8,17 +9,14 @@ import stylesBurgerIngredients from './BurgerIngredients.module.css';
 
 import BurgerIngredientsList from '../BurgerIngredientsList/BurgerIngredientsList';
 
-import AddedIngredientsContext from '../../services/addedIngredients';
-import IngredientsContext from '../../services/ingredientsContext';
-import IsLoadingContext from '../../services/isLoadigContext';
+function BurgerIngredients({ openIngredientDetails }) {
+  const ingredientsData = useSelector(
+    (store) => store.ingredientsData.ingredients
+  );
 
-function BurgerIngredients({
-  openIngredientDetails,
-  setCurrentIngredient,
-  setAddedIngredients,
-}) {
-  const ingredientsData = useContext(IngredientsContext);
-  const isLoading = useContext(IsLoadingContext);
+  const isLoading = useSelector(
+    (store) => store.ingredientsData.ingredientsRequest
+  );
 
   const [current, setCurrent] = useState('bun');
 
@@ -69,25 +67,19 @@ function BurgerIngredients({
               tabName="Булки"
               id={tabs.BUN}
               ingredientsDataType={ingredientFilter(tabs.BUN)}
-              setCurrentIngredient={setCurrentIngredient}
               openIngredientDetails={openIngredientDetails}
-              setAddedIngredients={setAddedIngredients}
             />
             <BurgerIngredientsList
               tabName="Соусы"
               id={tabs.SAUCE}
               ingredientsDataType={ingredientFilter(tabs.SAUCE)}
-              setCurrentIngredient={setCurrentIngredient}
               openIngredientDetails={openIngredientDetails}
-              setAddedIngredients={setAddedIngredients}
             />
             <BurgerIngredientsList
               tabName="Начинки"
               id={tabs.MAIN}
               ingredientsDataType={ingredientFilter(tabs.MAIN)}
-              setCurrentIngredient={setCurrentIngredient}
               openIngredientDetails={openIngredientDetails}
-              setAddedIngredients={setAddedIngredients}
             />
           </>
         )}
@@ -99,7 +91,5 @@ function BurgerIngredients({
 export default BurgerIngredients;
 
 BurgerIngredients.propTypes = {
-  setAddedIngredients: PropTypes.func.isRequired,
   openIngredientDetails: PropTypes.func,
-  setCurrentIngredient: PropTypes.func.isRequired,
 };

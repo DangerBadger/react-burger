@@ -2,27 +2,30 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import PropTypes from 'prop-types';
-import { useContext, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
 import {
   Counter,
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import {
+  selectIngredient,
+  addIngredient,
+} from '../../services/actions/ingredients';
 
 import stylesBurgerIngredientsItem from './BurgerIngredientsItem.module.css';
-import AddedIngredientsContext from '../../services/addedIngredients';
 
-function BurgerIngredientsItem({
-  ingredientData,
-  openIngredientDetails,
-  setCurrentIngredient,
-  setAddedIngredients,
-}) {
-  const addedIngredients = useContext(AddedIngredientsContext);
+function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
+  const dispatch = useDispatch();
+
+  const addedIngredients = useSelector(
+    (store) => store.ingredientsData.addedIngredients
+  );
 
   const [counter, setCounter] = useState(0);
 
   const ingredientOpenHandler = () => {
-    setCurrentIngredient(ingredientData);
+    dispatch(selectIngredient(ingredientData));
     openIngredientDetails();
   };
 
@@ -36,9 +39,9 @@ function BurgerIngredientsItem({
     if (ingredientData.type === 'bun' && addedBun) {
       const addedIngredientsDuplicate = addedIngredients.slice();
       addedIngredientsDuplicate.splice(addedBunIndex, 1, ingredientData);
-      setAddedIngredients(addedIngredientsDuplicate);
+      dispatch(addIngredient(addedIngredientsDuplicate));
     } else {
-      setAddedIngredients([...addedIngredients, ingredientData]);
+      dispatch(addIngredient([...addedIngredients, ingredientData]));
     }
   };
 
@@ -86,9 +89,7 @@ function BurgerIngredientsItem({
 export default BurgerIngredientsItem;
 
 BurgerIngredientsItem.propTypes = {
-  setAddedIngredients: PropTypes.func.isRequired,
   openIngredientDetails: PropTypes.func,
-  setCurrentIngredient: PropTypes.func.isRequired,
   ingredientData: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
