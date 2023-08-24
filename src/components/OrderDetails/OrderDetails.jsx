@@ -1,16 +1,14 @@
-import { useContext } from 'react';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { currentOrderData } from '../../utils/data';
-import { preparationStageTexts } from '../../utils/constants';
-import done from '../../images/done.gif';
 
 import stylesOrderDetails from './OrderDetails.module.css';
 
-import OrderContext from '../../services/orderContext';
-import IsLoadingContext from '../../services/isLoadigContext';
+import done from '../../images/done.gif';
+import { preparationStageTexts } from '../../utils/constants';
 
-function OrderDetails({ isOrderLoading }) {
-  const orderContext = useContext(OrderContext);
+function OrderDetails() {
+  const orderDetails = useSelector((store) => store.orderData.orderDetails);
+  const isOrderLoading = useSelector((store) => store.orderData.orderRequest);
 
   return (
     <div className={stylesOrderDetails.container}>
@@ -20,7 +18,7 @@ function OrderDetails({ isOrderLoading }) {
         </h3>
       ) : (
         <h3 className="text text_type_digits-large mt-4">
-          {orderContext.order.number}
+          {orderDetails.order.number}
         </h3>
       )}
       <p className="text text_type_main-medium mt-8">Идентификатор заказа</p>
@@ -37,7 +35,3 @@ function OrderDetails({ isOrderLoading }) {
 }
 
 export default OrderDetails;
-
-OrderDetails.propTypes = {
-  isOrderLoading: PropTypes.bool.isRequired,
-};

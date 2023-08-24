@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import api from '../../utils/Api';
 
 export const GET_INGREDIENTS = 'GET_INGREDIENTS';
@@ -54,15 +55,15 @@ export const unselectIngredient = () => ({
 });
 
 export const addIngredient = (ingredientsArr) => {
-  const enchancedIngredientArr = ingredientsArr.map((ingredient, index) => {
+  const enhancedArr = ingredientsArr.map((ingredient) => {
     const ingredientDuplicate = { ...ingredient };
-    ingredientDuplicate.objectId = index;
+    ingredientDuplicate.additionalId = uuidv4();
     return ingredientDuplicate;
   });
 
   return {
     type: ADD_INGREDIENT,
-    payload: enchancedIngredientArr,
+    payload: enhancedArr,
   };
 };
 

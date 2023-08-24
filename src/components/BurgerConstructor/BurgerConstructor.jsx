@@ -2,21 +2,36 @@
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
+import { useDrop } from 'react-dnd';
 import {
   ConstructorElement,
   CurrencyIcon,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { deleteIngredient } from '../../services/actions/ingredients';
+import {
+  deleteIngredient,
+  clearIngredients,
+} from '../../services/actions/ingredients';
+import { getOrderData } from '../../services/actions/order';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 
 import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorItem';
 
-function BurgerConstructor({ sendOrderHandler }) {
+function BurgerConstructor({ openOrderDetails, onDropHandler }) {
   const dispatch = useDispatch();
 
   const [foundBun, setFoundBun] = useState({});
+
+  const [{ isHover }, dropTarget] = useDrop({
+    accept: 'ingredient',
+    drop(itemId) {
+      onDropHandler(itemId);
+    },
+    collect: (monitor) => ({
+      isHover: monitor.isOver(),
+    }),
+  });
 
   const ingredientsData = useSelector(
     (store) => store.ingredientsData.ingredients
@@ -57,11 +72,21 @@ function BurgerConstructor({ sendOrderHandler }) {
 
   const orderClickHandler = () => {
     const orderIdArray = addedIngredients.map((ingredient) => ingredient._id);
-    sendOrderHandler(orderIdArray);
+    dispatch(getOrderData(orderIdArray));
+    dispatch(clearIngredients());
+    setFoundBun({});
+    openOrderDetails();
   };
 
   return (
-    <div className={`${stylesBurgerConstructor.constructorContainer} mt-25`}>
+    <div
+      ref={dropTarget}
+      className={`${
+        isHover
+          ? stylesBurgerConstructor.constructorContainerHover
+          : stylesBurgerConstructor.constructorContainer
+      } mt-25`}
+    >
       <div className={`${stylesBurgerConstructor.bunContainer} mb-4 pl-4 pr-4`}>
         <ConstructorElement
           type="top"
@@ -124,5 +149,6 @@ function BurgerConstructor({ sendOrderHandler }) {
 export default BurgerConstructor;
 
 BurgerConstructor.propTypes = {
-  sendOrderHandler: PropTypes.func.isRequired,
+  onDropHandler: PropTypes.func.isRequired,
+  openOrderDetails: PropTypes.func.isRequired,
 };

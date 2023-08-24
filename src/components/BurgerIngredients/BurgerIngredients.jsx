@@ -1,7 +1,8 @@
-/* eslint-disable react/require-default-props */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-nested-ternary */
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { useState, useContext } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { tabs } from '../../utils/constants';
 
@@ -20,18 +21,64 @@ function BurgerIngredients({ openIngredientDetails }) {
 
   const [current, setCurrent] = useState('bun');
 
+  const bunRef = useRef();
+  const sauceRef = useRef();
+  const mainRef = useRef();
+  const scrollRef = useRef();
+
   const tabClickHandler = (value) => {
+    value === 'bun'
+      ? bunRef.current.scrollIntoView({ behavior: 'smooth' })
+      : value === 'sauce'
+      ? sauceRef.current.scrollIntoView({ behavior: 'smooth' })
+      : mainRef.current.scrollIntoView({ behavior: 'smooth' });
     setCurrent(value);
-    document
-      .querySelector(`#${value}`)
-      .scrollIntoView({ block: 'start', behavior: 'smooth' });
   };
 
-  const ingredientFilter = (type) =>
-    ingredientsData.filter((ingredient) => ingredient.type === type);
+  useEffect(() => {
+    const targets = [bunRef.current, sauceRef.current, mainRef.current];
+    const options = {
+      root: scrollRef.current,
+      rootMargin: '0px 0px -90% 0px',
+    };
+
+    const callback = function (entries, observer) {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (entry.target === bunRef.current) {
+            setCurrent(tabs.BUN);
+          }
+          if (entry.target === sauceRef.current) {
+            setCurrent(tabs.SAUCE);
+          }
+          if (entry.target === mainRef.current) {
+            setCurrent(tabs.MAIN);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(callback, options);
+    targets.forEach((target) => observer.observe(target));
+  }, [ingredientsData]);
+
+  const bunFilter = useMemo(
+    () => ingredientsData?.filter((item) => item.type === 'bun'),
+    [ingredientsData]
+  );
+
+  const sauceFilter = useMemo(
+    () => ingredientsData?.filter((item) => item.type === 'sauce'),
+    [ingredientsData]
+  );
+
+  const mainFilter = useMemo(
+    () => ingredientsData?.filter((item) => item.type === 'main'),
+    [ingredientsData]
+  );
 
   return (
-    <div>
+    <div id="container">
       <h1 className="text text_type_main-large mt-10">Соберите бургер</h1>
       <div className={`${stylesBurgerIngredients.tabContainer} mt-5`}>
         <Tab
@@ -56,7 +103,10 @@ function BurgerIngredients({ openIngredientDetails }) {
           Начинки
         </Tab>
       </div>
-      <div className={`${stylesBurgerIngredients.constructorContainer} mt-10`}>
+      <div
+        ref={scrollRef}
+        className={`${stylesBurgerIngredients.constructorContainer} mt-10`}
+      >
         {isLoading ? (
           <h2 className="text text_type_main-large mt-10">
             Загрузка ингридиентов...
@@ -66,20 +116,23 @@ function BurgerIngredients({ openIngredientDetails }) {
             <BurgerIngredientsList
               tabName="Булки"
               id={tabs.BUN}
-              ingredientsDataType={ingredientFilter(tabs.BUN)}
+              ingredientsDataType={bunFilter}
               openIngredientDetails={openIngredientDetails}
+              refName={bunRef}
             />
             <BurgerIngredientsList
               tabName="Соусы"
               id={tabs.SAUCE}
-              ingredientsDataType={ingredientFilter(tabs.SAUCE)}
+              ingredientsDataType={sauceFilter}
               openIngredientDetails={openIngredientDetails}
+              refName={sauceRef}
             />
             <BurgerIngredientsList
               tabName="Начинки"
               id={tabs.MAIN}
-              ingredientsDataType={ingredientFilter(tabs.MAIN)}
+              ingredientsDataType={mainFilter}
               openIngredientDetails={openIngredientDetails}
+              refName={mainRef}
             />
           </>
         )}
@@ -91,5 +144,5 @@ function BurgerIngredients({ openIngredientDetails }) {
 export default BurgerIngredients;
 
 BurgerIngredients.propTypes = {
-  openIngredientDetails: PropTypes.func,
+  openIngredientDetails: PropTypes.func.isRequired,
 };
