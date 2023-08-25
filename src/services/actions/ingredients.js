@@ -22,22 +22,16 @@ export function getIngredients() {
     api
       .getIngredients()
       .then((res) => {
-        if (res && res.success) {
-          setTimeout(
-            () =>
-              dispatch({
-                type: GET_INGREDIENTS_SUCCESS,
-                payload: res.data,
-              }),
-            '1000'
-          );
-        } else {
-          dispatch({
-            type: GET_INGREDIENTS_FAILED,
-          });
-        }
+        setTimeout(
+          () =>
+            dispatch({
+              type: GET_INGREDIENTS_SUCCESS,
+              payload: res.data,
+            }),
+          '1000'
+        );
       })
-      .catch((err) => {
+      .catch(() => {
         dispatch({
           type: GET_INGREDIENTS_FAILED,
         });

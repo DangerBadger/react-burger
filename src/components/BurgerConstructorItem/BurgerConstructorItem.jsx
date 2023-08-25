@@ -28,8 +28,6 @@ function BurgerConstructorItem({
 
   const [{ idHandler }, dropRef] = useDrop({
     accept: 'filling',
-    /* Без getHandlerId() и атрибута data-handler-id у контейнера сортировка
-    вылетает с ошибкой. Метод используется для симуляции оперции перетаскивания */
     collect: (monitor) => ({ idHandler: monitor.getHandlerId() }),
     hover(item, monitor) {
       if (!ingredientItemRef.current) {

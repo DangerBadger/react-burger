@@ -9,10 +9,7 @@ import {
   Counter,
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import {
-  selectIngredient,
-  addIngredient,
-} from '../../services/actions/ingredients';
+import { selectIngredient } from '../../services/actions/ingredients';
 
 import stylesBurgerIngredientsItem from './BurgerIngredientsItem.module.css';
 
@@ -25,7 +22,7 @@ function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
 
   const [counter, setCounter] = useState(0);
 
-  const { type, _id, image, name, price } = ingredientData;
+  const { _id, image, name, price } = ingredientData;
 
   const [{ isDrag }, dragRef] = useDrag({
     type: 'ingredient',
@@ -38,22 +35,6 @@ function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
   const ingredientOpenHandler = () => {
     dispatch(selectIngredient(ingredientData));
     openIngredientDetails();
-  };
-
-  const ingredientAddHandler = () => {
-    const addedBun = addedIngredients.find(
-      (ingredient) => ingredient.type === 'bun'
-    );
-    const addedBunIndex = addedIngredients.indexOf(addedBun);
-
-    // Замена булки на новую
-    if (type === 'bun' && addedBun) {
-      const addedIngredientsDuplicate = addedIngredients.slice();
-      addedIngredientsDuplicate.splice(addedBunIndex, 1, ingredientData);
-      dispatch(addIngredient(addedIngredientsDuplicate));
-    } else {
-      dispatch(addIngredient([...addedIngredients, ingredientData]));
-    }
   };
 
   useEffect(() => {
@@ -76,8 +57,7 @@ function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
           ? stylesBurgerIngredientsItem.ingredientDragging
           : stylesBurgerIngredientsItem.ingredient
       }
-      onDoubleClick={ingredientOpenHandler}
-      onClick={ingredientAddHandler}
+      onClick={ingredientOpenHandler}
     >
       <img
         src={image}

@@ -13,22 +13,16 @@ export function getOrderData(orderIdArray) {
     api
       .sendOrder(orderIdArray)
       .then((res) => {
-        if (res && res.success) {
-          setTimeout(
-            () =>
-              dispatch({
-                type: GET_ORDER_DATA_SUCCESS,
-                payload: res,
-              }),
-            '1000'
-          );
-        } else {
-          dispatch({
-            type: GET_ORDER_DATA_FAILED,
-          });
-        }
+        setTimeout(
+          () =>
+            dispatch({
+              type: GET_ORDER_DATA_SUCCESS,
+              payload: res,
+            }),
+          '1000'
+        );
       })
-      .catch((err) => {
+      .catch(() => {
         dispatch({
           type: GET_ORDER_DATA_FAILED,
         });

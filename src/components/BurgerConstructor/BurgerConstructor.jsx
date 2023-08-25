@@ -83,14 +83,11 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
   // Замена ингрилиентов местами
   const moveIngredient = useCallback(
     (draggedIndex, hoveredIndex) => {
-      const fillingsOnly = addedIngredients.filter(
-        (ingredient) => ingredient.type !== 'bun'
-      );
-      const draggedFilling = fillingsOnly[draggedIndex];
-      const FillingsOnlyArrDuplicate = [...fillingsOnly];
-      FillingsOnlyArrDuplicate.splice(draggedIndex, 1);
-      FillingsOnlyArrDuplicate.splice(hoveredIndex, 0, draggedFilling);
-      dispatch(sortIngredients(FillingsOnlyArrDuplicate));
+      const draggedFilling = addedIngredients[draggedIndex];
+      const fillingsOnlyArrDuplicate = [...addedIngredients];
+      fillingsOnlyArrDuplicate.splice(draggedIndex, 1);
+      fillingsOnlyArrDuplicate.splice(hoveredIndex, 0, draggedFilling);
+      dispatch(sortIngredients(fillingsOnlyArrDuplicate));
     },
     [addedIngredients]
   );

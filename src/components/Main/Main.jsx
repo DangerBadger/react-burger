@@ -16,41 +16,27 @@ function Main({ openIngredientDetails, openOrderDetails }) {
   const ingredientsData = useSelector(
     (store) => store.ingredientsData.ingredients
   );
-  const addedientsData = useSelector(
+  const addedIngredients = useSelector(
     (store) => store.ingredientsData.addedIngredients
   );
 
-  const dropHandler = (ingredientItem) => {
+  const dropHandler = (ingredientId) => {
     const draggedIngredient = ingredientsData.find(
-      (ingredient) => ingredient._id === ingredientItem._id
+      (ingredient) => ingredient._id === ingredientId._id
     );
-    const addedBun = addedientsData.find(
+    const addedBun = addedIngredients.find(
       (ingredient) => ingredient.type === 'bun'
     );
-    const addedBunIndex = addedientsData.indexOf(addedBun);
+    const addedBunIndex = addedIngredients.indexOf(addedBun);
 
     if (draggedIngredient.type === 'bun' && addedBun) {
-      const addedientsDataDuplicate = addedientsData.slice();
+      const addedientsDataDuplicate = addedIngredients.slice();
       addedientsDataDuplicate.splice(addedBunIndex, 1, draggedIngredient);
       dispatch(addIngredient(addedientsDataDuplicate));
     } else {
-      dispatch(addIngredient([...addedientsData, draggedIngredient]));
+      dispatch(addIngredient([draggedIngredient, ...addedIngredients]));
     }
   };
-
-  // const handleDrop = (ingredientId) => {
-  //   const targetIngredient = initialIngredients.find(ingredient => ingredient._id === ingredientId._id)
-  //   const selectedBun = chosenIngredients.find(ingredient => ingredient.type === 'bun')
-  //   const selectedBunIndex = chosenIngredients.indexOf(selectedBun)
-
-  //   if (targetIngredient.type === 'bun' && selectedBun) {
-  //     const chosenIngredientsClone = chosenIngredients.slice();
-  //     chosenIngredientsClone.splice(selectedBunIndex, 1, targetIngredient);
-  //     dispatch(addIngredient(chosenIngredientsClone));
-  //   } else {
-  //     dispatch(addIngredient([...chosenIngredients, targetIngredient]));
-  //   }
-  // };
 
   return (
     <main className={mainStyle.main}>
