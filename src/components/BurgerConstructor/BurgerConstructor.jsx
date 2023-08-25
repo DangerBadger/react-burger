@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useDrop } from 'react-dnd';
 import {
   ConstructorElement,
@@ -11,6 +11,7 @@ import {
 import {
   deleteIngredient,
   clearIngredients,
+  sortIngredients,
 } from '../../services/actions/ingredients';
 import { getOrderData } from '../../services/actions/order';
 
@@ -59,6 +60,7 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
     dispatch(deleteIngredient(addedIngredientsDuplicate));
   };
 
+  // Добавляем булку в отдельный стейт
   useEffect(() => {
     if (
       addedIngredients.length &&
@@ -77,6 +79,21 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
     setFoundBun({});
     openOrderDetails();
   };
+
+  // Замена ингрилиентов местами
+  const moveIngredient = useCallback(
+    (draggedIndex, hoveredIndex) => {
+      const fillingsOnly = addedIngredients.filter(
+        (ingredient) => ingredient.type !== 'bun'
+      );
+      const draggedFilling = fillingsOnly[draggedIndex];
+      const FillingsOnlyArrDuplicate = [...fillingsOnly];
+      FillingsOnlyArrDuplicate.splice(draggedIndex, 1);
+      FillingsOnlyArrDuplicate.splice(hoveredIndex, 0, draggedFilling);
+      dispatch(sortIngredients(FillingsOnlyArrDuplicate));
+    },
+    [addedIngredients]
+  );
 
   return (
     <div
@@ -104,8 +121,11 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
           (ingredient, index) =>
             ingredient.type !== 'bun' && (
               <BurgerConstructorItem
-                key={index}
-                ingredientInfo={ingredient}
+                key={ingredient.uniqueId}
+                index={index}
+                ingredientItem={ingredient}
+                id={ingredient._id}
+                moveIngredient={moveIngredient}
                 onDelete={deleteIngredientHandler}
               />
             )

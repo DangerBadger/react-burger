@@ -57,7 +57,7 @@ export const unselectIngredient = () => ({
 export const addIngredient = (ingredientsArr) => {
   const enhancedArr = ingredientsArr.map((ingredient) => {
     const ingredientDuplicate = { ...ingredient };
-    ingredientDuplicate.additionalId = uuidv4();
+    ingredientDuplicate.uniqueId = uuidv4();
     return ingredientDuplicate;
   });
 
@@ -76,7 +76,7 @@ export const clearIngredients = () => ({
   type: CLEAR_INGREDIENTS,
 });
 
-export const sortIngredients = (ingredientsArr) => ({
+export const sortIngredients = (fillingsArr) => ({
   type: SORT_INGREDIENTS,
-  payload: ingredientsArr,
+  payload: fillingsArr,
 });
