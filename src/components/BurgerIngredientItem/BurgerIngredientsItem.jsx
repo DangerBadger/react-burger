@@ -10,6 +10,7 @@ import {
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { selectIngredient } from '../../services/actions/ingredients';
+import { foundBunPropTypes } from '../../utils/propShapes';
 
 import stylesBurgerIngredientsItem from './BurgerIngredientsItem.module.css';
 
@@ -86,11 +87,5 @@ export default BurgerIngredientsItem;
 
 BurgerIngredientsItem.propTypes = {
   openIngredientDetails: PropTypes.func,
-  ingredientData: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-  }).isRequired,
+  ingredientData: foundBunPropTypes,
 };
