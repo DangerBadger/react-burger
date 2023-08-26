@@ -2,49 +2,45 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import PropTypes from 'prop-types';
-import { useContext, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useDrag } from 'react-dnd';
 import {
   Counter,
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { selectIngredient } from '../../services/actions/ingredients';
+import { foundBunPropTypes } from '../../utils/propShapes';
 
 import stylesBurgerIngredientsItem from './BurgerIngredientsItem.module.css';
-import AddedIngredientsContext from '../../services/addedIngredients';
 
-function BurgerIngredientsItem({
-  ingredientData,
-  openIngredientDetails,
-  setCurrentIngredient,
-  setAddedIngredients,
-}) {
-  const addedIngredients = useContext(AddedIngredientsContext);
+function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
+  const dispatch = useDispatch();
+
+  const addedIngredients = useSelector(
+    (store) => store.ingredientsData.addedIngredients
+  );
 
   const [counter, setCounter] = useState(0);
 
+  const { _id, image, name, price } = ingredientData;
+
+  const [{ isDrag }, dragRef] = useDrag({
+    type: 'ingredient',
+    item: { _id },
+    collect: (monitor) => ({
+      isDrag: monitor.isDragging(),
+    }),
+  });
+
   const ingredientOpenHandler = () => {
-    setCurrentIngredient(ingredientData);
+    dispatch(selectIngredient(ingredientData));
     openIngredientDetails();
-  };
-
-  const ingredientAddHandler = () => {
-    const addedBun = addedIngredients.find(
-      (ingredient) => ingredient.type === 'bun'
-    );
-    const addedBunIndex = addedIngredients.indexOf(addedBun);
-
-    // Замена булки на новую
-    if (ingredientData.type === 'bun' && addedBun) {
-      const addedIngredientsDuplicate = addedIngredients.slice();
-      addedIngredientsDuplicate.splice(addedBunIndex, 1, ingredientData);
-      setAddedIngredients(addedIngredientsDuplicate);
-    } else {
-      setAddedIngredients([...addedIngredients, ingredientData]);
-    }
   };
 
   useEffect(() => {
     const counterArr = addedIngredients.filter(
-      (ingredient) => ingredient.name === ingredientData.name
+      (ingredient) => ingredient.name === name
     );
     if (counterArr.find((ingredient) => ingredient.type === 'bun')) {
       setCounter(2);
@@ -55,28 +51,32 @@ function BurgerIngredientsItem({
 
   return (
     <li
-      data-id={ingredientData._id}
-      className={stylesBurgerIngredientsItem.ingredient}
-      onDoubleClick={ingredientOpenHandler}
-      onClick={ingredientAddHandler}
+      data-id={_id}
+      ref={dragRef}
+      className={
+        isDrag
+          ? stylesBurgerIngredientsItem.ingredientDragging
+          : stylesBurgerIngredientsItem.ingredient
+      }
+      onClick={ingredientOpenHandler}
     >
       <img
-        src={ingredientData.image}
+        src={image}
         className={stylesBurgerIngredientsItem.image}
-        alt={ingredientData.name}
+        alt={name}
       />
       <span className={`${stylesBurgerIngredientsItem.price} mt-2 mb-2`}>
         <p
           className={`${stylesBurgerIngredientsItem.priceText} text text_type_digits-default`}
         >
-          {ingredientData.price}
+          {price}
         </p>
         <CurrencyIcon type="primary" />
       </span>
       <h3
         className={`${stylesBurgerIngredientsItem.name} text text_type_main-default`}
       >
-        {ingredientData.name}
+        {name}
       </h3>
       <Counter count={counter} size="default" />
     </li>
@@ -86,14 +86,6 @@ function BurgerIngredientsItem({
 export default BurgerIngredientsItem;
 
 BurgerIngredientsItem.propTypes = {
-  setAddedIngredients: PropTypes.func.isRequired,
   openIngredientDetails: PropTypes.func,
-  setCurrentIngredient: PropTypes.func.isRequired,
-  ingredientData: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-  }).isRequired,
+  ingredientData: foundBunPropTypes,
 };

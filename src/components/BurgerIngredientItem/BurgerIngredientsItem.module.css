@@ -12,6 +12,11 @@
   opacity: 0.7;
 }
 
+.ingredientDragging {
+  composes: ingredient;
+  filter: drop-shadow(16px 16px 20px red) invert(75%);
+}
+
 .price {
   display: flex;
 }

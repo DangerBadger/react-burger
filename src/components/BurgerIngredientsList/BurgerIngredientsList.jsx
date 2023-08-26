@@ -10,13 +10,12 @@ function BurgerIngredientsList({
   tabName,
   id,
   ingredientsDataType,
-  setCurrentIngredient,
   openIngredientDetails,
-  setAddedIngredients,
+  refName,
 }) {
   return (
     <>
-      <h2 className="text text_type_main-medium mb-6" id={id}>
+      <h2 className="text text_type_main-medium mb-6" id={id} ref={refName}>
         {tabName}
       </h2>
       <ul
@@ -26,9 +25,7 @@ function BurgerIngredientsList({
           <BurgerIngredientsItem
             key={ingredient._id}
             ingredientData={ingredient}
-            setCurrentIngredient={setCurrentIngredient}
             openIngredientDetails={openIngredientDetails}
-            setAddedIngredients={setAddedIngredients}
           />
         ))}
       </ul>
@@ -39,11 +36,12 @@ function BurgerIngredientsList({
 export default BurgerIngredientsList;
 
 BurgerIngredientsList.propTypes = {
-  setAddedIngredients: PropTypes.func.isRequired,
+  refName: PropTypes.oneOfType([
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
   tabName: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   openIngredientDetails: PropTypes.func,
-  setCurrentIngredient: PropTypes.func.isRequired,
   ingredientsDataType: PropTypes.arrayOf(ingredientPropTypes.isRequired)
     .isRequired,
 };

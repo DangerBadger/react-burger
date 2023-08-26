@@ -1,27 +1,45 @@
 /* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
-import { useContext, useEffect, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useDrop } from 'react-dnd';
 import {
   ConstructorElement,
   CurrencyIcon,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { foundBunPropTypes } from '../../utils/propShapes';
+import {
+  deleteIngredient,
+  clearIngredients,
+  sortIngredients,
+} from '../../services/actions/ingredients';
+import { getOrderData } from '../../services/actions/order';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 
 import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorItem';
-import IngredientsContext from '../../services/ingredientsContext';
-import AddedIngredientsContext from '../../services/addedIngredients';
 
-function BurgerConstructor({
-  setAddedIngredients,
-  sendOrderHandler,
-  foundBun,
-  setFoundBun,
-}) {
-  const ingredientsData = useContext(IngredientsContext);
-  const addedIngredients = useContext(AddedIngredientsContext);
+function BurgerConstructor({ openOrderDetails, onDropHandler }) {
+  const dispatch = useDispatch();
+
+  const [foundBun, setFoundBun] = useState({});
+
+  const [{ isHover }, dropTarget] = useDrop({
+    accept: 'ingredient',
+    drop(itemId) {
+      onDropHandler(itemId);
+    },
+    collect: (monitor) => ({
+      isHover: monitor.isOver(),
+    }),
+  });
+
+  const ingredientsData = useSelector(
+    (store) => store.ingredientsData.ingredients
+  );
+  const addedIngredients = useSelector(
+    (store) => store.ingredientsData.addedIngredients
+  );
 
   const total = useMemo(
     () =>
@@ -39,9 +57,10 @@ function BurgerConstructor({
     const addedIngredientIndex = addedIngredients.indexOf(item);
     const addedIngredientsDuplicate = addedIngredients.slice();
     addedIngredientsDuplicate.splice(addedIngredientIndex, 1);
-    setAddedIngredients(addedIngredientsDuplicate);
+    dispatch(deleteIngredient(addedIngredientsDuplicate));
   };
 
+  // Добавляем булку в отдельный стейт
   useEffect(() => {
     if (
       addedIngredients.length &&
@@ -55,11 +74,33 @@ function BurgerConstructor({
 
   const orderClickHandler = () => {
     const orderIdArray = addedIngredients.map((ingredient) => ingredient._id);
-    sendOrderHandler(orderIdArray);
+    dispatch(getOrderData(orderIdArray));
+    dispatch(clearIngredients());
+    setFoundBun({});
+    openOrderDetails();
   };
 
+  // Замена ингрилиентов местами
+  const moveIngredient = useCallback(
+    (draggedIndex, hoveredIndex) => {
+      const draggedFilling = addedIngredients[draggedIndex];
+      const fillingsOnlyArrDuplicate = [...addedIngredients];
+      fillingsOnlyArrDuplicate.splice(draggedIndex, 1);
+      fillingsOnlyArrDuplicate.splice(hoveredIndex, 0, draggedFilling);
+      dispatch(sortIngredients(fillingsOnlyArrDuplicate));
+    },
+    [addedIngredients]
+  );
+
   return (
-    <div className={`${stylesBurgerConstructor.constructorContainer} mt-25`}>
+    <div
+      ref={dropTarget}
+      className={`${
+        isHover
+          ? stylesBurgerConstructor.constructorContainerHover
+          : stylesBurgerConstructor.constructorContainer
+      } mt-25`}
+    >
       <div className={`${stylesBurgerConstructor.bunContainer} mb-4 pl-4 pr-4`}>
         <ConstructorElement
           type="top"
@@ -77,8 +118,11 @@ function BurgerConstructor({
           (ingredient, index) =>
             ingredient.type !== 'bun' && (
               <BurgerConstructorItem
-                key={index}
-                ingredientInfo={ingredient}
+                key={ingredient.uniqueId}
+                index={index}
+                ingredientItem={ingredient}
+                id={ingredient._id}
+                moveIngredient={moveIngredient}
                 onDelete={deleteIngredientHandler}
               />
             )
@@ -122,8 +166,6 @@ function BurgerConstructor({
 export default BurgerConstructor;
 
 BurgerConstructor.propTypes = {
-  foundBun: foundBunPropTypes.isRequired,
-  setFoundBun: PropTypes.func.isRequired,
-  setAddedIngredients: PropTypes.func.isRequired,
-  sendOrderHandler: PropTypes.func.isRequired,
+  onDropHandler: PropTypes.func.isRequired,
+  openOrderDetails: PropTypes.func.isRequired,
 };

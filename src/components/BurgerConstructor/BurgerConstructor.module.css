@@ -4,6 +4,14 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  border: 1px solid transparent;
+}
+
+.constructorContainerHover {
+  composes: constructorContainer;
+  border: 1px solid #5147f8;
+  border-radius: 40px;
+  filter: hue-rotate(350deg);
 }
 
 .bunContainer {

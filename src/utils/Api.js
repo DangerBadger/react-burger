@@ -8,13 +8,19 @@ class Api {
   }
 
   static checkResponse(res) {
-    return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+    return res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`);
+  }
+
+  static checkSuccess(res) {
+    return res && res.success
+      ? res
+      : Promise.reject(`Ответ на success: ${res}`);
   }
 
   _request(endpoint, options) {
-    return fetch(`${this._baseUrl}${endpoint}`, options).then(
-      Api.checkResponse
-    );
+    return fetch(`${this._baseUrl}${endpoint}`, options)
+      .then(Api.checkResponse)
+      .then(Api.checkSuccess);
   }
 
   getIngredients() {
@@ -31,20 +37,6 @@ class Api {
       body: JSON.stringify({ ingredients: ingredientsId }),
     });
   }
-
-  // sendIngredients(ingredientsIds) {
-  //   const burgerData = {
-  //     'ingredients': ingredientsIds
-  //   }
-
-  //   return fetch(`${this._baseUrl}/orders`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json;charset=utf-8'
-  //     },
-  //     body: JSON.stringify(burgerData)
-  //   }).then((res) => this._requestResult(res));
-  // }
 }
 
 const api = new Api(apiSettings);

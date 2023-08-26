@@ -26,6 +26,8 @@
         "@typescript-eslint"
     ],
     "rules": {
+      "import/prefer-default-export": "warn",
+      "default-param-last": "off",
       "no-underscore-dangle": "off",
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
     }
