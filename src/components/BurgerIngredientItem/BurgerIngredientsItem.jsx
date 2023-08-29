@@ -9,7 +9,7 @@ import {
   Counter,
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { selectIngredient } from '../../services/actions/ingredients';
+import { selectIngredient } from '../../services/reducers/ingredients';
 import { foundBunPropTypes } from '../../utils/propShapes';
 
 import stylesBurgerIngredientsItem from './BurgerIngredientsItem.module.css';

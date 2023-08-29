@@ -14,4 +14,5 @@ export const tabs = {
 
 export const preparationStageTexts = {
   cooking: 'Ваш заказ начали готовить',
+  error: 'Заказ не удалось обработать',
 };

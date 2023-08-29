@@ -3,11 +3,13 @@ import { Routes, Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { useModal } from '../../utils/hooks/useModal';
+
 import {
   getIngredients,
   unselectIngredient,
-} from '../../services/actions/ingredients';
-import { clearOrderData } from '../../services/actions/order';
+} from '../../services/reducers/ingredients';
+
+import { clearOrderData } from '../../services/reducers/order';
 
 import styles from './App.module.css';
 

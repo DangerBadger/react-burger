@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-nested-ternary */
 import PropTypes from 'prop-types';

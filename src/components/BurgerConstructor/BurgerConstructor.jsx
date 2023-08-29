@@ -12,8 +12,8 @@ import {
   deleteIngredient,
   clearIngredients,
   sortIngredients,
-} from '../../services/actions/ingredients';
-import { getOrderData } from '../../services/actions/order';
+} from '../../services/reducers/ingredients';
+import { getOrderData } from '../../services/reducers/order';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 
