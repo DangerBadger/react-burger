@@ -3,7 +3,7 @@
 /* eslint-disable no-nested-ternary */
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { tabs } from '../../utils/constants';
 

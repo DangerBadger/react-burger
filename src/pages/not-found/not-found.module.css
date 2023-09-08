@@ -1,0 +1,87 @@
+@keyframes move {
+  0% {
+    transform: translateX(-20px) rotate(20deg);
+  }
+  20% {
+    transform: translateY(-28px) rotate(75deg);
+  }
+  40% {
+    transform: translate(-3px, 330px) rotate(145deg);
+  }
+  45% {
+    transform: translate(47px, 290px) rotate(500deg);
+  }
+  60% {
+    transform: translate(82px, 350px) rotate(1000deg);
+  }
+  100% {
+    transform: translate(52px, 150vh) rotate(1500deg);
+    overflow: hidden;
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.container {
+  width: 100vw;
+  height: calc(100vh - 88px);
+  background: center no-repeat url('../../images/404.png');
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.headerContainer {
+  display: flex;
+  flex-direction: row;
+  margin: 80px 0 362px 0;
+  padding: 0;
+}
+
+.header {
+  margin: 0;
+  padding: 0;
+  transform: translateX(120px);
+}
+
+.headerDots {
+  composes: header;
+  transform: translate(120px, 10px);
+  opacity: 0;
+  animation-name: appear;
+  animation-duration: 2s;
+  animation-delay: 4s;
+  animation-fill-mode: forwards;
+}
+
+.headerFall {
+  composes: header;
+  transform: translateX(-20px) rotate(20deg);
+  text-align: end;
+  width: 300px;
+  animation-name: move;
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+  animation-direction: normal;
+  animation-delay: 1s;
+  animation-timing-function: linear;
+}
+
+.questionText {
+  margin: 0 0 14px 0;
+  padding: 0;
+  opacity: 0;
+  animation-name: appear;
+  animation-duration: 2s;
+  animation-delay: 4s;
+  animation-fill-mode: forwards;
+}

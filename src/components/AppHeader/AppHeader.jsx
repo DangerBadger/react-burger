@@ -40,7 +40,7 @@ function AppHeader() {
         <div className={stylesHeader.logoContainer}>
           <Logo />
         </div>
-        <NavLink to="profile" className={linkActivator}>
+        <NavLink to="/profile" className={linkActivator}>
           <ProfileIcon
             type={pathname === '/profile' ? 'primary' : 'secondary'}
           />

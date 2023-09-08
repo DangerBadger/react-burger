@@ -14,7 +14,7 @@ export const getOrderData = createAsyncThunk(
 
       return response;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return rejectWithValue(err);
     }
   }
@@ -47,7 +47,7 @@ const orderSlice = createSlice({
       .addCase(getOrderData.rejected, (state, action) => {
         state.orderRequest = false;
         state.orderFailed = true;
-        console.warn(action.payload);
+        console.error(action.payload);
       });
   },
 });

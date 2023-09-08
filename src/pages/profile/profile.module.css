@@ -1,0 +1,61 @@
+.main {
+  display: flex;
+  width: 100%;
+  margin: 120px 0 0 320px;
+}
+
+.menuContainer {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+}
+
+.menuList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  height: 64px;
+}
+
+.navLinkActive {
+  text-decoration: none;
+  color: #f2f2f3;
+}
+
+.navLink {
+  composes: navLinkActive;
+  color: #8585ad;
+  transition: all 0.2s linear 0.05s;
+}
+
+.navLink:hover {
+  opacity: 0.7;
+  transform: scale(1.06);
+  color: #f2f2f3;
+}
+
+.input {
+  margin-bottom: 24px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  color: #4c4cff;
+  cursor: pointer;
+}
+
+.button:disabled {
+  color: #3a3a55;
+}
