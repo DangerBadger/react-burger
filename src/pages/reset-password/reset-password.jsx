@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-useless-return */
 /* eslint-disable react/jsx-curly-brace-presence */
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Input,
   PasswordInput,
@@ -14,13 +15,37 @@ import { resetPassword } from '../../services/reducers/user';
 import resetPasswordStyles from './reset-password.module.css';
 
 function ResetPassword() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const passwordChangingConfirmation = useSelector((store) => store.userData);
-
   const [passwordValue, setPasswordValue] = useState('');
   const [codeValue, setCodeValue] = useState('');
+  const [isInputChanged, setIsInputChanged] = useState(false);
+  const { userInfo } = useSelector((store) => store.userData);
+  const { forgotPasswordSuccess } = useSelector((store) => store.userData);
   const inputRef = useRef();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (codeValue !== '' && passwordValue !== '' && passwordValue.length >= 6) {
+      setIsInputChanged(true);
+    } else {
+      setIsInputChanged(false);
+    }
+  }, [passwordValue, codeValue]);
+
+  useEffect(() => {
+    if (userInfo) {
+      location.state && location.state.previousLocation
+        ? navigate(location.state.previousLocation.pathname)
+        : navigate('/');
+    }
+  }, [userInfo, navigate, location]);
+
+  useEffect(() => {
+    if (!userInfo && !forgotPasswordSuccess) {
+      navigate('/forgot-password');
+    }
+  }, [userInfo, navigate, forgotPasswordSuccess]);
 
   const submitHundler = (evt) => {
     evt.preventDefault();
@@ -32,7 +57,7 @@ function ResetPassword() {
     dispatch(resetPassword({ passwordValue, codeValue }));
     setPasswordValue('');
     setCodeValue('');
-    navigate('/');
+    navigate('/login');
   };
 
   return (
@@ -62,7 +87,12 @@ function ResetPassword() {
           size={'default'}
           extraClass={`ml-1 ${resetPasswordStyles.input}`}
         />
-        <Button htmlType="submit" type="primary" size="medium">
+        <Button
+          htmlType="submit"
+          type="primary"
+          size="medium"
+          disabled={!isInputChanged}
+        >
           Сохранить
         </Button>
       </form>

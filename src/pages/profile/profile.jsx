@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable prefer-template */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-multi-assign */
@@ -5,7 +7,7 @@
 /* eslint-disable no-useless-return */
 /* eslint-disable react/jsx-curly-brace-presence */
 import { useRef, useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Input,
@@ -13,7 +15,7 @@ import {
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { logout } from '../../services/reducers/user';
+import { logout, changeUserData } from '../../services/reducers/user';
 import { getCookie } from '../../utils/cookie';
 
 import profileStyles from './profile.module.css';
@@ -76,9 +78,36 @@ function Profile() {
     const { value } = evt.target;
 
     stateSetter(value);
-    value === userInfo[propertyName]
-      ? setIsDataChanged(false)
-      : setIsDataChanged(true);
+
+    if (propertyName === passwordValue) {
+      value === passwordValue
+        ? setIsDataChanged(false)
+        : setIsDataChanged(true);
+    } else {
+      value === userInfo[propertyName]
+        ? setIsDataChanged(false)
+        : setIsDataChanged(true);
+    }
+  };
+
+  const cancelHandler = (evt) => {
+    evt.preventDefault();
+
+    setNameValue(userInfo.name);
+    setEmailValue(userInfo.email);
+    setPasswordValue('');
+    setIsDataChanged(false);
+  };
+
+  const submitHandler = (evt) => {
+    evt.preventDefault();
+    const accessToken = 'Bearer ' + getCookie('accessToken');
+
+    dispatch(
+      changeUserData({ nameValue, emailValue, passwordValue, accessToken })
+    );
+
+    setIsDataChanged(false);
   };
 
   return (
@@ -103,13 +132,13 @@ function Profile() {
             <li
               className={`text text_type_main-medium ${profileStyles.menuItem}`}
             >
-              <NavLink
-                to="/login"
+              <button
+                type="button"
                 onClick={logoutHandler}
-                className={linkActivator}
+                className={`text text_type_main-medium ${profileStyles.exitButton}`}
               >
                 Выход
-              </NavLink>
+              </button>
             </li>
           </ul>
           <p className="mt-20 text text_type_main-default text_color_inactive">
@@ -117,7 +146,7 @@ function Profile() {
           </p>
         </nav>
       </div>
-      <form className="ml-15">
+      <form className="ml-15" onSubmit={submitHandler}>
         <Input
           type={'text'}
           placeholder={'Имя'}
@@ -133,6 +162,7 @@ function Profile() {
           errorText={'Ошибка'}
           size={'default'}
           extraClass={profileStyles.input}
+          autoComplete="on"
         />
         <Input
           type={'email'}
@@ -151,9 +181,10 @@ function Profile() {
           errorText={'Ошибка'}
           size={'default'}
           extraClass={profileStyles.input}
+          autoComplete="on"
         />
         <PasswordInput
-          // onChange={onChange}
+          onChange={changeHandler(setPasswordValue, passwordValue)}
           value={passwordValue}
           name={'password'}
           icon="EditIcon"
@@ -161,12 +192,18 @@ function Profile() {
         <div className={`mt-6 ${profileStyles.buttonContainer}`}>
           <button
             type="button"
-            disabled
+            disabled={!isDataChanged}
             className={`mr-5 text text_type_main-default ${profileStyles.button}`}
+            onClick={cancelHandler}
           >
             Отмена
           </button>
-          <Button disabled htmlType="submit" type="primary" size="medium">
+          <Button
+            disabled={!isDataChanged}
+            htmlType="submit"
+            type="primary"
+            size="medium"
+          >
             Сохранить
           </Button>
         </div>

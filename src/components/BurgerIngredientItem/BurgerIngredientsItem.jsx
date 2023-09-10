@@ -4,6 +4,7 @@
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
 import {
   Counter,
@@ -15,6 +16,7 @@ import { foundBunPropTypes } from '../../utils/propShapes';
 import stylesBurgerIngredientsItem from './BurgerIngredientsItem.module.css';
 
 function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const addedIngredients = useSelector(
@@ -60,25 +62,31 @@ function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
       }
       onClick={ingredientOpenHandler}
     >
-      <img
-        src={image}
-        className={stylesBurgerIngredientsItem.image}
-        alt={name}
-      />
-      <span className={`${stylesBurgerIngredientsItem.price} mt-2 mb-2`}>
-        <p
-          className={`${stylesBurgerIngredientsItem.priceText} text text_type_digits-default`}
-        >
-          {price}
-        </p>
-        <CurrencyIcon type="primary" />
-      </span>
-      <h3
-        className={`${stylesBurgerIngredientsItem.name} text text_type_main-default`}
+      <Link
+        to={`/ingredients/${_id}`}
+        state={{ background: location }}
+        className={stylesBurgerIngredientsItem.link}
       >
-        {name}
-      </h3>
-      <Counter count={counter} size="default" />
+        <img
+          src={image}
+          className={stylesBurgerIngredientsItem.image}
+          alt={name}
+        />
+        <span className={`${stylesBurgerIngredientsItem.price} mt-2 mb-2`}>
+          <p
+            className={`${stylesBurgerIngredientsItem.priceText} text text_type_digits-default`}
+          >
+            {price}
+          </p>
+          <CurrencyIcon type="primary" />
+        </span>
+        <h3
+          className={`${stylesBurgerIngredientsItem.name} text text_type_main-default`}
+        >
+          {name}
+        </h3>
+        <Counter count={counter} size="default" />
+      </Link>
     </li>
   );
 }

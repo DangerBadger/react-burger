@@ -2,7 +2,7 @@
 /* eslint-disable no-useless-return */
 /* eslint-disable react/jsx-curly-brace-presence */
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -19,14 +19,33 @@ function Register() {
   const [nameValue, setNameValue] = useState('');
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
+  const [isInputChanged, setIsInputChanged] = useState(false);
   const inputRef = useRef();
   const navigate = useNavigate();
+  const location = useLocation();
   const userInfo = useSelector((store) => store.userData.userInfo);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    userInfo && navigate('/');
-  }, [userInfo, navigate]);
+    if (userInfo) {
+      location.state && location.state.previousLocation
+        ? navigate(location.state.previousLocation.pathname)
+        : navigate('/');
+    }
+  }, [userInfo, navigate, location]);
+
+  useEffect(() => {
+    if (
+      nameValue !== '' &&
+      emailValue !== '' &&
+      passwordValue !== '' &&
+      passwordValue.length >= 6
+    ) {
+      setIsInputChanged(true);
+    } else {
+      setIsInputChanged(false);
+    }
+  }, [emailValue, passwordValue, nameValue]);
 
   const submitHandler = (evt) => {
     evt.preventDefault();
@@ -55,9 +74,10 @@ function Register() {
           errorText={'Ошибка'}
           size={'default'}
           extraClass={registerStyles.input}
+          autoComplete="on"
         />
         <Input
-          type={'text'}
+          type={'email'}
           placeholder={'E-mail'}
           onChange={(evt) => setEmailValue(evt.target.value)}
           value={emailValue}
@@ -67,6 +87,7 @@ function Register() {
           errorText={'Ошибка'}
           size={'default'}
           extraClass={registerStyles.input}
+          autoComplete="on"
         />
         <PasswordInput
           onChange={(evt) => setPasswordValue(evt.target.value)}
@@ -74,7 +95,12 @@ function Register() {
           name={'password'}
           extraClass={registerStyles.input}
         />
-        <Button htmlType="submit" type="primary" size="medium">
+        <Button
+          htmlType="submit"
+          type="primary"
+          size="medium"
+          disabled={!isInputChanged}
+        >
           Зарегистрироваться
         </Button>
       </form>

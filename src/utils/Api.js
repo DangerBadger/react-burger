@@ -7,20 +7,10 @@ class Api {
     this._headers = headers;
   }
 
-  static checkResponse(res) {
-    return res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`);
-  }
-
-  static checkSuccess(res) {
-    return res && res.success
-      ? res
-      : Promise.reject(`Ответ на success: ${res}`);
-  }
-
   _request(endpoint, options) {
-    return fetch(`${this._baseUrl}${endpoint}`, options)
-      .then(Api.checkResponse)
-      .then(Api.checkSuccess);
+    return fetch(`${this._baseUrl}${endpoint}`, options).then((res) =>
+      res.json()
+    );
   }
 
   getIngredients() {
@@ -104,6 +94,25 @@ class Api {
         'Content-Type': 'application/json;charset=utf-8',
         authorization: token,
       },
+    });
+  }
+
+  changeUserData(name, email, password, token) {
+    return this._request('/auth/user', {
+      method: 'PATCH',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: token,
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify({
+        email,
+        name,
+        password,
+      }),
     });
   }
 

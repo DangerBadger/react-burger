@@ -1,6 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useDrop } from 'react-dnd';
 import {
@@ -20,9 +21,16 @@ import stylesBurgerConstructor from './BurgerConstructor.module.css';
 import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorItem';
 
 function BurgerConstructor({ openOrderDetails, onDropHandler }) {
-  const dispatch = useDispatch();
-
   const [foundBun, setFoundBun] = useState({});
+  const ingredientsData = useSelector(
+    (store) => store.ingredientsData.ingredients
+  );
+  const addedIngredients = useSelector(
+    (store) => store.ingredientsData.addedIngredients
+  );
+  const { userInfo } = useSelector((store) => store.userData);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [{ isHover }, dropTarget] = useDrop({
     accept: 'ingredient',
@@ -33,13 +41,6 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
       isHover: monitor.isOver(),
     }),
   });
-
-  const ingredientsData = useSelector(
-    (store) => store.ingredientsData.ingredients
-  );
-  const addedIngredients = useSelector(
-    (store) => store.ingredientsData.addedIngredients
-  );
 
   const total = useMemo(
     () =>
@@ -73,11 +74,15 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
   }, [addedIngredients, foundBun]);
 
   const orderClickHandler = () => {
-    const orderIdArray = addedIngredients.map((ingredient) => ingredient._id);
-    dispatch(getOrderData(orderIdArray));
-    dispatch(clearIngredients());
-    setFoundBun({});
-    openOrderDetails();
+    if (userInfo) {
+      const orderIdArray = addedIngredients.map((ingredient) => ingredient._id);
+      dispatch(getOrderData(orderIdArray));
+      dispatch(clearIngredients());
+      setFoundBun({});
+      openOrderDetails();
+    } else {
+      navigate('/login');
+    }
   };
 
   // Замена ингрилиентов местами

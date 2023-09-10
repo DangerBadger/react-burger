@@ -10,7 +10,7 @@ export const getIngredients = createAsyncThunk(
       const response = await api.getIngredients();
 
       if (!response.success) {
-        throw new Error('Ошибка запроса');
+        throw new Error('Ошибка загрузки ингредиентов');
       }
 
       return response.data;
@@ -20,17 +20,15 @@ export const getIngredients = createAsyncThunk(
   }
 );
 
-const ingredientsState = {
-  ingredients: [],
-  selectedIngredient: null,
-  addedIngredients: [],
-  ingredientsRequest: false,
-  ingredientsFailed: false,
-};
-
 const ingredientsSlice = createSlice({
   name: 'ingredients',
-  initialState: ingredientsState,
+  initialState: {
+    ingredients: [],
+    selectedIngredient: null,
+    addedIngredients: [],
+    ingredientsRequest: false,
+    ingredientsFailed: false,
+  },
   reducers: {
     selectIngredient: (state, action) => {
       state.selectedIngredient = action.payload;
@@ -70,7 +68,7 @@ const ingredientsSlice = createSlice({
       .addCase(getIngredients.rejected, (state, action) => {
         state.ingredientsRequest = false;
         state.ingredientsFailed = true;
-        console.warn(action.payload);
+        console.error(action.payload);
       });
   },
 });

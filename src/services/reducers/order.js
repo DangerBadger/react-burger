@@ -9,26 +9,23 @@ export const getOrderData = createAsyncThunk(
       const response = await api.sendOrder(orderIdArray);
 
       if (!response.success) {
-        throw new Error('Ошибка запроса');
+        throw new Error('Ошибка получения данных заказа');
       }
 
       return response;
     } catch (err) {
-      console.error(err);
       return rejectWithValue(err);
     }
   }
 );
 
-const orderState = {
-  orderDetails: null,
-  orderRequest: false,
-  orderFailed: false,
-};
-
 const orderSlice = createSlice({
   name: 'order',
-  initialState: orderState,
+  initialState: {
+    orderDetails: null,
+    orderRequest: false,
+    orderFailed: false,
+  },
   reducers: {
     clearOrderData: (state) => {
       state.orderDetails = null;

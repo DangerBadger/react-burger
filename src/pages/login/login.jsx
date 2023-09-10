@@ -18,6 +18,7 @@ import loginStyles from './login.module.css';
 function Login() {
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
+  const [isInputChanged, setIsInputChanged] = useState(false);
   const inputRef = useRef();
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,6 +32,18 @@ function Login() {
         : navigate('/');
     }
   }, [userInfo, navigate, location]);
+
+  useEffect(() => {
+    if (
+      emailValue !== '' &&
+      passwordValue !== '' &&
+      passwordValue.length >= 6
+    ) {
+      setIsInputChanged(true);
+    } else {
+      setIsInputChanged(false);
+    }
+  }, [emailValue, passwordValue]);
 
   const submitHandler = (evt) => {
     evt.preventDefault();
@@ -59,6 +72,7 @@ function Login() {
           errorText={'Ошибка'}
           size={'default'}
           extraClass={loginStyles.input}
+          autoComplete="on"
         />
         <PasswordInput
           onChange={(evt) => setPasswordValue(evt.target.value)}
@@ -66,7 +80,12 @@ function Login() {
           name={'password'}
           extraClass={loginStyles.input}
         />
-        <Button htmlType="submit" type="primary" size="medium">
+        <Button
+          htmlType="submit"
+          type="primary"
+          size="medium"
+          disabled={!isInputChanged}
+        >
           Войти
         </Button>
       </form>
