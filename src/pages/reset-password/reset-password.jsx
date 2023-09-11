@@ -3,12 +3,13 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Input,
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { paths } from '../../utils/constants';
 
 import { resetPassword } from '../../services/reducers/user';
 
@@ -18,11 +19,12 @@ function ResetPassword() {
   const [passwordValue, setPasswordValue] = useState('');
   const [codeValue, setCodeValue] = useState('');
   const [isInputChanged, setIsInputChanged] = useState(false);
-  const { userInfo } = useSelector((store) => store.userData);
-  const { forgotPasswordSuccess } = useSelector((store) => store.userData);
+  const userInfo = useSelector((store) => store.userData.userInfo);
+  const forgotPasswordSuccess = useSelector(
+    (store) => store.userData.forgotPasswordSuccess
+  );
   const inputRef = useRef();
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -34,16 +36,8 @@ function ResetPassword() {
   }, [passwordValue, codeValue]);
 
   useEffect(() => {
-    if (userInfo) {
-      location.state && location.state.previousLocation
-        ? navigate(location.state.previousLocation.pathname)
-        : navigate('/');
-    }
-  }, [userInfo, navigate, location]);
-
-  useEffect(() => {
     if (!userInfo && !forgotPasswordSuccess) {
-      navigate('/forgot-password');
+      navigate(paths.forgotPasswordPage);
     }
   }, [userInfo, navigate, forgotPasswordSuccess]);
 
@@ -57,7 +51,7 @@ function ResetPassword() {
     dispatch(resetPassword({ passwordValue, codeValue }));
     setPasswordValue('');
     setCodeValue('');
-    navigate('/login');
+    navigate(paths.loginPage);
   };
 
   return (
@@ -100,7 +94,7 @@ function ResetPassword() {
         className={`className="text text_type_main-default text_color_inactive" ${resetPasswordStyles.linkContainer}`}
       >
         <p className={resetPasswordStyles.text}>Вспомнили пароль?</p>
-        <Link to="/login" className={resetPasswordStyles.link}>
+        <Link to={paths.loginPage} className={resetPasswordStyles.link}>
           Войти
         </Link>
       </span>

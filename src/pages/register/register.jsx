@@ -2,14 +2,15 @@
 /* eslint-disable no-useless-return */
 /* eslint-disable react/jsx-curly-brace-presence */
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import {
   Input,
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { paths } from '../../utils/constants';
 
 import { registration } from '../../services/reducers/user';
 
@@ -21,18 +22,7 @@ function Register() {
   const [passwordValue, setPasswordValue] = useState('');
   const [isInputChanged, setIsInputChanged] = useState(false);
   const inputRef = useRef();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const userInfo = useSelector((store) => store.userData.userInfo);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (userInfo) {
-      location.state && location.state.previousLocation
-        ? navigate(location.state.previousLocation.pathname)
-        : navigate('/');
-    }
-  }, [userInfo, navigate, location]);
 
   useEffect(() => {
     if (
@@ -108,7 +98,7 @@ function Register() {
         className={`className="text text_type_main-default text_color_inactive" ${registerStyles.linkContainer}`}
       >
         <p className={registerStyles.text}>Уже зарегистрированы?</p>
-        <Link to="/login" className={registerStyles.link}>
+        <Link to={paths.loginPage} className={registerStyles.link}>
           Войти
         </Link>
       </span>

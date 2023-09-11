@@ -14,6 +14,7 @@ import {
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { paths } from '../../utils/constants';
 
 import { logout, changeUserData } from '../../services/reducers/user';
 import { getCookie } from '../../utils/cookie';
@@ -118,7 +119,7 @@ function Profile() {
             <li
               className={`text text_type_main-medium ${profileStyles.menuItem}`}
             >
-              <NavLink to="/profile" className={linkActivator}>
+              <NavLink to={paths.profilePage} className={linkActivator}>
                 Профиль
               </NavLink>
             </li>

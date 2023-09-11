@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
+import { paths } from '../../utils/constants';
 
 import notFoundStyles from './not-found.module.css';
 
@@ -8,7 +9,7 @@ function NotFound() {
   const navigate = useNavigate();
 
   const goMain = () => {
-    navigate('/', { replace: true });
+    navigate(paths.mainPage, { replace: true });
   };
 
   return (

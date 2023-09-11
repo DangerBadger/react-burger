@@ -1,7 +1,6 @@
 /* eslint-disable no-debugger */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-nested-ternary */
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -11,7 +10,7 @@ import stylesBurgerIngredients from './BurgerIngredients.module.css';
 
 import BurgerIngredientsList from '../BurgerIngredientsList/BurgerIngredientsList';
 
-function BurgerIngredients({ openIngredientDetails }) {
+function BurgerIngredients() {
   const ingredientsData = useSelector(
     (store) => store.ingredientsData.ingredients
   );
@@ -118,21 +117,18 @@ function BurgerIngredients({ openIngredientDetails }) {
               tabName="Булки"
               id={tabs.BUN}
               ingredientsDataType={bunFilter}
-              openIngredientDetails={openIngredientDetails}
               refName={bunRef}
             />
             <BurgerIngredientsList
               tabName="Соусы"
               id={tabs.SAUCE}
               ingredientsDataType={sauceFilter}
-              openIngredientDetails={openIngredientDetails}
               refName={sauceRef}
             />
             <BurgerIngredientsList
               tabName="Начинки"
               id={tabs.MAIN}
               ingredientsDataType={mainFilter}
-              openIngredientDetails={openIngredientDetails}
               refName={mainRef}
             />
           </>
@@ -143,7 +139,3 @@ function BurgerIngredients({ openIngredientDetails }) {
 }
 
 export default BurgerIngredients;
-
-BurgerIngredients.propTypes = {
-  openIngredientDetails: PropTypes.func.isRequired,
-};

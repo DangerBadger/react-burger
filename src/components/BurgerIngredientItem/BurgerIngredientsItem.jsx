@@ -1,8 +1,7 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
@@ -10,14 +9,13 @@ import {
   Counter,
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { selectIngredient } from '../../services/reducers/ingredients';
 import { foundBunPropTypes } from '../../utils/propShapes';
+import { paths } from '../../utils/constants';
 
 import stylesBurgerIngredientsItem from './BurgerIngredientsItem.module.css';
 
-function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
+function BurgerIngredientsItem({ ingredientData }) {
   const location = useLocation();
-  const dispatch = useDispatch();
 
   const addedIngredients = useSelector(
     (store) => store.ingredientsData.addedIngredients
@@ -34,11 +32,6 @@ function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
       isDrag: monitor.isDragging(),
     }),
   });
-
-  const ingredientOpenHandler = () => {
-    dispatch(selectIngredient(ingredientData));
-    openIngredientDetails();
-  };
 
   useEffect(() => {
     const counterArr = addedIngredients.filter(
@@ -60,10 +53,9 @@ function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
           ? stylesBurgerIngredientsItem.ingredientDragging
           : stylesBurgerIngredientsItem.ingredient
       }
-      onClick={ingredientOpenHandler}
     >
       <Link
-        to={`/ingredients/${_id}`}
+        to={`${paths.ingredientsPage}${_id}`}
         state={{ background: location }}
         className={stylesBurgerIngredientsItem.link}
       >
@@ -94,6 +86,5 @@ function BurgerIngredientsItem({ ingredientData, openIngredientDetails }) {
 export default BurgerIngredientsItem;
 
 BurgerIngredientsItem.propTypes = {
-  openIngredientDetails: PropTypes.func,
   ingredientData: foundBunPropTypes,
 };

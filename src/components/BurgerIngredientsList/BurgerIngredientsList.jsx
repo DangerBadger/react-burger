@@ -6,13 +6,7 @@ import stylesBurgerIngredientsList from './BurgerIngredientsList.module.css';
 
 import BurgerIngredientsItem from '../BurgerIngredientItem/BurgerIngredientsItem';
 
-function BurgerIngredientsList({
-  tabName,
-  id,
-  ingredientsDataType,
-  openIngredientDetails,
-  refName,
-}) {
+function BurgerIngredientsList({ tabName, id, ingredientsDataType, refName }) {
   return (
     <>
       <h2 className="text text_type_main-medium mb-6" id={id} ref={refName}>
@@ -25,7 +19,6 @@ function BurgerIngredientsList({
           <BurgerIngredientsItem
             key={ingredient._id}
             ingredientData={ingredient}
-            openIngredientDetails={openIngredientDetails}
           />
         ))}
       </ul>
@@ -41,7 +34,6 @@ BurgerIngredientsList.propTypes = {
   ]),
   tabName: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  openIngredientDetails: PropTypes.func,
   ingredientsDataType: PropTypes.arrayOf(ingredientPropTypes.isRequired)
     .isRequired,
 };

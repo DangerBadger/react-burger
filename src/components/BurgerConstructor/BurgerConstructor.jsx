@@ -15,6 +15,7 @@ import {
   sortIngredients,
 } from '../../services/reducers/ingredients';
 import { getOrderData } from '../../services/reducers/order';
+import { paths } from '../../utils/constants';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 
@@ -28,7 +29,7 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
   const addedIngredients = useSelector(
     (store) => store.ingredientsData.addedIngredients
   );
-  const { userInfo } = useSelector((store) => store.userData);
+  const userInfo = useSelector((store) => store.userData.userInfo);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -81,7 +82,7 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
       setFoundBun({});
       openOrderDetails();
     } else {
-      navigate('/login');
+      navigate(paths.loginPage);
     }
   };
 

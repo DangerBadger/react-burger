@@ -102,9 +102,6 @@ export const getUserData = createAsyncThunk(
       const response = await api.getUserData(token);
 
       if (!response.success) {
-        if (response.message === 'jwt expired') {
-          dispatch(refreshingToken(getCookie('refreshToken')));
-        }
         throw new Error('Ошибка получения данных пользователя');
       }
 
@@ -117,7 +114,7 @@ export const getUserData = createAsyncThunk(
 
 export const changeUserData = createAsyncThunk(
   'user/changeUserData',
-  async (changedData, { rejectWithValue }) => {
+  async (changedData, { rejectWithValue, dispatch }) => {
     try {
       const response = await api.changeUserData(
         changedData.nameValue,
@@ -125,6 +122,10 @@ export const changeUserData = createAsyncThunk(
         changedData.passwordValue,
         changedData.accessToken
       );
+
+      if (!response.success) {
+        throw new Error('Ошибка получения данных пользователя');
+      }
 
       return response.user;
     } catch (err) {

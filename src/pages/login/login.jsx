@@ -2,14 +2,15 @@
 /* eslint-disable no-useless-return */
 /* eslint-disable react/jsx-curly-brace-presence */
 import { useRef, useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import {
   Input,
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { paths } from '../../utils/constants';
 
 import { login } from '../../services/reducers/user';
 
@@ -20,18 +21,7 @@ function Login() {
   const [passwordValue, setPasswordValue] = useState('');
   const [isInputChanged, setIsInputChanged] = useState(false);
   const inputRef = useRef();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const userInfo = useSelector((store) => store.userData.userInfo);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (userInfo) {
-      location.state && location.state.previousLocation
-        ? navigate(location.state.previousLocation.pathname)
-        : navigate('/');
-    }
-  }, [userInfo, navigate, location]);
 
   useEffect(() => {
     if (
@@ -93,7 +83,7 @@ function Login() {
         className={`mb-4 className="text text_type_main-default text_color_inactive" ${loginStyles.linkContainer}`}
       >
         <p className={loginStyles.text}>Вы — новый пользователь?</p>
-        <Link to="/register" className={loginStyles.link}>
+        <Link to={paths.registerPage} className={loginStyles.link}>
           Зарегистрироваться
         </Link>
       </span>
@@ -101,7 +91,7 @@ function Login() {
         className={`className="text text_type_main-default text_color_inactive" ${loginStyles.linkContainer}`}
       >
         <p className={loginStyles.text}>Забыли пароль?</p>
-        <Link to="/forgot-password" className={loginStyles.link}>
+        <Link to={paths.forgotPasswordPage} className={loginStyles.link}>
           Восстановить пароль
         </Link>
       </span>

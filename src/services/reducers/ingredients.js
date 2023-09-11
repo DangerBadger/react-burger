@@ -24,18 +24,11 @@ const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState: {
     ingredients: [],
-    selectedIngredient: null,
     addedIngredients: [],
     ingredientsRequest: false,
     ingredientsFailed: false,
   },
   reducers: {
-    selectIngredient: (state, action) => {
-      state.selectedIngredient = action.payload;
-    },
-    unselectIngredient: (state) => {
-      state.selectedIngredient = null;
-    },
     addIngredient: (state, action) => {
       const enhancedArr = action.payload.map((ingredient) => {
         const ingredientDuplicate = { ...ingredient };
@@ -74,8 +67,6 @@ const ingredientsSlice = createSlice({
 });
 
 export const {
-  selectIngredient,
-  unselectIngredient,
   addIngredient,
   deleteIngredient,
   clearIngredients,

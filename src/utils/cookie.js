@@ -5,6 +5,8 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-useless-escape */
 /* eslint-disable prefer-template */
+import { paths } from './constants';
+
 export function getCookie(name) {
   const matches = document.cookie.match(
     new RegExp(
@@ -18,7 +20,7 @@ export function getCookie(name) {
 
 export function setCookie(name, value, props) {
   props = {
-    path: '/',
+    path: paths.mainPage,
     ...props,
   };
   let exp = props.expires;

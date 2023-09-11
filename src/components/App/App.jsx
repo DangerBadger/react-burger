@@ -5,14 +5,12 @@ import { useDispatch } from 'react-redux';
 
 import { useModal } from '../../utils/hooks/useModal';
 
-import {
-  getIngredients,
-  unselectIngredient,
-} from '../../services/reducers/ingredients';
+import { getIngredients } from '../../services/reducers/ingredients';
 
 import { clearOrderData } from '../../services/reducers/order';
 import { getUserData } from '../../services/reducers/user';
 import { getCookie } from '../../utils/cookie';
+import { paths } from '../../utils/constants';
 
 import styles from './App.module.css';
 
@@ -37,11 +35,6 @@ function App() {
   const accessToken = 'Bearer ' + getCookie('accessToken');
   const [isOrderDetailsOpened, openOrderDetails, closeOrderDetails] =
     useModal();
-  const [
-    isIngredientDetailsOpened,
-    openIngredientDetails,
-    closeIngredientDetails,
-  ] = useModal();
 
   // Получение ингредиентов и данных пользовтеля
   useEffect(() => {
@@ -66,28 +59,35 @@ function App() {
         <AppHeader />
         <Routes location={background || location}>
           <Route
-            path="/"
-            element={
-              <Main
-                openIngredientDetails={openIngredientDetails}
-                openOrderDetails={openOrderDetails}
-              />
-            }
-          />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          {/* Защищённый рут */}
-          <Route
-            path="/profile"
-            element={<ProtectedRoute component={Profile} />}
+            path={paths.mainPage}
+            element={<Main openOrderDetails={openOrderDetails} />}
           />
           <Route
-            path="ingredients/:id"
+            path={paths.registerPage}
+            element={<ProtectedRoute component={Register} onlyUnAuth />}
+          />
+          <Route
+            path={paths.loginPage}
+            element={<ProtectedRoute component={Login} onlyUnAuth />}
+          />
+          <Route
+            path={paths.forgotPasswordPage}
+            element={<ProtectedRoute component={ForgotPassword} onlyUnAuth />}
+          />
+          <Route
+            path={paths.resetPasswordPage}
+            element={<ProtectedRoute component={ResetPassword} onlyUnAuth />}
+          />
+          {/* Защищённый от неавторизованных пользователей рут */}
+          <Route
+            path={paths.profilePage}
+            element={<ProtectedRoute component={Profile} onlyUnAuth={false} />}
+          />
+          <Route
+            path={paths.ingredientsIdPage}
             element={<IngredientDetails title="Детали ингредиента" />}
           />
-          <Route path="*" element={<NotFound />} />
+          <Route path={paths.notFoundPage} element={<NotFound />} />
         </Routes>
       </div>
       {isOrderDetailsOpened && (
@@ -99,7 +99,7 @@ function App() {
       {background && (
         <Routes>
           <Route
-            path="ingredients/:id"
+            path={paths.ingredientsIdPage}
             element={
               <Modal onClose={closeIngredientsModal} title="Детали ингредиента">
                 <IngredientDetails />

@@ -10,7 +10,7 @@ import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 
 import mainStyle from './Main.module.css';
 
-function Main({ openIngredientDetails, openOrderDetails }) {
+function Main({ openOrderDetails }) {
   const dispatch = useDispatch();
 
   const ingredientsData = useSelector(
@@ -42,7 +42,7 @@ function Main({ openIngredientDetails, openOrderDetails }) {
     <main className={mainStyle.main}>
       <section className={mainStyle.section}>
         <DndProvider backend={HTML5Backend}>
-          <BurgerIngredients openIngredientDetails={openIngredientDetails} />
+          <BurgerIngredients />
           <BurgerConstructor
             openOrderDetails={openOrderDetails}
             onDropHandler={dropHandler}
@@ -57,5 +57,4 @@ export default Main;
 
 Main.propTypes = {
   openOrderDetails: PropTypes.func.isRequired,
-  openIngredientDetails: PropTypes.func.isRequired,
 };
