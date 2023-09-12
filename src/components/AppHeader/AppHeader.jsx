@@ -5,6 +5,7 @@ import {
   ProfileIcon,
   ListIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { paths } from '../../utils/constants';
 
 import stylesHeader from './AppHeader.module.css';
 
@@ -20,8 +21,10 @@ function AppHeader() {
         <nav className={stylesHeader.navigation}>
           <ul className={stylesHeader.navList}>
             <li className={`${stylesHeader.navItem} mr-2`}>
-              <NavLink to="/" className={linkActivator}>
-                <BurgerIcon type={pathname === '/' ? 'primary' : 'secondary'} />
+              <NavLink to={paths.mainPage} className={linkActivator}>
+                <BurgerIcon
+                  type={pathname === paths.mainPage ? 'primary' : 'secondary'}
+                />
                 <p className="text text_type_main-default ml-2">Конструктор</p>
               </NavLink>
             </li>
@@ -40,9 +43,9 @@ function AppHeader() {
         <div className={stylesHeader.logoContainer}>
           <Logo />
         </div>
-        <NavLink to="profile" className={linkActivator}>
+        <NavLink to={paths.profilePage} className={linkActivator}>
           <ProfileIcon
-            type={pathname === '/profile' ? 'primary' : 'secondary'}
+            type={pathname === paths.profilePage ? 'primary' : 'secondary'}
           />
           <p className="text text_type_main-default ml-2">Личный кабинет</p>
         </NavLink>

@@ -1,48 +1,53 @@
-/* eslint-disable import/prefer-default-export */
-import {
-  GET_ORDER_DATA,
-  GET_ORDER_DATA_SUCCESS,
-  GET_ORDER_DATA_FAILED,
-  CLEAR_ORDER_DATA,
-} from '../actions/order';
+/* eslint-disable no-param-reassign */
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import api from '../../utils/Api';
 
-const inititalState = {
-  orderDetails: null,
-  orderRequest: false,
-  orderFailed: false,
-};
+export const getOrderData = createAsyncThunk(
+  'order/get',
+  async (orderIdArray, { rejectWithValue }) => {
+    try {
+      const response = await api.sendOrder(orderIdArray);
 
-export const orderReducer = (state = inititalState, action) => {
-  switch (action.type) {
-    case GET_ORDER_DATA: {
-      return {
-        ...state,
-        orderRequest: true,
-        orderFailed: false,
-      };
-    }
-    case GET_ORDER_DATA_SUCCESS: {
-      return {
-        ...state,
-        orderDetails: action.payload,
-        orderRequest: false,
-      };
-    }
-    case GET_ORDER_DATA_FAILED: {
-      return {
-        ...state,
-        orderRequest: false,
-        orderFailed: true,
-      };
-    }
-    case CLEAR_ORDER_DATA: {
-      return {
-        ...state,
-        orderDetails: null,
-      };
-    }
-    default: {
-      return state;
+      if (!response.success) {
+        throw new Error('Ошибка получения данных заказа');
+      }
+
+      return response;
+    } catch (err) {
+      return rejectWithValue(err);
     }
   }
-};
+);
+
+const orderSlice = createSlice({
+  name: 'order',
+  initialState: {
+    orderDetails: null,
+    orderRequest: false,
+    orderFailed: false,
+  },
+  reducers: {
+    clearOrderData: (state) => {
+      state.orderDetails = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getOrderData.pending, (state) => {
+        state.orderRequest = true;
+        state.orderFailed = false;
+      })
+      .addCase(getOrderData.fulfilled, (state, action) => {
+        state.orderDetails = action.payload;
+        state.orderRequest = false;
+      })
+      .addCase(getOrderData.rejected, (state, action) => {
+        state.orderRequest = false;
+        state.orderFailed = true;
+        console.error(action.payload);
+      });
+  },
+});
+
+export const { clearOrderData } = orderSlice.actions;
+export const orderReducer = orderSlice.reducer;
