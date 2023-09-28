@@ -1,13 +1,19 @@
 /* eslint-disable react/require-default-props */
-import { useSelector } from 'react-redux';
+import { FC } from 'react';
 import { useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { useAppSelector } from '../../utils/hooks/useRedux';
 
 import stylesIngredientDetails from './IngredientDetails.module.css';
 
-function IngredientDetails({ title }) {
+interface IIngredientDetails {
+  title: string;
+}
+
+const IngredientDetails: FC<IIngredientDetails> = ({ title }) => {
   const { id } = useParams();
-  const ingredients = useSelector((store) => store.ingredientsData.ingredients);
+  const ingredients = useAppSelector(
+    (store) => store.ingredientsData.ingredients
+  );
   const currentIngredient = ingredients.find(
     (ingredient) => ingredient._id === id
   );
@@ -66,10 +72,6 @@ function IngredientDetails({ title }) {
       </ul>
     </div>
   );
-}
+};
 
 export default IngredientDetails;
-
-IngredientDetails.propTypes = {
-  title: PropTypes.string,
-};
