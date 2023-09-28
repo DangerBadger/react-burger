@@ -1,65 +1,80 @@
-/* eslint-disable no-debugger */
-/* eslint-disable no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-nested-ternary */
-import { useSelector } from 'react-redux';
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, FC } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import { tabs } from '../../utils/constants';
+import { useAppSelector } from '../../utils/hooks/useRedux';
+import { Tabs } from '../../utils/constants';
+import { IIngredient } from '../../utils/types';
 
 import stylesBurgerIngredients from './BurgerIngredients.module.css';
 
 import BurgerIngredientsList from '../BurgerIngredientsList/BurgerIngredientsList';
 
-function BurgerIngredients() {
-  const ingredientsData = useSelector(
+interface IOptions {
+  root: HTMLDivElement | null;
+  rootMargin: string;
+}
+
+const BurgerIngredients: FC = () => {
+  const ingredientsData: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.ingredients
   );
-
-  const isLoading = useSelector(
+  const isLoading: boolean = useAppSelector(
     (store) => store.ingredientsData.ingredientsRequest
   );
 
-  const [current, setCurrent] = useState('bun');
+  const [current, setCurrent] = useState<string>('bun');
 
-  const bunRef = useRef();
-  const sauceRef = useRef();
-  const mainRef = useRef();
-  const scrollRef = useRef();
+  const bunRef = useRef<HTMLHeadingElement>(null);
+  const sauceRef = useRef<HTMLHeadingElement>(null);
+  const mainRef = useRef<HTMLHeadingElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const tabClickHandler = (value) => {
+  const tabClickHandler = (value: string) => {
     value === 'bun'
-      ? bunRef.current.scrollIntoView({ behavior: 'smooth' })
+      ? bunRef.current?.scrollIntoView({ behavior: 'smooth' })
       : value === 'sauce'
-      ? sauceRef.current.scrollIntoView({ behavior: 'smooth' })
-      : mainRef.current.scrollIntoView({ behavior: 'smooth' });
+      ? sauceRef.current?.scrollIntoView({ behavior: 'smooth' })
+      : mainRef.current?.scrollIntoView({ behavior: 'smooth' });
     setCurrent(value);
   };
 
   useEffect(() => {
-    const targets = [bunRef.current, sauceRef.current, mainRef.current];
-    const options = {
+    const targets: Array<HTMLHeadingElement | null> = [
+      bunRef.current,
+      sauceRef.current,
+      mainRef.current,
+    ];
+    const options: IOptions = {
       root: scrollRef.current,
       rootMargin: '0px 0px -90% 0px',
     };
 
-    const callback = function (entries, observer) {
+    const callback = function (entries: Array<IntersectionObserverEntry>) {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           if (entry.target === bunRef.current) {
-            setCurrent(tabs.BUN);
+            setCurrent(Tabs.BUN);
           }
           if (entry.target === sauceRef.current) {
-            setCurrent(tabs.SAUCE);
+            setCurrent(Tabs.SAUCE);
           }
           if (entry.target === mainRef.current) {
-            setCurrent(tabs.MAIN);
+            setCurrent(Tabs.MAIN);
           }
         }
       });
     };
 
-    const observer = new IntersectionObserver(callback, options);
-    targets.forEach((target) => observer.observe(target));
+    const observer: IntersectionObserver = new IntersectionObserver(
+      callback,
+      options
+    );
+    targets.forEach((target) => {
+      if (target) {
+        observer.observe(target);
+      }
+    });
   }, [ingredientsData]);
 
   const bunFilter = useMemo(
@@ -68,12 +83,12 @@ function BurgerIngredients() {
   );
 
   const sauceFilter = useMemo(
-    () => ingredientsData?.filter((item) => item.type === 'sauce'),
+    () => ingredientsData.filter((item) => item.type === 'sauce'),
     [ingredientsData]
   );
 
   const mainFilter = useMemo(
-    () => ingredientsData?.filter((item) => item.type === 'main'),
+    () => ingredientsData.filter((item) => item.type === 'main'),
     [ingredientsData]
   );
 
@@ -82,22 +97,22 @@ function BurgerIngredients() {
       <h1 className="text text_type_main-large mt-10">Соберите бургер</h1>
       <div className={`${stylesBurgerIngredients.tabContainer} mt-5`}>
         <Tab
-          value={tabs.BUN}
-          active={current === tabs.BUN}
+          value={Tabs.BUN}
+          active={current === Tabs.BUN}
           onClick={tabClickHandler}
         >
           Булки
         </Tab>
         <Tab
-          value={tabs.SAUCE}
-          active={current === tabs.SAUCE}
+          value={Tabs.SAUCE}
+          active={current === Tabs.SAUCE}
           onClick={tabClickHandler}
         >
           Соусы
         </Tab>
         <Tab
-          value={tabs.MAIN}
-          active={current === tabs.MAIN}
+          value={Tabs.MAIN}
+          active={current === Tabs.MAIN}
           onClick={tabClickHandler}
         >
           Начинки
@@ -115,27 +130,27 @@ function BurgerIngredients() {
           <>
             <BurgerIngredientsList
               tabName="Булки"
-              id={tabs.BUN}
+              id={Tabs.BUN}
               ingredientsDataType={bunFilter}
-              refName={bunRef}
+              ref={bunRef}
             />
             <BurgerIngredientsList
               tabName="Соусы"
-              id={tabs.SAUCE}
+              id={Tabs.SAUCE}
               ingredientsDataType={sauceFilter}
-              refName={sauceRef}
+              ref={sauceRef}
             />
             <BurgerIngredientsList
               tabName="Начинки"
-              id={tabs.MAIN}
+              id={Tabs.MAIN}
               ingredientsDataType={mainFilter}
-              refName={mainRef}
+              ref={mainRef}
             />
           </>
         )}
       </div>
     </div>
   );
-}
+};
 
 export default BurgerIngredients;

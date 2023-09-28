@@ -5,9 +5,9 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-useless-escape */
 /* eslint-disable prefer-template */
-import { paths } from './constants';
+import { Paths } from './constants';
 
-export function getCookie(name) {
+export function getCookie(name: string) {
   const matches = document.cookie.match(
     new RegExp(
       '(?:^|; )' +
@@ -18,9 +18,13 @@ export function getCookie(name) {
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-export function setCookie(name, value, props) {
+export const setCookie: (
+  name: string,
+  value: string,
+  props: { [key: string]: any }
+) => void = (name, value, props) => {
   props = {
-    path: paths.mainPage,
+    path: Paths.mainPage,
     ...props,
   };
   let exp = props.expires;
@@ -43,14 +47,8 @@ export function setCookie(name, value, props) {
     }
   }
   document.cookie = updatedCookie;
-}
-
-export const deleteCookie = (name) => {
-  setCookie(name, null, { expires: -1 });
 };
 
-// function deleteCookie(name) {
-//   setCookie(name, "", {
-//     'max-age': -1
-//   })
-// }   ???
+export const deleteCookie = (name: string) => {
+  setCookie(name, '', { expires: -1 });
+};

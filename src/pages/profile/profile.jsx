@@ -1,10 +1,4 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable prefer-template */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-multi-assign */
-/* eslint-disable react/jsx-boolean-value */
-/* eslint-disable no-useless-return */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/jsx-curly-brace-presence */
 import { useRef, useState, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
@@ -14,7 +8,7 @@ import {
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { paths } from '../../utils/constants';
+import { Paths } from '../../utils/constants';
 
 import { logout, changeUserData } from '../../services/reducers/user';
 import { getCookie } from '../../utils/cookie';
@@ -102,7 +96,7 @@ function Profile() {
 
   const submitHandler = (evt) => {
     evt.preventDefault();
-    const accessToken = 'Bearer ' + getCookie('accessToken');
+    const accessToken = `Bearer ${getCookie('accessToken')}`;
 
     dispatch(
       changeUserData({ nameValue, emailValue, passwordValue, accessToken })
@@ -119,7 +113,7 @@ function Profile() {
             <li
               className={`text text_type_main-medium ${profileStyles.menuItem}`}
             >
-              <NavLink to={paths.profilePage} className={linkActivator}>
+              <NavLink to={Paths.profilePage} className={linkActivator}>
                 Профиль
               </NavLink>
             </li>

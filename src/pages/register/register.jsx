@@ -10,7 +10,7 @@ import {
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { paths } from '../../utils/constants';
+import { Paths } from '../../utils/constants.ts';
 
 import { registration } from '../../services/reducers/user';
 
@@ -98,7 +98,7 @@ function Register() {
         className={`className="text text_type_main-default text_color_inactive" ${registerStyles.linkContainer}`}
       >
         <p className={registerStyles.text}>Уже зарегистрированы?</p>
-        <Link to={paths.loginPage} className={registerStyles.link}>
+        <Link to={Paths.loginPage} className={registerStyles.link}>
           Войти
         </Link>
       </span>

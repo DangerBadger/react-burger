@@ -1,7 +1,7 @@
-/* eslint-disable prefer-template */
-import { useEffect } from 'react';
+/* eslint-disable import/no-cycle */
+import { useEffect, FC } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../../utils/hooks/useRedux';
 
 import { useModal } from '../../utils/hooks/useModal';
 
@@ -10,7 +10,7 @@ import { getIngredients } from '../../services/reducers/ingredients';
 import { clearOrderData } from '../../services/reducers/order';
 import { getUserData } from '../../services/reducers/user';
 import { getCookie } from '../../utils/cookie';
-import { paths } from '../../utils/constants';
+import { Paths } from '../../utils/constants';
 
 import styles from './App.module.css';
 
@@ -27,12 +27,12 @@ import Profile from '../../pages/profile/profile';
 import NotFound from '../../pages/not-found/not-found';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
-function App() {
+const App: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const background = location.state && location.state.background;
-  const dispatch = useDispatch();
-  const accessToken = 'Bearer ' + getCookie('accessToken');
+  const dispatch = useAppDispatch();
+  const accessToken = `Bearer ${getCookie('accessToken')}`;
   const [isOrderDetailsOpened, openOrderDetails, closeOrderDetails] =
     useModal();
 
@@ -59,35 +59,35 @@ function App() {
         <AppHeader />
         <Routes location={background || location}>
           <Route
-            path={paths.mainPage}
+            path={Paths.mainPage}
             element={<Main openOrderDetails={openOrderDetails} />}
           />
           <Route
-            path={paths.registerPage}
+            path={Paths.registerPage}
             element={<ProtectedRoute component={Register} onlyUnAuth />}
           />
           <Route
-            path={paths.loginPage}
+            path={Paths.loginPage}
             element={<ProtectedRoute component={Login} onlyUnAuth />}
           />
           <Route
-            path={paths.forgotPasswordPage}
+            path={Paths.forgotPasswordPage}
             element={<ProtectedRoute component={ForgotPassword} onlyUnAuth />}
           />
           <Route
-            path={paths.resetPasswordPage}
+            path={Paths.resetPasswordPage}
             element={<ProtectedRoute component={ResetPassword} onlyUnAuth />}
           />
           {/* Защищённый от неавторизованных пользователей рут */}
           <Route
-            path={paths.profilePage}
+            path={Paths.profilePage}
             element={<ProtectedRoute component={Profile} onlyUnAuth={false} />}
           />
           <Route
-            path={paths.ingredientsIdPage}
+            path={Paths.ingredientsIdPage}
             element={<IngredientDetails title="Детали ингредиента" />}
           />
-          <Route path={paths.notFoundPage} element={<NotFound />} />
+          <Route path={Paths.notFoundPage} element={<NotFound />} />
         </Routes>
       </div>
       {isOrderDetailsOpened && (
@@ -99,7 +99,7 @@ function App() {
       {background && (
         <Routes>
           <Route
-            path={paths.ingredientsIdPage}
+            path={Paths.ingredientsIdPage}
             element={
               <Modal onClose={closeIngredientsModal} title="Детали ингредиента">
                 <IngredientDetails />
@@ -110,6 +110,6 @@ function App() {
       )}
     </>
   );
-}
+};
 
 export default App;

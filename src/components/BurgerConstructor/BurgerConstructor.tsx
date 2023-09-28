@@ -1,41 +1,55 @@
 /* eslint-disable react/no-array-index-key */
-import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useCallback, FC } from 'react';
 import { useDrop } from 'react-dnd';
 import {
   ConstructorElement,
   CurrencyIcon,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks/useRedux';
 import {
   deleteIngredient,
   clearIngredients,
   sortIngredients,
 } from '../../services/reducers/ingredients';
+import {
+  IAddedIngredient,
+  IIngredient,
+  IIngredientId,
+} from '../../utils/types';
 import { getOrderData } from '../../services/reducers/order';
-import { paths } from '../../utils/constants';
+import { Paths } from '../../utils/constants';
 
 import stylesBurgerConstructor from './BurgerConstructor.module.css';
 
 import BurgerConstructorItem from '../BurgerConstructorItem/BurgerConstructorItem';
 
-function BurgerConstructor({ openOrderDetails, onDropHandler }) {
-  const [foundBun, setFoundBun] = useState({});
-  const ingredientsData = useSelector(
+interface IBurgerConstructor {
+  openOrderDetails: () => void;
+  onDropHandler: (ingredientId: IIngredientId) => void;
+}
+
+const BurgerConstructor: FC<IBurgerConstructor> = ({
+  openOrderDetails,
+  onDropHandler,
+}) => {
+  const [foundBun, setFoundBun] = useState<
+    IAddedIngredient | Record<string, never>
+  >({});
+  const ingredientsData: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.ingredients
   );
-  const addedIngredients = useSelector(
+  const addedIngredients: Array<IAddedIngredient> = useAppSelector(
     (store) => store.ingredientsData.addedIngredients
   );
-  const userInfo = useSelector((store) => store.userData.userInfo);
+  const userInfo = useAppSelector((store) => store.userData.userInfo);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [{ isHover }, dropTarget] = useDrop({
     accept: 'ingredient',
-    drop(itemId) {
+    drop(itemId: any) {
       onDropHandler(itemId);
     },
     collect: (monitor) => ({
@@ -55,9 +69,11 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
     [addedIngredients]
   );
 
-  const deleteIngredientHandler = (item) => {
-    const addedIngredientIndex = addedIngredients.indexOf(item);
-    const addedIngredientsDuplicate = addedIngredients.slice();
+  const deleteIngredientHandler = (item: IAddedIngredient) => {
+    const addedIngredientIndex: number = addedIngredients.indexOf(item);
+    const addedIngredientsDuplicate: Array<
+      IAddedIngredient | Record<string, never>
+    > = addedIngredients.slice();
     addedIngredientsDuplicate.splice(addedIngredientIndex, 1);
     dispatch(deleteIngredient(addedIngredientsDuplicate));
   };
@@ -68,9 +84,12 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
       addedIngredients.length &&
       addedIngredients.find((ingredient) => ingredient.type === 'bun')
     ) {
-      setFoundBun(
-        addedIngredients.find((ingredient) => ingredient.type === 'bun')
+      const found: IAddedIngredient | undefined = addedIngredients.find(
+        (ingredient) => ingredient.type === 'bun'
       );
+      if (typeof found !== 'undefined') {
+        setFoundBun(found);
+      }
     }
   }, [addedIngredients, foundBun]);
 
@@ -82,20 +101,20 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
       setFoundBun({});
       openOrderDetails();
     } else {
-      navigate(paths.loginPage);
+      navigate(Paths.loginPage);
     }
   };
 
   // Замена ингрилиентов местами
   const moveIngredient = useCallback(
-    (draggedIndex, hoveredIndex) => {
+    (draggedIndex: number, hoveredIndex: number) => {
       const draggedFilling = addedIngredients[draggedIndex];
       const fillingsOnlyArrDuplicate = [...addedIngredients];
       fillingsOnlyArrDuplicate.splice(draggedIndex, 1);
       fillingsOnlyArrDuplicate.splice(hoveredIndex, 0, draggedFilling);
       dispatch(sortIngredients(fillingsOnlyArrDuplicate));
     },
-    [addedIngredients]
+    [addedIngredients, dispatch]
   );
 
   return (
@@ -111,10 +130,10 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
         <ConstructorElement
           type="top"
           isLocked
-          text={`${foundBun.name ?? 'Выберите булку'} (верх)`}
-          price={foundBun.price ?? '0'}
+          text={`${foundBun?.name ?? 'Выберите булку'} (верх)`}
+          price={foundBun?.price ?? 0}
           thumbnail={
-            foundBun.image ??
+            foundBun?.image ??
             (ingredientsData.length && ingredientsData[0].image)
           }
         />
@@ -153,7 +172,7 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
           >
             {total}
           </span>
-          <CurrencyIcon />
+          <CurrencyIcon type="primary" />
         </span>
         <Button
           onClick={orderClickHandler}
@@ -167,11 +186,6 @@ function BurgerConstructor({ openOrderDetails, onDropHandler }) {
       </div>
     </div>
   );
-}
+};
 
 export default BurgerConstructor;
-
-BurgerConstructor.propTypes = {
-  onDropHandler: PropTypes.func.isRequired,
-  openOrderDetails: PropTypes.func.isRequired,
-};

@@ -1,27 +1,32 @@
-/* eslint-disable react/require-default-props */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FC } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDrag } from 'react-dnd';
 import {
   Counter,
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { foundBunPropTypes } from '../../utils/propShapes';
-import { paths } from '../../utils/constants';
+import { IIngredient, IAddedIngredient } from '../../utils/types';
+import { useAppSelector } from '../../utils/hooks/useRedux';
+import { Paths } from '../../utils/constants';
 
 import stylesBurgerIngredientsItem from './BurgerIngredientsItem.module.css';
 
-function BurgerIngredientsItem({ ingredientData }) {
+interface IBurgerIngredientsItem {
+  ingredientData: IIngredient;
+}
+
+const BurgerIngredientsItem: FC<IBurgerIngredientsItem> = ({
+  ingredientData,
+}) => {
   const location = useLocation();
 
-  const addedIngredients = useSelector(
+  const addedIngredients: Array<IAddedIngredient> = useAppSelector(
     (store) => store.ingredientsData.addedIngredients
   );
 
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState<number>(0);
 
   const { _id, image, name, price } = ingredientData;
 
@@ -34,7 +39,7 @@ function BurgerIngredientsItem({ ingredientData }) {
   });
 
   useEffect(() => {
-    const counterArr = addedIngredients.filter(
+    const counterArr: Array<IAddedIngredient> = addedIngredients.filter(
       (ingredient) => ingredient.name === name
     );
     if (counterArr.find((ingredient) => ingredient.type === 'bun')) {
@@ -55,7 +60,7 @@ function BurgerIngredientsItem({ ingredientData }) {
       }
     >
       <Link
-        to={`${paths.ingredientsPage}${_id}`}
+        to={`${Paths.ingredientsPage}${_id}`}
         state={{ background: location }}
         className={stylesBurgerIngredientsItem.link}
       >
@@ -81,10 +86,6 @@ function BurgerIngredientsItem({ ingredientData }) {
       </Link>
     </li>
   );
-}
+};
 
 export default BurgerIngredientsItem;
-
-BurgerIngredientsItem.propTypes = {
-  ingredientData: foundBunPropTypes,
-};

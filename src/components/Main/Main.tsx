@@ -1,38 +1,48 @@
 /* eslint-disable react/require-default-props */
-import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
+import { FC } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useAppSelector, useAppDispatch } from '../../utils/hooks/useRedux';
 import { addIngredient } from '../../services/reducers/ingredients';
 
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
+import {
+  IIngredientId,
+  IIngredient,
+  IAddedIngredient,
+} from '../../utils/types';
 
 import mainStyle from './Main.module.css';
 
-function Main({ openOrderDetails }) {
-  const dispatch = useDispatch();
+interface IMain {
+  openOrderDetails: () => void;
+}
 
-  const ingredientsData = useSelector(
+const Main: FC<IMain> = ({ openOrderDetails }) => {
+  const dispatch = useAppDispatch();
+
+  const ingredientsData: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.ingredients
   );
-  const addedIngredients = useSelector(
+  const addedIngredients: Array<IAddedIngredient> = useAppSelector(
     (store) => store.ingredientsData.addedIngredients
   );
 
-  const dropHandler = (ingredientId) => {
-    const draggedIngredient = ingredientsData.find(
+  const dropHandler = (ingredientId: IIngredientId): void => {
+    const draggedIngredient: IIngredient | undefined = ingredientsData.find(
       (ingredient) => ingredient._id === ingredientId._id
     );
-    const addedBun = addedIngredients.find(
+    const addedBun: IAddedIngredient | undefined = addedIngredients.find(
       (ingredient) => ingredient.type === 'bun'
     );
-    const addedBunIndex = addedIngredients.indexOf(addedBun);
 
-    if (draggedIngredient.type === 'bun' && addedBun) {
-      const addedientsDataDuplicate = addedIngredients.slice();
-      addedientsDataDuplicate.splice(addedBunIndex, 1, draggedIngredient);
-      dispatch(addIngredient(addedientsDataDuplicate));
+    if (draggedIngredient?.type === 'bun' && addedBun) {
+      const addedBunIndex: number = addedIngredients.indexOf(addedBun);
+      const addedIngredientsDataDuplicate: Array<IAddedIngredient> =
+        addedIngredients.slice();
+      addedIngredientsDataDuplicate.splice(addedBunIndex, 1, draggedIngredient);
+      dispatch(addIngredient(addedIngredientsDataDuplicate));
     } else {
       dispatch(addIngredient([draggedIngredient, ...addedIngredients]));
     }
@@ -51,10 +61,6 @@ function Main({ openOrderDetails }) {
       </section>
     </main>
   );
-}
+};
 
 export default Main;
-
-Main.propTypes = {
-  openOrderDetails: PropTypes.func.isRequired,
-};

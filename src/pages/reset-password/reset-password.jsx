@@ -9,7 +9,7 @@ import {
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { paths } from '../../utils/constants';
+import { Paths } from '../../utils/constants.ts';
 
 import { resetPassword } from '../../services/reducers/user';
 
@@ -37,7 +37,7 @@ function ResetPassword() {
 
   useEffect(() => {
     if (!userInfo && !forgotPasswordSuccess) {
-      navigate(paths.forgotPasswordPage);
+      navigate(Paths.forgotPasswordPage);
     }
   }, [userInfo, navigate, forgotPasswordSuccess]);
 
@@ -51,7 +51,7 @@ function ResetPassword() {
     dispatch(resetPassword({ passwordValue, codeValue }));
     setPasswordValue('');
     setCodeValue('');
-    navigate(paths.loginPage);
+    navigate(Paths.loginPage);
   };
 
   return (
@@ -94,7 +94,7 @@ function ResetPassword() {
         className={`className="text text_type_main-default text_color_inactive" ${resetPasswordStyles.linkContainer}`}
       >
         <p className={resetPasswordStyles.text}>Вспомнили пароль?</p>
-        <Link to={paths.loginPage} className={resetPasswordStyles.link}>
+        <Link to={Paths.loginPage} className={resetPasswordStyles.link}>
           Войти
         </Link>
       </span>

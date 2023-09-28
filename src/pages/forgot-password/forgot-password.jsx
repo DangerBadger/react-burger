@@ -8,7 +8,7 @@ import {
   Input,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { paths } from '../../utils/constants';
+import { Paths } from '../../utils/constants.ts';
 
 import { sendEmail } from '../../services/reducers/user';
 
@@ -29,7 +29,7 @@ function ForgotPassword() {
   }, [emailValue]);
 
   useEffect(() => {
-    forgotPasswordSuccess && navigate(paths.resetPasswordPage);
+    forgotPasswordSuccess && navigate(Paths.resetPasswordPage);
   }, [forgotPasswordSuccess]);
 
   const submitHandler = (evt) => {
@@ -76,7 +76,7 @@ function ForgotPassword() {
         className={`className="text text_type_main-default text_color_inactive" ${forgotPasswordStyles.linkContainer}`}
       >
         <p className={forgotPasswordStyles.text}>Вспомнили пароль?</p>
-        <Link to={paths.loginPage} className={forgotPasswordStyles.link}>
+        <Link to={Paths.loginPage} className={forgotPasswordStyles.link}>
           Войти
         </Link>
       </span>

@@ -3,7 +3,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { paths } from '../../utils/constants';
+import { Paths } from '../../utils/constants';
 
 function ProtectedRoute({ component: Component, onlyUnAuth, ...props }) {
   const userInfo = useSelector((store) => store.userData.userInfo);
@@ -12,7 +12,7 @@ function ProtectedRoute({ component: Component, onlyUnAuth, ...props }) {
   return onlyUnAuth ? (
     userInfo ? (
       <Navigate
-        to={paths.mainPage}
+        to={Paths.mainPage}
         state={{ previousLocation: location }}
         replace
       />
@@ -23,7 +23,7 @@ function ProtectedRoute({ component: Component, onlyUnAuth, ...props }) {
     <Component {...props} />
   ) : (
     <Navigate
-      to={paths.loginPage}
+      to={Paths.loginPage}
       state={{ previousLocation: location }}
       replace
     />

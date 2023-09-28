@@ -1,22 +1,30 @@
 /* eslint-disable no-param-reassign */
-import PropTypes from 'prop-types';
-import { useRef } from 'react';
+import { useRef, FC } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import {
   ConstructorElement,
   DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { IAddedIngredient } from '../../utils/types';
 
 import stylesBurgerConstructorItem from './BurgerConstructorItem.module.css';
 
-function BurgerConstructorItem({
+interface IBurgerConstructorItem {
+  ingredientItem: IAddedIngredient;
+  index: number;
+  moveIngredient: (draggedIndex: number, hoveredIndex: number) => void;
+  id: string;
+  onDelete: (item: IAddedIngredient) => void;
+}
+
+const BurgerConstructorItem: FC<IBurgerConstructorItem> = ({
   ingredientItem,
   index,
   moveIngredient,
   id,
   onDelete,
-}) {
-  const ingredientItemRef = useRef();
+}) => {
+  const ingredientItemRef = useRef<HTMLLIElement>(null);
 
   const [{ opacity }, dragRef] = useDrag({
     type: 'filling',
@@ -29,7 +37,7 @@ function BurgerConstructorItem({
   const [{ idHandler }, dropRef] = useDrop({
     accept: 'filling',
     collect: (monitor) => ({ idHandler: monitor.getHandlerId() }),
-    hover(item, monitor) {
+    hover(item: any, monitor) {
       if (!ingredientItemRef.current) {
         return;
       }
@@ -43,7 +51,7 @@ function BurgerConstructorItem({
         ingredientItemRef.current?.getBoundingClientRect();
       const hoverHalfY = (boundingHoverRect.bottom - boundingHoverRect.top) / 2;
       const clientOffset = monitor.getClientOffset();
-      const hoverClientOffsetY = clientOffset.y - boundingHoverRect.top;
+      const hoverClientOffsetY = clientOffset!.y - boundingHoverRect.top;
       if (draggedIndex > hoveredIndex && hoverClientOffsetY > hoverHalfY) {
         return;
       }
@@ -62,7 +70,7 @@ function BurgerConstructorItem({
       style={{ opacity }}
       className={`${stylesBurgerConstructorItem.mainItem} mt-4 pr-2`}
     >
-      <DragIcon />
+      <DragIcon type="primary" />
       <ConstructorElement
         text={ingredientItem.name}
         price={ingredientItem.price}
@@ -71,18 +79,6 @@ function BurgerConstructorItem({
       />
     </li>
   );
-}
+};
 
 export default BurgerConstructorItem;
-
-BurgerConstructorItem.propTypes = {
-  id: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  moveIngredient: PropTypes.func.isRequired,
-  ingredientItem: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-  }).isRequired,
-};

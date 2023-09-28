@@ -10,7 +10,7 @@ import {
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { paths } from '../../utils/constants';
+import { Paths } from '../../utils/constants.ts';
 
 import { login } from '../../services/reducers/user';
 
@@ -83,7 +83,7 @@ function Login() {
         className={`mb-4 className="text text_type_main-default text_color_inactive" ${loginStyles.linkContainer}`}
       >
         <p className={loginStyles.text}>Вы — новый пользователь?</p>
-        <Link to={paths.registerPage} className={loginStyles.link}>
+        <Link to={Paths.registerPage} className={loginStyles.link}>
           Зарегистрироваться
         </Link>
       </span>
@@ -91,7 +91,7 @@ function Login() {
         className={`className="text text_type_main-default text_color_inactive" ${loginStyles.linkContainer}`}
       >
         <p className={loginStyles.text}>Забыли пароль?</p>
-        <Link to={paths.forgotPasswordPage} className={loginStyles.link}>
+        <Link to={Paths.forgotPasswordPage} className={loginStyles.link}>
           Восстановить пароль
         </Link>
       </span>

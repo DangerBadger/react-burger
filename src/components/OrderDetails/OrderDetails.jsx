@@ -1,11 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import { useSelector } from 'react-redux';
-import { currentOrderData } from '../../utils/data';
+import { CurrentOrderData } from '../../utils/data';
 
 import stylesOrderDetails from './OrderDetails.module.css';
 
 import done from '../../images/done.gif';
-import { preparationStageTexts } from '../../utils/constants';
+import { PreparationStageTexts } from '../../utils/constants';
 
 function OrderDetails() {
   const orderDetails = useSelector((store) => store.orderData.orderDetails);
@@ -32,11 +32,11 @@ function OrderDetails() {
         <img src={done} alt="Готовится" className="mt-15" />
       )}
       <p className="text text_type_main-default mt-15">
-        {!currentOrderData.preparationStage === 'cooking' &&
+        {!CurrentOrderData.preparationStage === 'cooking' &&
         !orderDetails &&
         orderError
-          ? preparationStageTexts.error
-          : preparationStageTexts.cooking}
+          ? PreparationStageTexts.error
+          : PreparationStageTexts.cooking}
       </p>
       {!orderDetails && orderError ? (
         <p className="text text_type_main-default text_color_inactive mt-2 mb-30">

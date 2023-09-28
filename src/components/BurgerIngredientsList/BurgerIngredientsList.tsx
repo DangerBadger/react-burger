@@ -1,15 +1,25 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable react/require-default-props */
-import PropTypes from 'prop-types';
-import { ingredientPropTypes } from '../../utils/propShapes';
+import { forwardRef } from 'react';
+import { IIngredient } from '../../utils/types';
 
 import stylesBurgerIngredientsList from './BurgerIngredientsList.module.css';
 
 import BurgerIngredientsItem from '../BurgerIngredientItem/BurgerIngredientsItem';
 
-function BurgerIngredientsList({ tabName, id, ingredientsDataType, refName }) {
+interface IBurgerIngredientsList {
+  tabName: string;
+  id: string;
+  ingredientsDataType: Array<IIngredient>;
+}
+
+const BurgerIngredientsList = forwardRef<
+  HTMLHeadingElement,
+  IBurgerIngredientsList
+>(({ tabName, id, ingredientsDataType }, ref) => {
   return (
     <>
-      <h2 className="text text_type_main-medium mb-6" id={id} ref={refName}>
+      <h2 className="text text_type_main-medium mb-6" id={id} ref={ref}>
         {tabName}
       </h2>
       <ul
@@ -24,16 +34,6 @@ function BurgerIngredientsList({ tabName, id, ingredientsDataType, refName }) {
       </ul>
     </>
   );
-}
+});
 
 export default BurgerIngredientsList;
-
-BurgerIngredientsList.propTypes = {
-  refName: PropTypes.oneOfType([
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
-  ]),
-  tabName: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  ingredientsDataType: PropTypes.arrayOf(ingredientPropTypes.isRequired)
-    .isRequired,
-};

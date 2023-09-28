@@ -1,13 +1,25 @@
-/* eslint-disable prefer-destructuring */
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../utils/Api';
-import { setCookie, deleteCookie, getCookie } from '../../utils/cookie';
+import { setCookie, deleteCookie } from '../../utils/cookie';
+
+type TLoginData = {
+  emailValue: string;
+  passwordValue: string;
+};
+
+type TRegistrationData = TLoginData & {
+  nameValue: string;
+};
+
+type TChangedData = TRegistrationData & {
+  accessToken: string;
+};
 
 export const registration = createAsyncThunk(
   'user/registration',
-  async (registrationData, { rejectWithValue }) => {
+  async (registrationData: TRegistrationData, { rejectWithValue }) => {
     try {
       const response = await api.registration(
         registrationData.emailValue,
@@ -22,8 +34,8 @@ export const registration = createAsyncThunk(
       const accessToken = response.accessToken.split('Bearer ')[1];
       const { refreshToken } = response;
 
-      setCookie('accessToken', accessToken);
-      setCookie('refreshToken', refreshToken);
+      setCookie('accessToken', accessToken, {});
+      setCookie('refreshToken', refreshToken, {});
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -33,7 +45,7 @@ export const registration = createAsyncThunk(
 
 export const login = createAsyncThunk(
   'user/login',
-  async (loginData, { rejectWithValue }) => {
+  async (loginData: TLoginData, { rejectWithValue }) => {
     try {
       const response = await api.login(
         loginData.emailValue,
@@ -46,8 +58,8 @@ export const login = createAsyncThunk(
       const accessToken = response.accessToken.split('Bearer ')[1];
       const { refreshToken } = response;
 
-      setCookie('accessToken', accessToken);
-      setCookie('refreshToken', refreshToken);
+      setCookie('accessToken', accessToken, {});
+      setCookie('refreshToken', refreshToken, {});
       return response;
     } catch (err) {
       return rejectWithValue(err);
@@ -55,31 +67,31 @@ export const login = createAsyncThunk(
   }
 );
 
-export const refreshingToken = createAsyncThunk(
-  'user/refreshToken',
-  async (token, { rejectWithValue }) => {
-    try {
-      const response = await api.refreshToken(token);
+// export const refreshingToken = createAsyncThunk(
+//   'user/refreshToken',
+//   async (token: string, { rejectWithValue }) => {
+//     try {
+//       const response = await api.refreshToken(token);
 
-      if (!response.success) {
-        throw new Error('Ошибка обновления токена пользователя');
-      }
+//       if (!response.success) {
+//         throw new Error('Ошибка обновления токена пользователя');
+//       }
 
-      const accessToken = response.accessToken.split('Bearer ')[1];
-      const { refreshToken } = response;
+//       const accessToken = response.accessToken.split('Bearer ')[1];
+//       const { refreshToken } = response;
 
-      setCookie('accessToken', accessToken);
-      setCookie('refreshToken', refreshToken);
-      return response;
-    } catch (err) {
-      return rejectWithValue(err);
-    }
-  }
-);
+//       setCookie('accessToken', accessToken);
+//       setCookie('refreshToken', refreshToken);
+//       return response;
+//     } catch (err) {
+//       return rejectWithValue(err);
+//     }
+//   }
+// );
 
 export const logout = createAsyncThunk(
   'user/logout',
-  async (token, { rejectWithValue }) => {
+  async (token: string, { rejectWithValue }) => {
     try {
       const response = await api.logout(token);
 
@@ -97,7 +109,7 @@ export const logout = createAsyncThunk(
 
 export const getUserData = createAsyncThunk(
   'user/getUserData',
-  async (token, { rejectWithValue, dispatch }) => {
+  async (token: string, { rejectWithValue }) => {
     try {
       const response = await api.getUserData(token);
 
@@ -114,7 +126,7 @@ export const getUserData = createAsyncThunk(
 
 export const changeUserData = createAsyncThunk(
   'user/changeUserData',
-  async (changedData, { rejectWithValue, dispatch }) => {
+  async (changedData: TChangedData, { rejectWithValue }) => {
     try {
       const response = await api.changeUserData(
         changedData.nameValue,
@@ -136,7 +148,7 @@ export const changeUserData = createAsyncThunk(
 
 export const sendEmail = createAsyncThunk(
   'user/sendEmail',
-  async (email, { rejectWithValue }) => {
+  async (email: string, { rejectWithValue }) => {
     try {
       const response = await api.sendEmail(email);
 
@@ -153,7 +165,10 @@ export const sendEmail = createAsyncThunk(
 
 export const resetPassword = createAsyncThunk(
   'user/resetPassword',
-  async (resetData, { rejectWithValue }) => {
+  async (
+    resetData: { passwordValue: string; codeValue: string },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await api.resetPassword(
         resetData.passwordValue,
@@ -171,30 +186,62 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+type TUserInfo = {
+  name: string;
+  email: string;
+  password?: string;
+};
+
+type TUserState = {
+  forgotPasswordEmailConfirmed: boolean;
+  forgotPasswordRequest: boolean;
+  forgotPasswordSuccess: boolean;
+  forgotPasswordFailed: boolean;
+  resetPasswordConfirmed: boolean;
+  resetPasswordRequest: boolean;
+  resetPasswordFailed: boolean;
+  registrationRequest: boolean;
+  registrationFailed: boolean;
+  loginRequest: boolean;
+  loginFailed: boolean;
+  refreshTokenRequest: boolean;
+  refreshTokenFailed: boolean;
+  logoutRequest: boolean;
+  logoutFailed: boolean;
+  getUserDataRequest: boolean;
+  getUserDataFailed: boolean;
+  changeUserDataRequest: boolean;
+  changeUserDataFailed: boolean;
+  userInfo: TUserInfo | null;
+};
+
+const initialState: TUserState = {
+  forgotPasswordEmailConfirmed: false,
+  forgotPasswordRequest: false,
+  forgotPasswordSuccess: false,
+  forgotPasswordFailed: false,
+  resetPasswordConfirmed: false,
+  resetPasswordRequest: false,
+  resetPasswordFailed: false,
+  registrationRequest: false,
+  registrationFailed: false,
+  loginRequest: false,
+  loginFailed: false,
+  refreshTokenRequest: false,
+  refreshTokenFailed: false,
+  logoutRequest: false,
+  logoutFailed: false,
+  getUserDataRequest: false,
+  getUserDataFailed: false,
+  changeUserDataRequest: false,
+  changeUserDataFailed: false,
+  userInfo: null,
+};
+
 const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    forgotPasswordEmailConfirmed: false,
-    forgotPasswordRequest: false,
-    forgotPasswordSuccess: false,
-    forgotPasswordFailed: false,
-    resetPasswordConfirmed: false,
-    resetPasswordRequest: false,
-    resetPasswordFailed: false,
-    registrationRequest: false,
-    registrationFailed: false,
-    loginRequest: false,
-    loginFailed: false,
-    refreshTokenRequest: false,
-    refreshTokenFailed: false,
-    logoutRequest: false,
-    logoutFailed: false,
-    getUserDataRequest: false,
-    getUserDataFailed: false,
-    changeUserDataRequest: false,
-    changeUserDataFailed: false,
-    userInfo: null,
-  },
+  initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(registration.pending, (state) => {
@@ -223,18 +270,18 @@ const userSlice = createSlice({
         state.loginFailed = true;
         console.error(action.payload);
       })
-      .addCase(refreshingToken.pending, (state) => {
-        state.refreshTokenRequest = true;
-        state.registrationFailed = false;
-      })
-      .addCase(refreshingToken.fulfilled, (state, action) => {
-        state.refreshTokenRequest = false;
-      })
-      .addCase(refreshingToken.rejected, (state, action) => {
-        state.refreshTokenRequest = false;
-        state.registrationFailed = true;
-        console.error(action.payload);
-      })
+      // .addCase(refreshingToken.pending, (state) => {
+      //   state.refreshTokenRequest = true;
+      //   state.registrationFailed = false;
+      // })
+      // .addCase(refreshingToken.fulfilled, (state, action) => {
+      //   state.refreshTokenRequest = false;
+      // })
+      // .addCase(refreshingToken.rejected, (state, action) => {
+      //   state.refreshTokenRequest = false;
+      //   state.registrationFailed = true;
+      //   console.error(action.payload);
+      // })
       .addCase(logout.pending, (state) => {
         state.logoutRequest = true;
         state.logoutFailed = false;

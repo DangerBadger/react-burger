@@ -2,9 +2,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../utils/Api';
 
+type TOrder = {
+  name: string;
+  order: {
+    number: number;
+  };
+};
+
+type TOrderState = {
+  orderDetails: TOrder | null;
+  orderRequest: boolean;
+  orderFailed: boolean;
+};
+
 export const getOrderData = createAsyncThunk(
   'order/get',
-  async (orderIdArray, { rejectWithValue }) => {
+  async (orderIdArray: Array<string>, { rejectWithValue }) => {
     try {
       const response = await api.sendOrder(orderIdArray);
 
@@ -19,13 +32,15 @@ export const getOrderData = createAsyncThunk(
   }
 );
 
+const initialState: TOrderState = {
+  orderDetails: null,
+  orderRequest: false,
+  orderFailed: false,
+};
+
 const orderSlice = createSlice({
   name: 'order',
-  initialState: {
-    orderDetails: null,
-    orderRequest: false,
-    orderFailed: false,
-  },
+  initialState,
   reducers: {
     clearOrderData: (state) => {
       state.orderDetails = null;
