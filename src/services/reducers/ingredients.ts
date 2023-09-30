@@ -1,7 +1,16 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import api from '../../utils/Api';
+import { IIngredient } from '../../utils/types';
+
+type TInitialState = {
+  ingredients: Array<IIngredient>;
+  addedIngredients: Array<IIngredient>;
+  ingredientsRequest: boolean;
+  ingredientsFailed: boolean;
+};
 
 export const getIngredients = createAsyncThunk(
   'ingredients/get',
@@ -15,26 +24,32 @@ export const getIngredients = createAsyncThunk(
 
       return response.data;
     } catch (err) {
-      return rejectWithValue(err.message);
+      if (err instanceof Error) {
+        return rejectWithValue(err.message);
+      }
     }
   }
 );
 
+const initialState: TInitialState = {
+  ingredients: [],
+  addedIngredients: [],
+  ingredientsRequest: false,
+  ingredientsFailed: false,
+};
+
 const ingredientsSlice = createSlice({
   name: 'ingredients',
-  initialState: {
-    ingredients: [],
-    addedIngredients: [],
-    ingredientsRequest: false,
-    ingredientsFailed: false,
-  },
+  initialState,
   reducers: {
-    addIngredient: (state, action) => {
-      const enhancedArr = action.payload.map((ingredient) => {
-        const ingredientDuplicate = { ...ingredient };
-        ingredientDuplicate.uniqueId = uuidv4();
-        return ingredientDuplicate;
-      });
+    addIngredient: (state, action: PayloadAction<Array<IIngredient>>) => {
+      const enhancedArr: Array<IIngredient> = action.payload.map(
+        (ingredient) => {
+          const ingredientDuplicate: IIngredient = { ...ingredient };
+          ingredientDuplicate.uniqueId = uuidv4();
+          return ingredientDuplicate;
+        }
+      );
 
       state.addedIngredients = enhancedArr;
     },

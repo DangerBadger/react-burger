@@ -13,11 +13,7 @@ import {
   clearIngredients,
   sortIngredients,
 } from '../../services/reducers/ingredients';
-import {
-  IAddedIngredient,
-  IIngredient,
-  IIngredientId,
-} from '../../utils/types';
+import { IIngredient, IIngredientId } from '../../utils/types';
 import { getOrderData } from '../../services/reducers/order';
 import { Paths } from '../../utils/constants';
 
@@ -34,13 +30,13 @@ const BurgerConstructor: FC<IBurgerConstructor> = ({
   openOrderDetails,
   onDropHandler,
 }) => {
-  const [foundBun, setFoundBun] = useState<
-    IAddedIngredient | Record<string, never>
-  >({});
+  const [foundBun, setFoundBun] = useState<IIngredient | Record<string, never>>(
+    {}
+  );
   const ingredientsData: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.ingredients
   );
-  const addedIngredients: Array<IAddedIngredient> = useAppSelector(
+  const addedIngredients: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.addedIngredients
   );
   const userInfo = useAppSelector((store) => store.userData.userInfo);
@@ -49,7 +45,7 @@ const BurgerConstructor: FC<IBurgerConstructor> = ({
 
   const [{ isHover }, dropTarget] = useDrop({
     accept: 'ingredient',
-    drop(itemId: any) {
+    drop(itemId: { _id: string }) {
       onDropHandler(itemId);
     },
     collect: (monitor) => ({
@@ -69,10 +65,10 @@ const BurgerConstructor: FC<IBurgerConstructor> = ({
     [addedIngredients]
   );
 
-  const deleteIngredientHandler = (item: IAddedIngredient) => {
+  const deleteIngredientHandler = (item: IIngredient) => {
     const addedIngredientIndex: number = addedIngredients.indexOf(item);
     const addedIngredientsDuplicate: Array<
-      IAddedIngredient | Record<string, never>
+      IIngredient | Record<string, never>
     > = addedIngredients.slice();
     addedIngredientsDuplicate.splice(addedIngredientIndex, 1);
     dispatch(deleteIngredient(addedIngredientsDuplicate));
@@ -84,7 +80,7 @@ const BurgerConstructor: FC<IBurgerConstructor> = ({
       addedIngredients.length &&
       addedIngredients.find((ingredient) => ingredient.type === 'bun')
     ) {
-      const found: IAddedIngredient | undefined = addedIngredients.find(
+      const found: IIngredient | undefined = addedIngredients.find(
         (ingredient) => ingredient.type === 'bun'
       );
       if (typeof found !== 'undefined') {
@@ -108,8 +104,10 @@ const BurgerConstructor: FC<IBurgerConstructor> = ({
   // Замена ингрилиентов местами
   const moveIngredient = useCallback(
     (draggedIndex: number, hoveredIndex: number) => {
-      const draggedFilling = addedIngredients[draggedIndex];
-      const fillingsOnlyArrDuplicate = [...addedIngredients];
+      const draggedFilling: IIngredient = addedIngredients[draggedIndex];
+      const fillingsOnlyArrDuplicate: Array<IIngredient> = [
+        ...addedIngredients,
+      ];
       fillingsOnlyArrDuplicate.splice(draggedIndex, 1);
       fillingsOnlyArrDuplicate.splice(hoveredIndex, 0, draggedFilling);
       dispatch(sortIngredients(fillingsOnlyArrDuplicate));

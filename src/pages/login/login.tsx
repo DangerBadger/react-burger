@@ -1,27 +1,26 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-useless-return */
 /* eslint-disable react/jsx-curly-brace-presence */
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, FC, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-
 import {
   Input,
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Paths } from '../../utils/constants.ts';
+import { useAppDispatch } from '../../utils/hooks/useRedux';
+import { Paths } from '../../utils/constants';
 
 import { login } from '../../services/reducers/user';
 
 import loginStyles from './login.module.css';
 
-function Login() {
-  const [emailValue, setEmailValue] = useState('');
-  const [passwordValue, setPasswordValue] = useState('');
-  const [isInputChanged, setIsInputChanged] = useState(false);
-  const inputRef = useRef();
-  const dispatch = useDispatch();
+const Login: FC = () => {
+  const [emailValue, setEmailValue] = useState<string>('');
+  const [passwordValue, setPasswordValue] = useState<string>('');
+  const [isInputChanged, setIsInputChanged] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (
@@ -35,7 +34,7 @@ function Login() {
     }
   }, [emailValue, passwordValue]);
 
-  const submitHandler = (evt) => {
+  const submitHandler = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
     if (!emailValue || !passwordValue) {
@@ -97,6 +96,6 @@ function Login() {
       </span>
     </main>
   );
-}
+};
 
 export default Login;

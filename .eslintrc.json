@@ -34,6 +34,7 @@
       "no-shadow": "off",
       "lines-between-class-members": "off",
       "@typescript-eslint/lines-between-class-members": "off",
+      "@typescript-eslint/no-inferrable-types": "off",
       "@typescript-eslint/naming-convention": ["error",
       {
         "format": ["camelCase", "strictCamelCase", "PascalCase", "StrictPascalCase", "snake_case", "UPPER_CASE"],

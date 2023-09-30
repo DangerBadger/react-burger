@@ -14,8 +14,19 @@ export interface IIngredient extends IIngredientId {
   image_mobile: string;
   price: number;
   __v: number;
+  uniqueId?: string;
 }
 
-export interface IAddedIngredient extends IIngredient {
-  uniqueId?: string;
+export type TUserInfo = {
+  name: string;
+  email: string;
+  password?: string;
+};
+
+export interface IOrder {
+  name: string;
+  order: {
+    number: number;
+  };
+  success: boolean;
 }

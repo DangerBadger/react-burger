@@ -1,16 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { IOrder } from '../../utils/types';
 import api from '../../utils/Api';
 
-type TOrder = {
-  name: string;
-  order: {
-    number: number;
-  };
-};
-
 type TOrderState = {
-  orderDetails: TOrder | null;
+  orderDetails: IOrder | null;
   orderRequest: boolean;
   orderFailed: boolean;
 };

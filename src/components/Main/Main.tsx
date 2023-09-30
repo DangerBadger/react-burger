@@ -7,11 +7,7 @@ import { addIngredient } from '../../services/reducers/ingredients';
 
 import BurgerIngredients from '../BurgerIngredients/BurgerIngredients';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
-import {
-  IIngredientId,
-  IIngredient,
-  IAddedIngredient,
-} from '../../utils/types';
+import { IIngredientId, IIngredient } from '../../utils/types';
 
 import mainStyle from './Main.module.css';
 
@@ -25,7 +21,7 @@ const Main: FC<IMain> = ({ openOrderDetails }) => {
   const ingredientsData: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.ingredients
   );
-  const addedIngredients: Array<IAddedIngredient> = useAppSelector(
+  const addedIngredients: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.addedIngredients
   );
 
@@ -33,17 +29,17 @@ const Main: FC<IMain> = ({ openOrderDetails }) => {
     const draggedIngredient: IIngredient | undefined = ingredientsData.find(
       (ingredient) => ingredient._id === ingredientId._id
     );
-    const addedBun: IAddedIngredient | undefined = addedIngredients.find(
+    const addedBun: IIngredient | undefined = addedIngredients.find(
       (ingredient) => ingredient.type === 'bun'
     );
 
     if (draggedIngredient?.type === 'bun' && addedBun) {
       const addedBunIndex: number = addedIngredients.indexOf(addedBun);
-      const addedIngredientsDataDuplicate: Array<IAddedIngredient> =
+      const addedIngredientsDataDuplicate: Array<IIngredient> =
         addedIngredients.slice();
       addedIngredientsDataDuplicate.splice(addedBunIndex, 1, draggedIngredient);
       dispatch(addIngredient(addedIngredientsDataDuplicate));
-    } else {
+    } else if (draggedIngredient) {
       dispatch(addIngredient([draggedIngredient, ...addedIngredients]));
     }
   };

@@ -1,20 +1,20 @@
 /* eslint-disable no-param-reassign */
 import { useRef, FC } from 'react';
-import { useDrag, useDrop } from 'react-dnd';
+import { useDrag, useDrop, DropTargetMonitor, XYCoord } from 'react-dnd';
 import {
   ConstructorElement,
   DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { IAddedIngredient } from '../../utils/types';
+import { IIngredient } from '../../utils/types';
 
 import stylesBurgerConstructorItem from './BurgerConstructorItem.module.css';
 
 interface IBurgerConstructorItem {
-  ingredientItem: IAddedIngredient;
+  ingredientItem: IIngredient;
   index: number;
   moveIngredient: (draggedIndex: number, hoveredIndex: number) => void;
   id: string;
-  onDelete: (item: IAddedIngredient) => void;
+  onDelete: (item: IIngredient) => void;
 }
 
 const BurgerConstructorItem: FC<IBurgerConstructorItem> = ({
@@ -37,21 +37,23 @@ const BurgerConstructorItem: FC<IBurgerConstructorItem> = ({
   const [{ idHandler }, dropRef] = useDrop({
     accept: 'filling',
     collect: (monitor) => ({ idHandler: monitor.getHandlerId() }),
-    hover(item: any, monitor) {
+    hover(item: any, monitor: DropTargetMonitor) {
       if (!ingredientItemRef.current) {
         return;
       }
-      const draggedIndex = item.index;
-      const hoveredIndex = index;
+      const draggedIndex: number = item.index;
+      const hoveredIndex: number = index;
       if (draggedIndex === hoveredIndex) {
         return;
       }
 
-      const boundingHoverRect =
+      const boundingHoverRect: DOMRect =
         ingredientItemRef.current?.getBoundingClientRect();
-      const hoverHalfY = (boundingHoverRect.bottom - boundingHoverRect.top) / 2;
+      const hoverHalfY: number =
+        (boundingHoverRect.bottom - boundingHoverRect.top) / 2;
       const clientOffset = monitor.getClientOffset();
-      const hoverClientOffsetY = clientOffset!.y - boundingHoverRect.top;
+      const hoverClientOffsetY: number =
+        (clientOffset as XYCoord).y - boundingHoverRect.top;
       if (draggedIndex > hoveredIndex && hoverClientOffsetY > hoverHalfY) {
         return;
       }

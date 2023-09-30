@@ -1,28 +1,29 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-useless-return */
 /* eslint-disable react/jsx-curly-brace-presence */
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, FC, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   Input,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Paths } from '../../utils/constants.ts';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks/useRedux';
+import { Paths } from '../../utils/constants';
 
 import { sendEmail } from '../../services/reducers/user';
 
 import forgotPasswordStyles from './forgot-password.module.css';
 
-function ForgotPassword() {
-  const [emailValue, setEmailValue] = useState('');
-  const [isInputChanged, setIsInputChanged] = useState(false);
-  const forgotPasswordSuccess = useSelector(
+const ForgotPassword: FC = () => {
+  const [emailValue, setEmailValue] = useState<string>('');
+  const [isInputChanged, setIsInputChanged] = useState<boolean>(false);
+  const forgotPasswordSuccess: boolean = useAppSelector(
     (store) => store.userData.forgotPasswordSuccess
   );
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     emailValue !== '' ? setIsInputChanged(true) : setIsInputChanged(false);
@@ -30,9 +31,9 @@ function ForgotPassword() {
 
   useEffect(() => {
     forgotPasswordSuccess && navigate(Paths.resetPasswordPage);
-  }, [forgotPasswordSuccess]);
+  }, [forgotPasswordSuccess, navigate]);
 
-  const submitHandler = (evt) => {
+  const submitHandler = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     if (!emailValue) {
       return;
@@ -82,6 +83,6 @@ function ForgotPassword() {
       </span>
     </main>
   );
-}
+};
 
 export default ForgotPassword;

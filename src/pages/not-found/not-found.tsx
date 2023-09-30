@@ -1,14 +1,15 @@
+import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Paths } from '../../utils/constants.ts';
+import { Paths } from '../../utils/constants';
 
 import notFoundStyles from './not-found.module.css';
 
-function NotFound() {
+const NotFound: FC = () => {
   const navigate = useNavigate();
 
-  const goMain = () => {
+  const goMain = (): void => {
     navigate(Paths.mainPage, { replace: true });
   };
 
@@ -43,6 +44,6 @@ function NotFound() {
       </Button>
     </div>
   );
-}
+};
 
 export default NotFound;

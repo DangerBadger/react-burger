@@ -30,7 +30,7 @@ const BurgerIngredients: FC = () => {
   const mainRef = useRef<HTMLHeadingElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const tabClickHandler = (value: string) => {
+  const tabClickHandler = (value: string): void => {
     value === 'bun'
       ? bunRef.current?.scrollIntoView({ behavior: 'smooth' })
       : value === 'sauce'

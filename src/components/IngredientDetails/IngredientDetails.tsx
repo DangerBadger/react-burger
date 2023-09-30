@@ -2,19 +2,21 @@
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppSelector } from '../../utils/hooks/useRedux';
+import { IIngredient } from '../../utils/types';
 
 import stylesIngredientDetails from './IngredientDetails.module.css';
 
 interface IIngredientDetails {
-  title: string;
+  title?: string;
 }
 
 const IngredientDetails: FC<IIngredientDetails> = ({ title }) => {
   const { id } = useParams();
-  const ingredients = useAppSelector(
+  const ingredients: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.ingredients
   );
-  const currentIngredient = ingredients.find(
+
+  const currentIngredient: IIngredient | undefined = ingredients.find(
     (ingredient) => ingredient._id === id
   );
 

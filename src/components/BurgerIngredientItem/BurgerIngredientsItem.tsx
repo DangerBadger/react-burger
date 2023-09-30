@@ -7,7 +7,7 @@ import {
   Counter,
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { IIngredient, IAddedIngredient } from '../../utils/types';
+import { IIngredient } from '../../utils/types';
 import { useAppSelector } from '../../utils/hooks/useRedux';
 import { Paths } from '../../utils/constants';
 
@@ -22,7 +22,7 @@ const BurgerIngredientsItem: FC<IBurgerIngredientsItem> = ({
 }) => {
   const location = useLocation();
 
-  const addedIngredients: Array<IAddedIngredient> = useAppSelector(
+  const addedIngredients: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.addedIngredients
   );
 
@@ -39,7 +39,7 @@ const BurgerIngredientsItem: FC<IBurgerIngredientsItem> = ({
   });
 
   useEffect(() => {
-    const counterArr: Array<IAddedIngredient> = addedIngredients.filter(
+    const counterArr: Array<IIngredient> = addedIngredients.filter(
       (ingredient) => ingredient.name === name
     );
     if (counterArr.find((ingredient) => ingredient.type === 'bun')) {

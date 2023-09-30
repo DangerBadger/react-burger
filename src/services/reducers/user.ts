@@ -3,6 +3,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../utils/Api';
 import { setCookie, deleteCookie } from '../../utils/cookie';
+import { TUserInfo } from '../../utils/types';
 
 type TLoginData = {
   emailValue: string;
@@ -15,6 +16,29 @@ type TRegistrationData = TLoginData & {
 
 type TChangedData = TRegistrationData & {
   accessToken: string;
+};
+
+type TUserState = {
+  forgotPasswordEmailConfirmed: boolean;
+  forgotPasswordRequest: boolean;
+  forgotPasswordSuccess: boolean;
+  forgotPasswordFailed: boolean;
+  resetPasswordConfirmed: boolean;
+  resetPasswordRequest: boolean;
+  resetPasswordFailed: boolean;
+  registrationRequest: boolean;
+  registrationFailed: boolean;
+  loginRequest: boolean;
+  loginFailed: boolean;
+  refreshTokenRequest: boolean;
+  refreshTokenFailed: boolean;
+  logoutRequest: boolean;
+  logoutFailed: boolean;
+  getUserDataRequest: boolean;
+  getUserDataFailed: boolean;
+  changeUserDataRequest: boolean;
+  changeUserDataFailed: boolean;
+  userInfo: TUserInfo | null;
 };
 
 export const registration = createAsyncThunk(
@@ -66,28 +90,6 @@ export const login = createAsyncThunk(
     }
   }
 );
-
-// export const refreshingToken = createAsyncThunk(
-//   'user/refreshToken',
-//   async (token: string, { rejectWithValue }) => {
-//     try {
-//       const response = await api.refreshToken(token);
-
-//       if (!response.success) {
-//         throw new Error('Ошибка обновления токена пользователя');
-//       }
-
-//       const accessToken = response.accessToken.split('Bearer ')[1];
-//       const { refreshToken } = response;
-
-//       setCookie('accessToken', accessToken);
-//       setCookie('refreshToken', refreshToken);
-//       return response;
-//     } catch (err) {
-//       return rejectWithValue(err);
-//     }
-//   }
-// );
 
 export const logout = createAsyncThunk(
   'user/logout',
@@ -186,35 +188,6 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
-type TUserInfo = {
-  name: string;
-  email: string;
-  password?: string;
-};
-
-type TUserState = {
-  forgotPasswordEmailConfirmed: boolean;
-  forgotPasswordRequest: boolean;
-  forgotPasswordSuccess: boolean;
-  forgotPasswordFailed: boolean;
-  resetPasswordConfirmed: boolean;
-  resetPasswordRequest: boolean;
-  resetPasswordFailed: boolean;
-  registrationRequest: boolean;
-  registrationFailed: boolean;
-  loginRequest: boolean;
-  loginFailed: boolean;
-  refreshTokenRequest: boolean;
-  refreshTokenFailed: boolean;
-  logoutRequest: boolean;
-  logoutFailed: boolean;
-  getUserDataRequest: boolean;
-  getUserDataFailed: boolean;
-  changeUserDataRequest: boolean;
-  changeUserDataFailed: boolean;
-  userInfo: TUserInfo | null;
-};
-
 const initialState: TUserState = {
   forgotPasswordEmailConfirmed: false,
   forgotPasswordRequest: false,
@@ -270,18 +243,6 @@ const userSlice = createSlice({
         state.loginFailed = true;
         console.error(action.payload);
       })
-      // .addCase(refreshingToken.pending, (state) => {
-      //   state.refreshTokenRequest = true;
-      //   state.registrationFailed = false;
-      // })
-      // .addCase(refreshingToken.fulfilled, (state, action) => {
-      //   state.refreshTokenRequest = false;
-      // })
-      // .addCase(refreshingToken.rejected, (state, action) => {
-      //   state.refreshTokenRequest = false;
-      //   state.registrationFailed = true;
-      //   console.error(action.payload);
-      // })
       .addCase(logout.pending, (state) => {
         state.logoutRequest = true;
         state.logoutFailed = false;

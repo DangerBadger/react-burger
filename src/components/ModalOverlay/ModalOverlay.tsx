@@ -1,9 +1,14 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import PropTypes from 'prop-types';
+import { FC } from 'react';
 
 import stylesModalOverlay from './ModalOverlay.module.css';
 
-function ModalOverlay({ onClose }) {
+interface IModalOverlay {
+  onClose: () => void;
+}
+
+const ModalOverlay: FC<IModalOverlay> = ({ onClose }) => {
   return (
     <div
       className={stylesModalOverlay.overlay}
@@ -14,10 +19,6 @@ function ModalOverlay({ onClose }) {
       }}
     />
   );
-}
+};
 
 export default ModalOverlay;
-
-ModalOverlay.propTypes = {
-  onClose: PropTypes.func.isRequired,
-};

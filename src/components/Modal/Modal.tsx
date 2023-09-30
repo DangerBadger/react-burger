@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, FC, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -8,11 +7,17 @@ import stylesModal from './Modal.module.css';
 
 import ModalOverlay from '../ModalOverlay/ModalOverlay';
 
-function Modal({ onClose, children, title = '' }) {
-  const modalRoot = document.getElementById('react-modals');
+interface IModal {
+  onClose: () => void;
+  children: ReactNode;
+  title?: string;
+}
+
+const Modal: FC<IModal> = ({ onClose, children, title = '' }) => {
+  const modalRoot = document.getElementById('react-modals') as HTMLElement;
 
   // Закрытие модалки по esc
-  const closeByEsc = (evt) => {
+  const closeByEsc = (evt: KeyboardEvent): void => {
     if (evt.key === 'Escape') {
       onClose();
     }
@@ -39,7 +44,7 @@ function Modal({ onClose, children, title = '' }) {
             className={`${stylesModal.closeButton} ml-9`}
             onClick={onClose}
           >
-            <CloseIcon />
+            <CloseIcon type="primary" />
           </button>
         </div>
         {children}
@@ -48,12 +53,6 @@ function Modal({ onClose, children, title = '' }) {
     </>,
     modalRoot
   );
-}
+};
 
 export default Modal;
-
-Modal.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
-  title: PropTypes.string,
-};

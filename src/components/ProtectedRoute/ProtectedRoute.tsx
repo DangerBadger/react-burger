@@ -1,12 +1,24 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-props-no-spreading */
+import { FC } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useAppSelector } from '../../utils/hooks/useRedux';
+import { TUserInfo } from '../../utils/types';
 import { Paths } from '../../utils/constants';
 
-function ProtectedRoute({ component: Component, onlyUnAuth, ...props }) {
-  const userInfo = useSelector((store) => store.userData.userInfo);
+interface IProtectedRoute {
+  component: FC;
+  onlyUnAuth: boolean;
+}
+
+const ProtectedRoute: FC<IProtectedRoute> = ({
+  component: Component,
+  onlyUnAuth,
+  ...props
+}) => {
+  const userInfo: TUserInfo | null = useAppSelector(
+    (store) => store.userData.userInfo
+  );
   const location = useLocation();
 
   return onlyUnAuth ? (
@@ -28,11 +40,6 @@ function ProtectedRoute({ component: Component, onlyUnAuth, ...props }) {
       replace
     />
   );
-}
+};
 
 export default ProtectedRoute;
-
-ProtectedRoute.propTypes = {
-  component: PropTypes.elementType.isRequired,
-  onlyUnAuth: PropTypes.bool.isRequired,
-};

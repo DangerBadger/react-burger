@@ -1,16 +1,23 @@
 /* eslint-disable no-nested-ternary */
-import { useSelector } from 'react-redux';
-import { CurrentOrderData } from '../../utils/data';
+import { FC } from 'react';
+import { IOrder } from '../../utils/types';
+import { useAppSelector } from '../../utils/hooks/useRedux';
 
 import stylesOrderDetails from './OrderDetails.module.css';
 
 import done from '../../images/done.gif';
 import { PreparationStageTexts } from '../../utils/constants';
 
-function OrderDetails() {
-  const orderDetails = useSelector((store) => store.orderData.orderDetails);
-  const orderError = useSelector((store) => store.orderData.orderFailed);
-  const isOrderLoading = useSelector((store) => store.orderData.orderRequest);
+const OrderDetails: FC = () => {
+  const orderDetails: IOrder | null = useAppSelector(
+    (store) => store.orderData.orderDetails
+  );
+  const orderError: boolean = useAppSelector(
+    (store) => store.orderData.orderFailed
+  );
+  const isOrderLoading: boolean = useAppSelector(
+    (store) => store.orderData.orderRequest
+  );
 
   return (
     <div className={stylesOrderDetails.container}>
@@ -32,9 +39,7 @@ function OrderDetails() {
         <img src={done} alt="Готовится" className="mt-15" />
       )}
       <p className="text text_type_main-default mt-15">
-        {!CurrentOrderData.preparationStage === 'cooking' &&
-        !orderDetails &&
-        orderError
+        {!orderDetails && orderError
           ? PreparationStageTexts.error
           : PreparationStageTexts.cooking}
       </p>
@@ -49,6 +54,6 @@ function OrderDetails() {
       )}
     </div>
   );
-}
+};
 
 export default OrderDetails;

@@ -1,48 +1,53 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/jsx-curly-brace-presence */
-import { useRef, useState, useEffect } from 'react';
-import { NavLink, Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  useRef,
+  useState,
+  useEffect,
+  FC,
+  Dispatch,
+  SetStateAction,
+  RefObject,
+  FormEvent,
+} from 'react';
+import { NavLink } from 'react-router-dom';
 import {
   Input,
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks/useRedux';
 import { Paths } from '../../utils/constants';
+import { TUserInfo } from '../../utils/types';
 
 import { logout, changeUserData } from '../../services/reducers/user';
 import { getCookie } from '../../utils/cookie';
 
 import profileStyles from './profile.module.css';
 
-function Profile() {
-  const userInfo = useSelector((store) => store.userData.userInfo);
-  const [nameValue, setNameValue] = useState('Default user');
-  const [emailValue, setEmailValue] = useState('default@mail.space');
-  const [passwordValue, setPasswordValue] = useState('');
-  const [nameReadOnly, setNameReadOnly] = useState(true);
-  const [loginReadOnly, setLoginReadOnly] = useState(true);
-  const [isDataChanged, setIsDataChanged] = useState(false);
+const Profile: FC = () => {
+  const [nameValue, setNameValue] = useState<string>('Default user');
+  const [emailValue, setEmailValue] = useState<string>('default@mail.space');
+  const [passwordValue, setPasswordValue] = useState<string>('');
+  const [nameReadOnly, setNameReadOnly] = useState<boolean>(true);
+  const [loginReadOnly, setLoginReadOnly] = useState<boolean>(true);
+  const [isDataChanged, setIsDataChanged] = useState<boolean>(false);
 
-  const nameInputRef = useRef();
-  const loginInputRef = useRef();
-  const dispatch = useDispatch();
+  const userInfo: TUserInfo | null = useAppSelector(
+    (store) => store.userData.userInfo
+  );
+
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const loginInputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    nameInputRef.current.focus();
+    nameInputRef.current?.focus();
   }, [nameReadOnly]);
 
   useEffect(() => {
-    loginInputRef.current.focus();
+    loginInputRef.current?.focus();
   }, [loginReadOnly]);
-
-  useEffect(() => {
-    if (userInfo) {
-      setNameValue(userInfo.name);
-      setEmailValue(userInfo.email);
-      setPasswordValue('');
-    }
-  }, []);
 
   useEffect(() => {
     if (userInfo) {
@@ -52,51 +57,66 @@ function Profile() {
     }
   }, [userInfo]);
 
-  const linkActivator = (navStatus) =>
-    navStatus.isActive ? profileStyles.navLinkActive : profileStyles.navLink;
+  useEffect(() => {
+    if (userInfo) {
+      setNameValue(userInfo.name);
+      setEmailValue(userInfo.email);
+      setPasswordValue('');
+    }
+  }, [userInfo]);
 
-  const onIconClickHandler = (ref, stateSetter) => {
-    ref.current.focus();
+  const linkActivator = ({ isActive }: { isActive: boolean }): string =>
+    isActive ? profileStyles.navLinkActive : profileStyles.navLink;
+
+  const onIconClickHandler = (
+    ref: RefObject<HTMLInputElement>,
+    stateSetter: Dispatch<SetStateAction<boolean>>
+  ) => {
+    ref.current?.focus();
     stateSetter(false);
   };
 
-  const onBlurHandler = (stateSetter) => {
+  const onBlurHandler = (stateSetter: Dispatch<SetStateAction<boolean>>) => {
     stateSetter(true);
   };
 
   const logoutHandler = () => {
-    const refreshToken = getCookie('refreshToken');
-    dispatch(logout(refreshToken));
+    const refreshToken: string | undefined = getCookie('refreshToken');
+    if (refreshToken) dispatch(logout(refreshToken));
   };
 
-  const changeHandler = (stateSetter, propertyName) => (evt) => {
-    const { value } = evt.target;
+  const changeHandler =
+    (stateSetter: Dispatch<SetStateAction<string>>, propertyName: string) =>
+    (evt: FormEvent<HTMLInputElement> & { target: HTMLInputElement }) => {
+      const { value } = evt.target;
 
-    stateSetter(value);
+      stateSetter(value);
 
-    if (propertyName === passwordValue) {
-      value === passwordValue
-        ? setIsDataChanged(false)
-        : setIsDataChanged(true);
-    } else {
-      value === userInfo[propertyName]
-        ? setIsDataChanged(false)
-        : setIsDataChanged(true);
-    }
-  };
+      if (propertyName === passwordValue) {
+        value === passwordValue
+          ? setIsDataChanged(false)
+          : setIsDataChanged(true);
+      } else if (userInfo !== null) {
+        value === userInfo[propertyName as keyof TUserInfo]
+          ? setIsDataChanged(false)
+          : setIsDataChanged(true);
+      }
+    };
 
-  const cancelHandler = (evt) => {
+  const cancelHandler = (evt: FormEvent<HTMLButtonElement>) => {
     evt.preventDefault();
 
-    setNameValue(userInfo.name);
-    setEmailValue(userInfo.email);
+    if (userInfo !== null) {
+      setNameValue(userInfo.name);
+      setEmailValue(userInfo.email);
+    }
     setPasswordValue('');
     setIsDataChanged(false);
   };
 
-  const submitHandler = (evt) => {
+  const submitHandler = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    const accessToken = `Bearer ${getCookie('accessToken')}`;
+    const accessToken: string = `Bearer ${getCookie('accessToken')}`;
 
     dispatch(
       changeUserData({ nameValue, emailValue, passwordValue, accessToken })
@@ -205,6 +225,6 @@ function Profile() {
       </form>
     </main>
   );
-}
+};
 
 export default Profile;

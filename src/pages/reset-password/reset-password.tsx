@@ -1,31 +1,36 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-useless-return */
 /* eslint-disable react/jsx-curly-brace-presence */
-import { useRef, useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useRef, useState, useEffect, FC, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Input,
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Paths } from '../../utils/constants.ts';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks/useRedux';
+import { Paths } from '../../utils/constants';
+import { TUserInfo } from '../../utils/types';
 
 import { resetPassword } from '../../services/reducers/user';
 
 import resetPasswordStyles from './reset-password.module.css';
 
-function ResetPassword() {
-  const [passwordValue, setPasswordValue] = useState('');
-  const [codeValue, setCodeValue] = useState('');
-  const [isInputChanged, setIsInputChanged] = useState(false);
-  const userInfo = useSelector((store) => store.userData.userInfo);
-  const forgotPasswordSuccess = useSelector(
+const ResetPassword: FC = () => {
+  const [passwordValue, setPasswordValue] = useState<string>('');
+  const [codeValue, setCodeValue] = useState<string>('');
+  const [isInputChanged, setIsInputChanged] = useState<boolean>(false);
+
+  const userInfo: TUserInfo | null = useAppSelector(
+    (store) => store.userData.userInfo
+  );
+  const forgotPasswordSuccess: boolean = useAppSelector(
     (store) => store.userData.forgotPasswordSuccess
   );
-  const inputRef = useRef();
+
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (codeValue !== '' && passwordValue !== '' && passwordValue.length >= 6) {
@@ -41,7 +46,7 @@ function ResetPassword() {
     }
   }, [userInfo, navigate, forgotPasswordSuccess]);
 
-  const submitHundler = (evt) => {
+  const submitHundler = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
     if (!passwordValue || !codeValue) {
@@ -100,6 +105,6 @@ function ResetPassword() {
       </span>
     </main>
   );
-}
+};
 
 export default ResetPassword;

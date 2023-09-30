@@ -29,10 +29,11 @@ import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 const App: FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const background = location.state && location.state.background;
   const dispatch = useAppDispatch();
-  const accessToken = `Bearer ${getCookie('accessToken')}`;
+  const navigate = useNavigate();
+
+  const background = location.state && location.state.background;
+  const accessToken: string = `Bearer ${getCookie('accessToken')}`;
   const [isOrderDetailsOpened, openOrderDetails, closeOrderDetails] =
     useModal();
 

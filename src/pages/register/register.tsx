@@ -1,28 +1,27 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-useless-return */
 /* eslint-disable react/jsx-curly-brace-presence */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, FC, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-
 import {
   Input,
   PasswordInput,
   Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Paths } from '../../utils/constants.ts';
+import { useAppDispatch } from '../../utils/hooks/useRedux';
+import { Paths } from '../../utils/constants';
 
 import { registration } from '../../services/reducers/user';
 
 import registerStyles from './register.module.css';
 
-function Register() {
-  const [nameValue, setNameValue] = useState('');
-  const [emailValue, setEmailValue] = useState('');
-  const [passwordValue, setPasswordValue] = useState('');
-  const [isInputChanged, setIsInputChanged] = useState(false);
-  const inputRef = useRef();
-  const dispatch = useDispatch();
+const Register: FC = () => {
+  const [nameValue, setNameValue] = useState<string>('');
+  const [emailValue, setEmailValue] = useState<string>('');
+  const [passwordValue, setPasswordValue] = useState<string>('');
+  const [isInputChanged, setIsInputChanged] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (
@@ -37,7 +36,7 @@ function Register() {
     }
   }, [emailValue, passwordValue, nameValue]);
 
-  const submitHandler = (evt) => {
+  const submitHandler = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
     if (!nameValue || !emailValue || !passwordValue) {
@@ -104,6 +103,6 @@ function Register() {
       </span>
     </main>
   );
-}
+};
 
 export default Register;
