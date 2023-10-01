@@ -5,9 +5,20 @@ import api from '../../utils/Api';
 import { setCookie, deleteCookie } from '../../utils/cookie';
 import { TUserInfo } from '../../utils/types';
 
+type TUserData = {
+  accessToken: string;
+  refreshToken: string;
+  success: boolean;
+  user: TUserInfo;
+};
+
 type TLoginData = {
   emailValue: string;
   passwordValue: string;
+};
+
+type TResetData = Omit<TLoginData, 'emailValue'> & {
+  codeValue: string;
 };
 
 type TRegistrationData = TLoginData & {
@@ -41,152 +52,172 @@ type TUserState = {
   userInfo: TUserInfo | null;
 };
 
-export const registration = createAsyncThunk(
-  'user/registration',
-  async (registrationData: TRegistrationData, { rejectWithValue }) => {
-    try {
-      const response = await api.registration(
-        registrationData.emailValue,
-        registrationData.passwordValue,
-        registrationData.nameValue
-      );
+export const registration = createAsyncThunk<
+  TUserData,
+  TRegistrationData,
+  { rejectValue: string }
+>('user/registration', async (registrationData, { rejectWithValue }) => {
+  try {
+    const response = await api.registration(
+      registrationData.emailValue,
+      registrationData.passwordValue,
+      registrationData.nameValue
+    );
 
-      if (!response.success) {
-        throw new Error('Ошибка регистрации пользователя');
-      }
+    if (!response.success) {
+      throw new Error('Ошибка регистрации пользователя');
+    }
 
-      const accessToken = response.accessToken.split('Bearer ')[1];
-      const { refreshToken } = response;
+    const accessToken = response.accessToken.split('Bearer ')[1];
+    const { refreshToken } = response;
 
-      setCookie('accessToken', accessToken, {});
-      setCookie('refreshToken', refreshToken, {});
-      return response;
-    } catch (err) {
-      return rejectWithValue(err);
+    setCookie('accessToken', accessToken, {});
+    setCookie('refreshToken', refreshToken, {});
+
+    return response;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
     }
   }
-);
+});
 
-export const login = createAsyncThunk(
-  'user/login',
-  async (loginData: TLoginData, { rejectWithValue }) => {
-    try {
-      const response = await api.login(
-        loginData.emailValue,
-        loginData.passwordValue
-      );
+export const login = createAsyncThunk<
+  TUserData,
+  TLoginData,
+  { rejectValue: string }
+>('user/login', async (loginData, { rejectWithValue }) => {
+  try {
+    const response = await api.login(
+      loginData.emailValue,
+      loginData.passwordValue
+    );
 
-      if (!response.success) {
-        throw new Error('Ошибка авторизации пользователя');
-      }
-      const accessToken = response.accessToken.split('Bearer ')[1];
-      const { refreshToken } = response;
+    if (!response.success) {
+      throw new Error('Ошибка авторизации пользователя');
+    }
+    const accessToken = response.accessToken.split('Bearer ')[1];
+    const { refreshToken } = response;
 
-      setCookie('accessToken', accessToken, {});
-      setCookie('refreshToken', refreshToken, {});
-      return response;
-    } catch (err) {
-      return rejectWithValue(err);
+    setCookie('accessToken', accessToken, {});
+    setCookie('refreshToken', refreshToken, {});
+
+    return response;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
     }
   }
-);
+});
 
-export const logout = createAsyncThunk(
-  'user/logout',
-  async (token: string, { rejectWithValue }) => {
-    try {
-      const response = await api.logout(token);
+export const logout = createAsyncThunk<
+  unknown,
+  string,
+  { rejectValue: string }
+>('user/logout', async (token: string, { rejectWithValue }) => {
+  try {
+    const response = await api.logout(token);
 
-      if (!response.success) {
-        throw new Error('Ошибка выхода из учётной записи');
-      }
+    if (!response.success) {
+      throw new Error('Ошибка выхода из учётной записи');
+    }
 
-      deleteCookie('accessToken');
-      deleteCookie('refreshToken');
-    } catch (err) {
-      return rejectWithValue(err);
+    deleteCookie('accessToken');
+    deleteCookie('refreshToken');
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
     }
   }
-);
+});
 
-export const getUserData = createAsyncThunk(
-  'user/getUserData',
-  async (token: string, { rejectWithValue }) => {
-    try {
-      const response = await api.getUserData(token);
+export const getUserData = createAsyncThunk<
+  TUserInfo,
+  string,
+  { rejectValue: string }
+>('user/getUserData', async (token, { rejectWithValue }) => {
+  try {
+    const response = await api.getUserData(token);
 
-      if (!response.success) {
-        throw new Error('Ошибка получения данных пользователя');
-      }
+    if (!response.success) {
+      throw new Error('Ошибка получения данных пользователя');
+    }
 
-      return response.user;
-    } catch (err) {
-      return rejectWithValue(err);
+    return response.user;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
     }
   }
-);
+});
 
-export const changeUserData = createAsyncThunk(
-  'user/changeUserData',
-  async (changedData: TChangedData, { rejectWithValue }) => {
-    try {
-      const response = await api.changeUserData(
-        changedData.nameValue,
-        changedData.emailValue,
-        changedData.passwordValue,
-        changedData.accessToken
-      );
+export const changeUserData = createAsyncThunk<
+  TUserInfo,
+  TChangedData,
+  { rejectValue: string }
+>('user/changeUserData', async (changedData, { rejectWithValue }) => {
+  try {
+    const response = await api.changeUserData(
+      changedData.nameValue,
+      changedData.emailValue,
+      changedData.passwordValue,
+      changedData.accessToken
+    );
 
-      if (!response.success) {
-        throw new Error('Ошибка получения данных пользователя');
-      }
+    if (!response.success) {
+      throw new Error('Ошибка получения данных пользователя');
+    }
 
-      return response.user;
-    } catch (err) {
-      return rejectWithValue(err);
+    return response.user;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
     }
   }
-);
+});
 
-export const sendEmail = createAsyncThunk(
-  'user/sendEmail',
-  async (email: string, { rejectWithValue }) => {
-    try {
-      const response = await api.sendEmail(email);
+export const sendEmail = createAsyncThunk<
+  boolean,
+  string,
+  { rejectValue: string }
+>('user/sendEmail', async (email, { rejectWithValue }) => {
+  try {
+    const response = await api.sendEmail(email);
 
-      if (!response.success) {
-        throw new Error('Ошибка отправки почтового адреса пользователя');
-      }
+    if (!response.success) {
+      throw new Error('Ошибка отправки почтового адреса пользователя');
+    }
 
-      return response.success;
-    } catch (err) {
-      return rejectWithValue(err);
+    return response.success;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
     }
   }
-);
+});
 
-export const resetPassword = createAsyncThunk(
-  'user/resetPassword',
-  async (
-    resetData: { passwordValue: string; codeValue: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const response = await api.resetPassword(
-        resetData.passwordValue,
-        resetData.codeValue
-      );
+export const resetPassword = createAsyncThunk<
+  boolean,
+  TResetData,
+  { rejectValue: string }
+>('user/resetPassword', async (resetData, { rejectWithValue }) => {
+  try {
+    const response = await api.resetPassword(
+      resetData.passwordValue,
+      resetData.codeValue
+    );
 
-      if (!response.success) {
-        throw new Error('Ошибка запроса перезаписи пароля пользователя');
-      }
+    if (!response.success) {
+      throw new Error('Ошибка запроса перезаписи пароля пользователя');
+    }
 
-      return response.success;
-    } catch (err) {
-      return rejectWithValue(err);
+    return response.success;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
     }
   }
-);
+});
 
 const initialState: TUserState = {
   forgotPasswordEmailConfirmed: false,

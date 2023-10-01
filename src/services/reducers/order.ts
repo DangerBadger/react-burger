@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { IOrder } from '../../utils/types';
@@ -9,22 +10,24 @@ type TOrderState = {
   orderFailed: boolean;
 };
 
-export const getOrderData = createAsyncThunk(
-  'order/get',
-  async (orderIdArray: Array<string>, { rejectWithValue }) => {
-    try {
-      const response = await api.sendOrder(orderIdArray);
+export const getOrderData = createAsyncThunk<
+  IOrder,
+  Array<string>,
+  { rejectValue: string }
+>('order/get', async (orderIdArray, { rejectWithValue }) => {
+  try {
+    const response = await api.sendOrder(orderIdArray);
 
-      if (!response.success) {
-        throw new Error('Ошибка получения данных заказа');
-      }
-
-      return response;
-    } catch (err) {
-      return rejectWithValue(err);
+    if (!response.success) {
+      throw new Error('Ошибка получения данных заказа');
+    }
+    return response;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
     }
   }
-);
+});
 
 const initialState: TOrderState = {
   orderDetails: null,

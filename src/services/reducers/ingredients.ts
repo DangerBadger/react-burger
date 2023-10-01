@@ -12,24 +12,24 @@ type TInitialState = {
   ingredientsFailed: boolean;
 };
 
-export const getIngredients = createAsyncThunk(
-  'ingredients/get',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await api.getIngredients();
+export const getIngredients = createAsyncThunk<
+  IIngredient[],
+  undefined,
+  { rejectValue: string }
+>('ingredients/get', async (_, { rejectWithValue }) => {
+  try {
+    const response = await api.getIngredients();
 
-      if (!response.success) {
-        throw new Error('Ошибка загрузки ингредиентов');
-      }
-
-      return response.data;
-    } catch (err) {
-      if (err instanceof Error) {
-        return rejectWithValue(err.message);
-      }
+    if (!response.success) {
+      throw new Error('Ошибка загрузки ингредиентов');
+    }
+    return response.data;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
     }
   }
-);
+});
 
 const initialState: TInitialState = {
   ingredients: [],
