@@ -24,6 +24,8 @@ import Login from '../../pages/login/login';
 import ForgotPassword from '../../pages/forgot-password/forgot-password';
 import ResetPassword from '../../pages/reset-password/reset-password';
 import Profile from '../../pages/profile/profile';
+import Feed from '../../pages/feed/feed';
+import FeedItemDetails from '../FeedItemDetails/FeedItemDetails';
 import NotFound from '../../pages/not-found/not-found';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
@@ -45,7 +47,7 @@ const App: FC = () => {
     }
   }, []);
 
-  const closeIngredientsModal = () => {
+  const closeModal = () => {
     navigate(-1);
   };
 
@@ -63,6 +65,7 @@ const App: FC = () => {
             path={Paths.mainPage}
             element={<Main openOrderDetails={openOrderDetails} />}
           />
+          <Route path={Paths.feed} element={<Feed />} />
           <Route
             path={Paths.registerPage}
             element={<ProtectedRoute component={Register} onlyUnAuth />}
@@ -88,6 +91,10 @@ const App: FC = () => {
             path={Paths.ingredientsIdPage}
             element={<IngredientDetails title="Детали ингредиента" />}
           />
+          <Route
+            path={Paths.feedDetails}
+            element={<FeedItemDetails marginTop />}
+          />
           <Route path={Paths.notFoundPage} element={<NotFound />} />
         </Routes>
       </div>
@@ -100,9 +107,17 @@ const App: FC = () => {
       {background && (
         <Routes>
           <Route
+            path={Paths.feedDetails}
+            element={
+              <Modal onClose={closeModal}>
+                <FeedItemDetails />
+              </Modal>
+            }
+          />
+          <Route
             path={Paths.ingredientsIdPage}
             element={
-              <Modal onClose={closeIngredientsModal} title="Детали ингредиента">
+              <Modal onClose={closeModal} title="Детали ингредиента">
                 <IngredientDetails />
               </Modal>
             }

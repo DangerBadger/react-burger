@@ -19,6 +19,8 @@ export enum PreparationStageTexts {
 
 export enum Paths {
   mainPage = '/',
+  feed = '/feed/',
+  feedDetails = '/feed/:id',
   registerPage = '/register',
   loginPage = '/login',
   profilePage = '/profile',
