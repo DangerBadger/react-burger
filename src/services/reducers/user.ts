@@ -1,9 +1,10 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import api from '../../utils/Api';
 import { setCookie, deleteCookie } from '../../utils/cookie';
 import { TUserInfo } from '../../utils/types';
+import { isError } from '../../utils/utils';
 
 type TUserData = {
   accessToken: string;
@@ -50,6 +51,7 @@ type TUserState = {
   changeUserDataRequest: boolean;
   changeUserDataFailed: boolean;
   userInfo: TUserInfo | null;
+  error: string | null;
 };
 
 export const registration = createAsyncThunk<
@@ -57,29 +59,23 @@ export const registration = createAsyncThunk<
   TRegistrationData,
   { rejectValue: string }
 >('user/registration', async (registrationData, { rejectWithValue }) => {
-  try {
-    const response = await api.registration(
-      registrationData.emailValue,
-      registrationData.passwordValue,
-      registrationData.nameValue
-    );
+  const response = await api.registration(
+    registrationData.emailValue,
+    registrationData.passwordValue,
+    registrationData.nameValue
+  );
 
-    if (!response.success) {
-      throw new Error('Ошибка регистрации пользователя');
-    }
-
-    const accessToken = response.accessToken.split('Bearer ')[1];
-    const { refreshToken } = response;
-
-    setCookie('accessToken', accessToken, {});
-    setCookie('refreshToken', refreshToken, {});
-
-    return response;
-  } catch (err) {
-    if (err instanceof Error) {
-      return rejectWithValue(err.message);
-    }
+  if (!response.success) {
+    return rejectWithValue(response.message);
   }
+
+  const accessToken = response.accessToken.split('Bearer ')[1];
+  const { refreshToken } = response;
+
+  setCookie('accessToken', accessToken, {});
+  setCookie('refreshToken', refreshToken, {});
+
+  return response;
 });
 
 export const login = createAsyncThunk<
@@ -87,27 +83,21 @@ export const login = createAsyncThunk<
   TLoginData,
   { rejectValue: string }
 >('user/login', async (loginData, { rejectWithValue }) => {
-  try {
-    const response = await api.login(
-      loginData.emailValue,
-      loginData.passwordValue
-    );
+  const response = await api.login(
+    loginData.emailValue,
+    loginData.passwordValue
+  );
 
-    if (!response.success) {
-      throw new Error('Ошибка авторизации пользователя');
-    }
-    const accessToken = response.accessToken.split('Bearer ')[1];
-    const { refreshToken } = response;
-
-    setCookie('accessToken', accessToken, {});
-    setCookie('refreshToken', refreshToken, {});
-
-    return response;
-  } catch (err) {
-    if (err instanceof Error) {
-      return rejectWithValue(err.message);
-    }
+  if (!response.success) {
+    return rejectWithValue(response.message);
   }
+  const accessToken = response.accessToken.split('Bearer ')[1];
+  const { refreshToken } = response;
+
+  setCookie('accessToken', accessToken, {});
+  setCookie('refreshToken', refreshToken, {});
+
+  return response;
 });
 
 export const logout = createAsyncThunk<
@@ -115,20 +105,14 @@ export const logout = createAsyncThunk<
   string,
   { rejectValue: string }
 >('user/logout', async (token: string, { rejectWithValue }) => {
-  try {
-    const response = await api.logout(token);
+  const response = await api.logout(token);
 
-    if (!response.success) {
-      throw new Error('Ошибка выхода из учётной записи');
-    }
-
-    deleteCookie('accessToken');
-    deleteCookie('refreshToken');
-  } catch (err) {
-    if (err instanceof Error) {
-      return rejectWithValue(err.message);
-    }
+  if (!response.success) {
+    return rejectWithValue(response.message);
   }
+
+  deleteCookie('accessToken');
+  deleteCookie('refreshToken');
 });
 
 export const getUserData = createAsyncThunk<
@@ -136,19 +120,13 @@ export const getUserData = createAsyncThunk<
   string,
   { rejectValue: string }
 >('user/getUserData', async (token, { rejectWithValue }) => {
-  try {
-    const response = await api.getUserData(token);
+  const response = await api.getUserData(token);
 
-    if (!response.success) {
-      throw new Error('Ошибка получения данных пользователя');
-    }
-
-    return response.user;
-  } catch (err) {
-    if (err instanceof Error) {
-      return rejectWithValue(err.message);
-    }
+  if (!response.success) {
+    return rejectWithValue(response.message);
   }
+
+  return response.user;
 });
 
 export const changeUserData = createAsyncThunk<
@@ -156,24 +134,18 @@ export const changeUserData = createAsyncThunk<
   TChangedData,
   { rejectValue: string }
 >('user/changeUserData', async (changedData, { rejectWithValue }) => {
-  try {
-    const response = await api.changeUserData(
-      changedData.nameValue,
-      changedData.emailValue,
-      changedData.passwordValue,
-      changedData.accessToken
-    );
+  const response = await api.changeUserData(
+    changedData.nameValue,
+    changedData.emailValue,
+    changedData.passwordValue,
+    changedData.accessToken
+  );
 
-    if (!response.success) {
-      throw new Error('Ошибка получения данных пользователя');
-    }
-
-    return response.user;
-  } catch (err) {
-    if (err instanceof Error) {
-      return rejectWithValue(err.message);
-    }
+  if (!response.success) {
+    return rejectWithValue(response.message);
   }
+
+  return response.user;
 });
 
 export const sendEmail = createAsyncThunk<
@@ -181,19 +153,13 @@ export const sendEmail = createAsyncThunk<
   string,
   { rejectValue: string }
 >('user/sendEmail', async (email, { rejectWithValue }) => {
-  try {
-    const response = await api.sendEmail(email);
+  const response = await api.sendEmail(email);
 
-    if (!response.success) {
-      throw new Error('Ошибка отправки почтового адреса пользователя');
-    }
-
-    return response.success;
-  } catch (err) {
-    if (err instanceof Error) {
-      return rejectWithValue(err.message);
-    }
+  if (!response.success) {
+    return rejectWithValue(response.message);
   }
+
+  return response.success;
 });
 
 export const resetPassword = createAsyncThunk<
@@ -201,22 +167,16 @@ export const resetPassword = createAsyncThunk<
   TResetData,
   { rejectValue: string }
 >('user/resetPassword', async (resetData, { rejectWithValue }) => {
-  try {
-    const response = await api.resetPassword(
-      resetData.passwordValue,
-      resetData.codeValue
-    );
+  const response = await api.resetPassword(
+    resetData.passwordValue,
+    resetData.codeValue
+  );
 
-    if (!response.success) {
-      throw new Error('Ошибка запроса перезаписи пароля пользователя');
-    }
-
-    return response.success;
-  } catch (err) {
-    if (err instanceof Error) {
-      return rejectWithValue(err.message);
-    }
+  if (!response.success) {
+    return rejectWithValue(response.message);
   }
+
+  return response.success;
 });
 
 const initialState: TUserState = {
@@ -240,6 +200,7 @@ const initialState: TUserState = {
   changeUserDataRequest: false,
   changeUserDataFailed: false,
   userInfo: null,
+  error: null,
 };
 
 const userSlice = createSlice({
@@ -250,72 +211,53 @@ const userSlice = createSlice({
     builder
       .addCase(registration.pending, (state) => {
         state.registrationRequest = true;
+        state.error = null;
         state.registrationFailed = false;
       })
       .addCase(registration.fulfilled, (state, action) => {
         state.registrationRequest = false;
         state.userInfo = action.payload.user;
       })
-      .addCase(registration.rejected, (state, action) => {
-        state.registrationRequest = false;
-        state.registrationFailed = true;
-        console.error(action.payload);
-      })
       .addCase(login.pending, (state) => {
         state.loginRequest = true;
+        state.error = null;
         state.loginFailed = false;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loginRequest = false;
         state.userInfo = action.payload.user;
       })
-      .addCase(login.rejected, (state, action) => {
-        state.loginRequest = false;
-        state.loginFailed = true;
-        console.error(action.payload);
-      })
       .addCase(logout.pending, (state) => {
         state.logoutRequest = true;
+        state.error = null;
         state.logoutFailed = false;
       })
       .addCase(logout.fulfilled, (state) => {
         state.loginRequest = false;
         state.userInfo = null;
       })
-      .addCase(logout.rejected, (state, action) => {
-        state.logoutRequest = false;
-        state.logoutFailed = true;
-        console.error(action.payload);
-      })
       .addCase(getUserData.pending, (state) => {
         state.getUserDataRequest = true;
+        state.error = null;
         state.getUserDataFailed = false;
       })
       .addCase(getUserData.fulfilled, (state, action) => {
         state.getUserDataRequest = false;
         state.userInfo = action.payload;
       })
-      .addCase(getUserData.rejected, (state, action) => {
-        state.getUserDataRequest = false;
-        state.getUserDataFailed = true;
-        console.error(action.payload);
-      })
       .addCase(changeUserData.pending, (state) => {
         state.changeUserDataRequest = true;
+        state.error = null;
         state.changeUserDataFailed = false;
       })
       .addCase(changeUserData.fulfilled, (state, action) => {
         state.changeUserDataRequest = false;
         state.userInfo = action.payload;
       })
-      .addCase(changeUserData.rejected, (state, action) => {
-        state.changeUserDataRequest = false;
-        state.changeUserDataFailed = true;
-        console.error(action.payload);
-      })
       .addCase(sendEmail.pending, (state) => {
         state.forgotPasswordRequest = true;
         state.forgotPasswordSuccess = false;
+        state.error = null;
         state.forgotPasswordFailed = false;
       })
       .addCase(sendEmail.fulfilled, (state, action) => {
@@ -323,22 +265,24 @@ const userSlice = createSlice({
         state.forgotPasswordSuccess = true;
         state.forgotPasswordEmailConfirmed = action.payload;
       })
-      .addCase(sendEmail.rejected, (state, action) => {
-        state.forgotPasswordRequest = false;
-        state.forgotPasswordFailed = true;
-        console.error(action.payload);
-      })
       .addCase(resetPassword.pending, (state) => {
         state.resetPasswordRequest = true;
+        state.error = null;
         state.resetPasswordFailed = false;
       })
       .addCase(resetPassword.fulfilled, (state, action) => {
         state.resetPasswordRequest = false;
         state.resetPasswordConfirmed = action.payload;
       })
-      .addCase(resetPassword.rejected, (state, action) => {
+      .addMatcher(isError, (state, action: PayloadAction<string>) => {
+        state.error = action.payload;
+        state.registrationRequest = false;
+        state.loginRequest = false;
+        state.logoutRequest = false;
+        state.getUserDataRequest = false;
+        state.changeUserDataRequest = false;
+        state.forgotPasswordRequest = false;
         state.resetPasswordRequest = false;
-        state.resetPasswordFailed = true;
         console.error(action.payload);
       });
   },

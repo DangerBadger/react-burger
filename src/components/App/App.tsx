@@ -84,8 +84,14 @@ const App: FC = () => {
           />
           {/* Защищённый от неавторизованных пользователей рут */}
           <Route
-            path={Paths.profilePage}
+            path={`${Paths.profilePage}/*`}
             element={<ProtectedRoute component={Profile} onlyUnAuth={false} />}
+          />
+          <Route
+            path={Paths.orderIdItem}
+            element={
+              <ProtectedRoute component={FeedItemDetails} onlyUnAuth={false} />
+            }
           />
           <Route
             path={Paths.ingredientsIdPage}
@@ -119,6 +125,17 @@ const App: FC = () => {
             element={
               <Modal onClose={closeModal} title="Детали ингредиента">
                 <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path={Paths.orderIdItem}
+            element={
+              <Modal onClose={closeModal}>
+                <ProtectedRoute
+                  component={FeedItemDetails}
+                  onlyUnAuth={false}
+                />
               </Modal>
             }
           />

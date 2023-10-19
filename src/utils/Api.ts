@@ -27,8 +27,14 @@ class Api implements IApi<THeaders> {
     this._headers = headers;
   }
 
+  // static _checkResponse(res: Response) {
+  //   return res.ok
+  //     ? res.json()
+  //     : res.json().then((err) => console.log(Promise.reject(err)));
+  // }
+
   static _checkResponse(res: Response) {
-    return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+    return res.ok ? res.json() : res.json().then((err) => err);
   }
 
   _request(endpoint: string, options: RequestInit) {
@@ -56,7 +62,6 @@ class Api implements IApi<THeaders> {
 
           setCookie('accessToken', accessToken.split('Bearer ')[1], {});
           setCookie('refreshToken', refreshToken, {});
-          // options.headers.authorization = accessToken;
           const headers = new Headers(options.headers);
           headers.append('Authorization', accessToken);
           options.headers = headers;

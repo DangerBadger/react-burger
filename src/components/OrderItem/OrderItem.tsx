@@ -27,12 +27,21 @@ const OrderItem: FC = () => {
 
   const today = new Date();
 
+  const feedOrOrders = (orders: string, feed: string): string =>
+    location.pathname.startsWith(Paths.feed) ? feed : orders;
+
   return (
     <li>
       <Link
-        to={`${Paths.feed}${id}`}
+        to={feedOrOrders(
+          `${Paths.profilePage}/${Paths.orders}${id}`,
+          `${Paths.feed}${id}`
+        )}
         state={{ background: location }}
-        className={orderItemStyles.link}
+        className={feedOrOrders(
+          `${orderItemStyles.linkOrder} text text_type_main-medium mb-2`,
+          `${orderItemStyles.link} text text_type_main-medium mb-6`
+        )}
       >
         <div className={`${orderItemStyles.orderHeaderContainer} mb-6`}>
           <p className="text text_type_digits-default">#034533</p>
@@ -51,10 +60,16 @@ const OrderItem: FC = () => {
           />
         </div>
         <h2
-          className={`${orderItemStyles.orderName} text text_type_main-medium mb-6`}
+          className={feedOrOrders(
+            `${orderItemStyles.orderName} text text_type_main-medium mb-2`,
+            `${orderItemStyles.orderName} text text_type_main-medium mb-6`
+          )}
         >
           Black Hole Singularity острый бургер
         </h2>
+        {!location.pathname.startsWith(Paths.feed) && (
+          <p className="text text_type_main-small mb-6">Создан</p>
+        )}
         <div className={orderItemStyles.footerContainer}>
           <ul className={orderItemStyles.iconsList}>
             {exampleIngredientsData.map((ingredient, index) => {
