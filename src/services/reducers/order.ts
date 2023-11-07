@@ -10,6 +10,11 @@ type TOrderState = {
   orderRequest: boolean;
   orderFailed: boolean;
   error: string | null;
+  wsOpen: boolean;
+  wsUrl: string;
+  wsConnected: boolean;
+  wsError: string | null;
+  wsCloseCode: string;
 };
 
 export const getOrderData = createAsyncThunk<
@@ -30,6 +35,11 @@ const initialState: TOrderState = {
   orderRequest: false,
   orderFailed: false,
   error: null,
+  wsOpen: false,
+  wsUrl: '',
+  wsConnected: true,
+  wsError: null,
+  wsCloseCode: '',
 };
 
 const orderSlice = createSlice({
@@ -38,6 +48,13 @@ const orderSlice = createSlice({
   reducers: {
     clearOrderData: (state) => {
       state.orderDetails = null;
+    },
+    wsConnectionSuccess: (state, action: PayloadAction<boolean>) => {
+      state.wsOpen = action.payload;
+      state.wsError = null;
+    },
+    wsConnectionClosed: (state, action: PayloadAction<boolean>) => {
+      state.wsOpen = false;
     },
   },
   extraReducers: (builder) => {
