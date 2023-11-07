@@ -30,3 +30,19 @@ export interface IOrder {
   };
   success: boolean;
 }
+
+export interface IFeedOrder {
+  ingredients: Array<string>;
+  id: string;
+  status: string;
+  number: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IFeedOrders {
+  success: boolean;
+  orders: Array<IFeedOrder>;
+  total: number;
+  totalToday: number;
+}

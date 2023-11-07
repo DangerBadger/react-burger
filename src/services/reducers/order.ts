@@ -6,6 +6,7 @@ import api from '../../utils/Api';
 import { isError } from '../../utils/utils';
 
 type TOrderState = {
+  orders: null;
   orderDetails: IOrder | null;
   orderRequest: boolean;
   orderFailed: boolean;
@@ -31,6 +32,7 @@ export const getOrderData = createAsyncThunk<
 });
 
 const initialState: TOrderState = {
+  orders: null,
   orderDetails: null,
   orderRequest: false,
   orderFailed: false,
@@ -55,6 +57,8 @@ const orderSlice = createSlice({
     },
     wsConnectionClosed: (state, action: PayloadAction<boolean>) => {
       state.wsOpen = false;
+      state.wsUrl = '';
+      state.wsError = null;
     },
   },
   extraReducers: (builder) => {
