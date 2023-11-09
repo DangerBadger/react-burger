@@ -1,9 +1,35 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable consistent-return */
 /* eslint-disable arrow-body-style */
-import { FC } from 'react';
+import { FC, useMemo, useCallback } from 'react';
+import { IFeedOrders } from '../../utils/types';
 
 import ordersSummaryStyles from './OrdersSummary.module.css';
 
-const OrdersSummary: FC = () => {
+interface IOrdersSummary {
+  orders: IFeedOrders | null;
+}
+
+const OrdersSummary: FC<IOrdersSummary> = ({ orders }) => {
+  const total = orders?.total;
+  const totalToday = orders?.totalToday;
+
+  const compliteOrders = useMemo(() => {
+    return orders?.orders
+      ?.filter((order) => {
+        return order.status === 'done';
+      })
+      .map((order) => order.number);
+  }, [orders?.orders]);
+
+  const incompliteOrders = useCallback(() => {
+    return orders?.orders
+      ?.filter((order) => {
+        return order.status !== 'done';
+      })
+      .map((order) => order.number);
+  }, [orders?.orders]);
+
   return (
     <section className={`${ordersSummaryStyles.numdersSection} mt-25`}>
       <div className={ordersSummaryStyles.numbersListsContainer}>
@@ -12,12 +38,9 @@ const OrdersSummary: FC = () => {
           <ul
             className={`${ordersSummaryStyles.numbersListReady} text text_type_digits-default`}
           >
-            <li>034532</li>
-            <li>034532</li>
-            <li>034532</li>
-            <li>034532</li>
-            <li>034532</li>
-            <li>034532</li>
+            {compliteOrders?.map((order, index) => {
+              if (index < 10) return <li key={order}>{order}</li>;
+            })}
           </ul>
         </div>
         <div>
@@ -25,9 +48,9 @@ const OrdersSummary: FC = () => {
           <ul
             className={`${ordersSummaryStyles.numbersList} text text_type_digits-default`}
           >
-            <li>034532</li>
-            <li>034532</li>
-            <li>034532</li>
+            {incompliteOrders()?.map((order, index) => {
+              if (index < 10) return <li key={order}>{order}</li>;
+            })}
           </ul>
         </div>
       </div>
@@ -36,7 +59,7 @@ const OrdersSummary: FC = () => {
         <p
           className={`text text_type_digits-large ${ordersSummaryStyles.largeDigits}`}
         >
-          28 752
+          {total}
         </p>
       </div>
       <div className="mb-15">
@@ -44,7 +67,7 @@ const OrdersSummary: FC = () => {
         <p
           className={`text text_type_digits-large ${ordersSummaryStyles.largeDigits}`}
         >
-          138
+          {totalToday}
         </p>
       </div>
     </section>

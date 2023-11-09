@@ -1,31 +1,54 @@
 /* eslint-disable no-else-return */
 /* eslint-disable arrow-body-style */
 import { Link, useLocation } from 'react-router-dom';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import {
   FormattedDate,
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useAppSelector } from '../../utils/hooks/useRedux';
-import { IIngredient } from '../../utils/types';
+import { IIngredient, IFeedOrder } from '../../utils/types';
 
 import orderItemStyles from './OrderItem.module.css';
 
 import { Paths } from '../../utils/constants';
 
-const OrderItem: FC = () => {
-  const location = useLocation();
-  const id: string = '034533';
+interface IOrderItem {
+  order: IFeedOrder;
+}
 
+const OrderItem: FC<IOrderItem> = ({ order }) => {
+  const location = useLocation();
   const ingredientsData: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.ingredients
   );
-  const exampleIngredientsData: Array<IIngredient> = ingredientsData.slice(
-    4,
-    12
-  );
 
-  const today = new Date();
+  const orderPrice = useMemo(() => {
+    const arrOfPrices = order.ingredients.map((orderIngredient) => {
+      if (orderIngredient !== null) {
+        return ingredientsData.find(
+          (ingredient) => ingredient._id === orderIngredient
+        )?.price;
+      }
+      return 0;
+    });
+
+    return arrOfPrices.reduce((accum: number, price: number | undefined) => {
+      if (typeof price !== 'undefined') {
+        return accum + price;
+      }
+      return accum;
+    }, 0);
+  }, [order.ingredients]);
+
+  const arrOfIngredients = useMemo(() => {
+    const arrOfUniqueIngredients = Array.from(new Set(order.ingredients));
+    return arrOfUniqueIngredients.map((ingredient) => {
+      return ingredientsData.find((item) => item._id === ingredient);
+    });
+  }, [order.ingredients]);
+
+  const status = order.status === 'done' ? 'Выполнен' : 'Готовится';
 
   const feedOrOrders = (orders: string, feed: string): string =>
     location.pathname.startsWith(Paths.feed) ? feed : orders;
@@ -34,29 +57,20 @@ const OrderItem: FC = () => {
     <li>
       <Link
         to={feedOrOrders(
-          `${Paths.profilePage}/${Paths.orders}${id}`,
-          `${Paths.feed}${id}`
+          `${Paths.profilePage}/${Paths.orders}${order.number}`,
+          `${Paths.feed}${order.number}`
         )}
         state={{ background: location }}
         className={feedOrOrders(
           `${orderItemStyles.linkOrder} text text_type_main-medium mb-2`,
-          `${orderItemStyles.link} text text_type_main-medium mb-6`
+          `${orderItemStyles.link} text text_type_main-medium`
         )}
       >
         <div className={`${orderItemStyles.orderHeaderContainer} mb-6`}>
-          <p className="text text_type_digits-default">#034533</p>
+          <p className="text text_type_digits-default">{`#${order.number}`}</p>
           <FormattedDate
             className={`${orderItemStyles.date} text text_type_main-small`}
-            date={
-              new Date(
-                today.getFullYear(),
-                today.getMonth(),
-                today.getDate(),
-                today.getHours(),
-                today.getMinutes(),
-                0
-              )
-            }
+            date={new Date(order.createdAt)}
           />
         </div>
         <h2
@@ -65,43 +79,21 @@ const OrderItem: FC = () => {
             `${orderItemStyles.orderName} text text_type_main-medium mb-6`
           )}
         >
-          Black Hole Singularity острый бургер
+          {order.name}
         </h2>
         {!location.pathname.startsWith(Paths.feed) && (
-          <p className="text text_type_main-small mb-6">Создан</p>
+          <p className="text text_type_main-small mb-6">{status}</p>
         )}
         <div className={orderItemStyles.footerContainer}>
           <ul className={orderItemStyles.iconsList}>
-            {exampleIngredientsData.map((ingredient, index) => {
+            {arrOfIngredients.map((ingredient, index) => {
               const offset = -17;
               if (index > 5) {
                 return null;
               } else if (index === 5) {
                 return (
                   <li
-                    key={ingredient._id}
-                    className={orderItemStyles.ingredientItemlast}
-                    style={{
-                      transform: `translateX(${offset * index}px)`,
-                      zIndex: 6 - index,
-                    }}
-                  >
-                    <img
-                      src={ingredient.image_mobile}
-                      alt={ingredient.name}
-                      className={orderItemStyles.ingredientIcon}
-                    />
-                    <p
-                      className={`text text_type_main-small ${orderItemStyles.ingredientCount}`}
-                    >
-                      {`+${exampleIngredientsData.length - 5}`}
-                    </p>
-                  </li>
-                );
-              } else {
-                return (
-                  <li
-                    key={ingredient._id}
+                    key={ingredient?._id}
                     className={orderItemStyles.ingredientItem}
                     style={{
                       transform: `translateX(${offset * index}px)`,
@@ -109,8 +101,30 @@ const OrderItem: FC = () => {
                     }}
                   >
                     <img
-                      src={ingredient.image_mobile}
-                      alt={ingredient.name}
+                      src={ingredient?.image_mobile}
+                      alt={ingredient?.name}
+                      className={orderItemStyles.ingredientIconLast}
+                    />
+                    <p
+                      className={`text text_type_main-small ${orderItemStyles.ingredientCount}`}
+                    >
+                      {`+${arrOfIngredients.length - 5}`}
+                    </p>
+                  </li>
+                );
+              } else {
+                return (
+                  <li
+                    key={ingredient?._id}
+                    className={orderItemStyles.ingredientItem}
+                    style={{
+                      transform: `translateX(${offset * index}px)`,
+                      zIndex: 6 - index,
+                    }}
+                  >
+                    <img
+                      src={ingredient?.image_mobile}
+                      alt={ingredient?.name}
                       className={orderItemStyles.ingredientIcon}
                     />
                   </li>
@@ -119,7 +133,7 @@ const OrderItem: FC = () => {
             })}
           </ul>
           <div className={orderItemStyles.currencyContainer}>
-            <p className="text text_type_digits-default mr-4">510</p>
+            <p className="text text_type_digits-default mr-4">{orderPrice}</p>
             <CurrencyIcon type="primary" />
           </div>
         </div>

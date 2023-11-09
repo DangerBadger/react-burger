@@ -1,12 +1,12 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { IOrder } from '../../utils/types';
+import { IOrder, IFeedOrders } from '../../utils/types';
 import api from '../../utils/Api';
 import { isError } from '../../utils/utils';
 
 type TOrderState = {
-  orders: null;
+  orders: IFeedOrders | null;
   orderDetails: IOrder | null;
   orderRequest: boolean;
   orderFailed: boolean;
@@ -59,6 +59,20 @@ const orderSlice = createSlice({
       state.wsOpen = false;
       state.wsUrl = '';
       state.wsError = null;
+      state.orders = null;
+    },
+    wsConnectionStart: (state, action: PayloadAction<string>) => {
+      state.wsConnected = true;
+      state.wsUrl = action.payload;
+    },
+    wsConnectionOffline: (state) => {
+      state.wsConnected = false;
+    },
+    wsConnectionError: (state, action: PayloadAction<null | string>) => {
+      state.wsError = action.payload;
+    },
+    wsConnectionGetOrders: (state, action: PayloadAction<IFeedOrders>) => {
+      state.orders = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -80,5 +94,13 @@ const orderSlice = createSlice({
   },
 });
 
-export const { clearOrderData } = orderSlice.actions;
+export const {
+  clearOrderData,
+  wsConnectionClosed,
+  wsConnectionError,
+  wsConnectionGetOrders,
+  wsConnectionOffline,
+  wsConnectionStart,
+  wsConnectionSuccess,
+} = orderSlice.actions;
 export const orderReducer = orderSlice.reducer;

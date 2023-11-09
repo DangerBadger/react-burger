@@ -6,6 +6,8 @@ export const apiSettings = {
   },
 };
 
+export const BASE_WSS = 'wss://norma.nomoreparties.space';
+
 export enum Tabs {
   BUN = 'bun',
   SAUCE = 'sauce',

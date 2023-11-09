@@ -8,6 +8,8 @@ export const socketMiddleware = (wsActions: TWSStoreActions): Middleware => {
   return ((store: MiddlewareAPI<TAppDispatch, TRootState>) => {
     let socket: WebSocket | null = null;
     let url: string = '';
+    let isConnected: boolean = false;
+    let connectionTimer: number = 0;
 
     return (next) => (action) => {
       const { type, payload } = action;
@@ -24,13 +26,13 @@ export const socketMiddleware = (wsActions: TWSStoreActions): Middleware => {
       if (type === wsConnection) {
         url = payload;
         socket = new WebSocket(url);
+        isConnected = true;
       }
 
-      if (type === wsSetOffline) {
-        if (socket) {
-          socket.close(1000, 'Websocket clsoed');
-          socket = null;
-        }
+      if (type === wsSetOffline && socket) {
+        socket.close(1000, 'Websocket closed');
+        socket = null;
+        isConnected = false;
       }
 
       if (socket) {
@@ -46,16 +48,22 @@ export const socketMiddleware = (wsActions: TWSStoreActions): Middleware => {
           dispatch({ type: wsGetOrders, payload: data });
         };
         socket.onclose = (event: CloseEvent) => {
-          if (event.wasClean) {
+          if (event.code !== 1000) {
             dispatch({
               type: wsClose,
-              payload: `Соединение закрыто корректно ${event.code}`,
+              payload: `Соединение закрыто с кодом -  ${event.code}`,
             });
           }
           dispatch({
             type: wsClose,
-            payload: `Соединение закрыто с кодом -  ${event.code}`,
+            payload: `Соединение закрыто корректно ${event.code}`,
           });
+
+          if (isConnected) {
+            connectionTimer = window.setTimeout(() => {
+              dispatch({ type: wsConnection, payload: url });
+            }, 3000);
+          }
         };
       }
 

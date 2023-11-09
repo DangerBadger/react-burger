@@ -33,7 +33,8 @@ export interface IOrder {
 
 export interface IFeedOrder {
   ingredients: Array<string>;
-  id: string;
+  name: string;
+  _id: string;
   status: string;
   number: number;
   createdAt: string;

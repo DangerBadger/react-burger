@@ -53,18 +53,15 @@
 .ingredientItem {
   position: relative;
   border-radius: 50%;
-  border: 2px solid #801ab2;
+  border: double 2px transparent;
+  background-image: linear-gradient(rgba(19, 19, 22, 1), rgba(19, 19, 22, 1)),
+    linear-gradient(65deg, #871fbb, #4747f7);
+  overflow: hidden;
   width: 64px;
   height: 64px;
-  overflow: hidden;
   z-index: 6;
-  background-color: #131316;
+  background-clip: content-box, border-box;
   box-sizing: border-box;
-}
-
-.ingredientItemlast {
-  composes: ingredientItem;
-  background-color: #1c1c21;
 }
 
 .ingredientItemlast:before {
@@ -74,6 +71,11 @@
 .ingredientIcon {
   position: absolute;
   transform: translate(-41px, -5px) scale(0.78);
+}
+
+.ingredientIconLast {
+  composes: ingredientIcon;
+  opacity: 0.6;
 }
 
 .ingredientCount {

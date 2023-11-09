@@ -10,6 +10,13 @@
 
 .numbersList {
   list-style: none;
+  height: 152px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  column-gap: 24px;
+  row-gap: 8px;
 }
 
 .numbersListReady {
