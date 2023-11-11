@@ -1,6 +1,6 @@
 .main {
   display: flex;
-  margin: 40px 0 0 320px;
+  margin: 120px 0 0 320px;
 }
 
 .menuContainer {
@@ -44,4 +44,16 @@
   padding: 0;
   background: transparent;
   border: none;
+}
+
+.link {
+  text-decoration: none;
+  color: #f2f2f3;
+  transition: all 0.2s linear 0.05s;
+  height: 26px;
+}
+
+.link:hover {
+  transform: scale(1.06);
+  color: #38a0c0;
 }

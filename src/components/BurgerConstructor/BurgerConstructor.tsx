@@ -92,6 +92,9 @@ const BurgerConstructor: FC<IBurgerConstructor> = ({
   const orderClickHandler = () => {
     if (userInfo) {
       const orderIdArray = addedIngredients.map((ingredient) => ingredient._id);
+      if (foundBun._id) {
+        orderIdArray.push(foundBun._id);
+      }
       dispatch(getOrderData(orderIdArray));
       dispatch(clearIngredients());
       setFoundBun({});

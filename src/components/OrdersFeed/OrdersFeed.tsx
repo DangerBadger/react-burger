@@ -9,21 +9,33 @@ import ordersFeedStyles from './OrdersFeed.module.css';
 
 import OrderItem from '../OrderItem/OrderItem';
 
-const OrdersFeed: FC = () => {
+interface IOrdersFeed {
+  reverse: boolean;
+}
+
+const OrdersFeed: FC<IOrdersFeed> = ({ reverse }) => {
   const location = useLocation();
   const orders: IFeedOrders | null = useAppSelector(
     (store) => store.orderData?.orders
   );
+
+  const listOforders = orders?.orders?.map((order) => {
+    return <OrderItem key={order.number} order={order} />;
+  });
 
   return (
     <section>
       {location.pathname === Paths.feed && (
         <h1 className="text text_type_main-large mt-10 mb-5">Лента заказов</h1>
       )}
-      <ul className={ordersFeedStyles.orderList}>
-        {orders?.orders?.map((order) => {
-          return <OrderItem key={order.number} order={order} />;
-        })}
+      <ul
+        className={
+          location.pathname === Paths.feed
+            ? ordersFeedStyles.orderList
+            : ordersFeedStyles.orderProfileList
+        }
+      >
+        {reverse ? listOforders?.reverse() : listOforders}
       </ul>
     </section>
   );

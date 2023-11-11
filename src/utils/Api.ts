@@ -27,12 +27,6 @@ class Api implements IApi<THeaders> {
     this._headers = headers;
   }
 
-  // static _checkResponse(res: Response) {
-  //   return res.ok
-  //     ? res.json()
-  //     : res.json().then((err) => console.log(Promise.reject(err)));
-  // }
-
   static _checkResponse(res: Response) {
     return res.ok ? res.json() : res.json().then((err) => err);
   }
@@ -52,7 +46,7 @@ class Api implements IApi<THeaders> {
       return await Api._checkResponse(res);
     } catch (err) {
       if (err instanceof Error) {
-        console.log(err.message);
+        console.warn(err.message);
         if (err.message === 'jwt expired') {
           const refreshedData = await this.refreshToken(
             getCookie('refreshToken')
@@ -83,7 +77,10 @@ class Api implements IApi<THeaders> {
   sendOrder(ingredientsId: Array<string>) {
     return this._request('/orders', {
       method: 'POST',
-      headers: this._headers,
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Bearer ${getCookie('accessToken')}`,
+      },
       body: JSON.stringify({ ingredients: ingredientsId }),
     });
   }
@@ -194,6 +191,13 @@ class Api implements IApi<THeaders> {
         password,
         token,
       }),
+    });
+  }
+
+  getOrder(orderNumber: string) {
+    return this._request(`/orders/${orderNumber}`, {
+      method: 'GET',
+      headers: this._headers,
     });
   }
 }

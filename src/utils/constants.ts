@@ -16,6 +16,7 @@ export enum Tabs {
 
 export enum PreparationStageTexts {
   cooking = 'Ваш заказ начали готовить',
+  done = 'Ваш заказ готов!',
   error = 'Заказ не удалось обработать',
 }
 

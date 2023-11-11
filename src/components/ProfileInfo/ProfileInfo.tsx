@@ -116,7 +116,7 @@ const ProfileInfo: FC = () => {
   };
 
   return (
-    <form className="mt-20 ml-15" onSubmit={submitHandler}>
+    <form className="ml-15" onSubmit={submitHandler}>
       <Input
         type={'text'}
         placeholder={'Имя'}

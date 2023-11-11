@@ -31,6 +31,19 @@ export const getOrderData = createAsyncThunk<
   return response;
 });
 
+export const getOrderByNumber = createAsyncThunk<
+  IFeedOrders,
+  string,
+  { rejectValue: string }
+>('order/getBynumber', async (orderNumber, { rejectWithValue }) => {
+  const response = await api.getOrder(orderNumber);
+
+  if (!response.success) {
+    return rejectWithValue(response.message);
+  }
+  return response;
+});
+
 const initialState: TOrderState = {
   orders: null,
   orderDetails: null,
@@ -84,6 +97,14 @@ const orderSlice = createSlice({
       })
       .addCase(getOrderData.fulfilled, (state, action) => {
         state.orderDetails = action.payload;
+        state.orderRequest = false;
+      })
+      .addCase(getOrderByNumber.pending, (state) => {
+        state.orderRequest = true;
+        state.error = null;
+      })
+      .addCase(getOrderByNumber.fulfilled, (state, action) => {
+        state.orders = action.payload;
         state.orderRequest = false;
       })
       .addMatcher(isError, (state, action: PayloadAction<string>) => {

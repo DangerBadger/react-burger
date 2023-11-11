@@ -44,6 +44,6 @@ export interface IFeedOrder {
 export interface IFeedOrders {
   success: boolean;
   orders: Array<IFeedOrder>;
-  total: number;
-  totalToday: number;
+  total?: number;
+  totalToday?: number;
 }

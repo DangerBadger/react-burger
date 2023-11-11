@@ -11,6 +11,11 @@
   scroll-snap-type: y proximity;
 }
 
+.orderProfileList {
+  composes: orderList;
+  transform: translateY(-65px);
+}
+
 .orderList::-webkit-scrollbar {
   width: 8px;
   height: 664px;

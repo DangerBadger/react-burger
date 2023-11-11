@@ -1,6 +1,5 @@
 /* eslint-disable arrow-body-style */
 import { FC, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../utils/hooks/useRedux';
 import {
   wsConnectionStart,
@@ -15,7 +14,6 @@ import OrdersFeed from '../../components/OrdersFeed/OrdersFeed';
 import OrdersSummary from '../../components/OrdersInfo/OrdersSummary';
 
 const Feed: FC = () => {
-  const location = useLocation();
   const dispatch = useAppDispatch();
   const orders: IFeedOrders | null = useAppSelector(
     (store) => store.orderData?.orders
@@ -27,14 +25,14 @@ const Feed: FC = () => {
     return () => {
       dispatch(wsConnectionOffline());
     };
-  }, [location.pathname, dispatch]);
+  }, []);
 
   return (
     <main className={feedStyles.main}>
       <section className={feedStyles.section}>
         {orders ? (
           <>
-            <OrdersFeed />
+            <OrdersFeed reverse={false} />
             <OrdersSummary orders={orders} />
           </>
         ) : (

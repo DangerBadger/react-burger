@@ -1,13 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable react/jsx-curly-brace-presence */
-import { FC } from 'react';
-import { NavLink, useLocation, Routes, Route } from 'react-router-dom';
-
-import { useAppDispatch } from '../../utils/hooks/useRedux';
-import { Paths } from '../../utils/constants';
-
+/* eslint-disable no-nested-ternary */
+import { FC, useEffect } from 'react';
+import { NavLink, useLocation, Routes, Route, Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks/useRedux';
+import { Paths, BASE_WSS } from '../../utils/constants';
 import { logout } from '../../services/reducers/user';
 import { getCookie } from '../../utils/cookie';
+import {
+  wsConnectionStart,
+  wsConnectionOffline,
+} from '../../services/reducers/order';
+import { IFeedOrders } from '../../utils/types';
 
 import profileStyles from './profile.module.css';
 
@@ -21,8 +23,20 @@ const Profile: FC = () => {
     'В этом разделе вы можете просмотреть свою историю заказов';
 
   const location = useLocation();
-
   const dispatch = useAppDispatch();
+  const accessToken = getCookie('accessToken');
+
+  const myOrders: IFeedOrders | null = useAppSelector(
+    (store) => store.orderData?.orders
+  );
+
+  useEffect(() => {
+    dispatch(wsConnectionStart(`${BASE_WSS}/orders?token=${accessToken}`));
+
+    return () => {
+      dispatch(wsConnectionOffline());
+    };
+  }, []);
 
   const linkActivator = ({ isActive }: { isActive: boolean }): string =>
     isActive ? profileStyles.navLinkActive : profileStyles.navLink;
@@ -37,7 +51,7 @@ const Profile: FC = () => {
   return (
     <main className={profileStyles.main}>
       <div className={profileStyles.menuContainer}>
-        <nav className="mt-0">
+        <nav>
           <ul className={profileStyles.menuList}>
             <li
               className={`text text_type_main-medium ${profileStyles.menuItem}`}
@@ -74,7 +88,23 @@ const Profile: FC = () => {
       </div>
       <Routes>
         <Route path={Paths.mainPage} element={<ProfileInfo />} />
-        <Route path={Paths.orders} element={<OrdersFeed />} />
+        <Route
+          path={Paths.orders}
+          element={
+            !myOrders ? (
+              <p className="text text_type_main-medium mt-3">Загрузка...</p>
+            ) : myOrders.orders.length ? (
+              <OrdersFeed reverse />
+            ) : (
+              <Link
+                to={Paths.mainPage}
+                className={`${profileStyles.link} text text_type_main-medium mt-3`}
+              >
+                Сделайте свой первый заказ
+              </Link>
+            )
+          }
+        />
       </Routes>
     </main>
   );

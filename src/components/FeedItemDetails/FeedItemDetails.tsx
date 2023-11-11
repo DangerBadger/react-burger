@@ -1,14 +1,16 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-plusplus */
 /* eslint-disable react/require-default-props */
-/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable arrow-body-style */
-import { useParams } from 'react-router-dom';
-import { FC, useMemo } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+import { FC, useMemo, useCallback, useEffect } from 'react';
 import {
   FormattedDate,
   CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useAppSelector } from '../../utils/hooks/useRedux';
-import { IIngredient, IFeedOrders, IFeedOrder } from '../../utils/types';
+import { useAppSelector, useAppDispatch } from '../../utils/hooks/useRedux';
+import { IIngredient, IFeedOrder } from '../../utils/types';
+import { getOrderByNumber } from '../../services/reducers/order';
 
 import feedItemDetailsStyles from './FeedItemDetails.module.css';
 
@@ -18,7 +20,20 @@ interface IFeedItemDetails {
 
 const FeedItemDetails: FC<IFeedItemDetails> = ({ marginTop = false }) => {
   const { id } = useParams();
-  const today = new Date();
+  const location = useLocation();
+  const background = location.state?.background;
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!background && id) {
+      if (
+        location.pathname.startsWith('/profile') ||
+        location.pathname.startsWith('/feed')
+      ) {
+        dispatch(getOrderByNumber(id));
+      }
+    }
+  }, [location.pathname]);
 
   const orders: Array<IFeedOrder> | undefined = useAppSelector(
     (store) => store.orderData?.orders?.orders
@@ -26,27 +41,52 @@ const FeedItemDetails: FC<IFeedItemDetails> = ({ marginTop = false }) => {
   const ingredientsData: Array<IIngredient> = useAppSelector(
     (store) => store.ingredientsData.ingredients
   );
-  const exampleIngredientsData: Array<IIngredient> = ingredientsData.slice(
-    4,
-    12
-  );
 
-  const openedOrder = orders?.find(
+  const openedOrder: IFeedOrder | undefined = orders?.find(
     (order: IFeedOrder) => order.number.toString() === id
   );
 
-  const totalPrice = useMemo(
-    () =>
-      exampleIngredientsData.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.price,
-        0
-      ),
-    [exampleIngredientsData]
+  const totalPrice: number | undefined = useMemo(() => {
+    const arrOfOrderedIngredientsWithPrice:
+      | Array<number | undefined>
+      | undefined = openedOrder?.ingredients.map((ingredientId) => {
+      return ingredientsData.find(
+        (ingredient) => ingredient._id === ingredientId
+      )?.price;
+    });
+
+    return arrOfOrderedIngredientsWithPrice?.reduce(
+      (acc: number, item: number | undefined) => {
+        if (item) acc += item;
+        return acc;
+      },
+      0
+    );
+  }, [openedOrder?.ingredients]);
+
+  const arrOfIngredients: Array<IIngredient | undefined> = useMemo(() => {
+    const arrOfUniqueIngredients: Array<string> = Array.from(
+      new Set(openedOrder?.ingredients)
+    );
+
+    return arrOfUniqueIngredients.map((ingredient) => {
+      return ingredientsData.find((item) => item._id === ingredient);
+    });
+  }, [openedOrder?.ingredients]);
+
+  const ingredientCounter = useCallback(
+    (_id: string | undefined) => {
+      let counter = 0;
+      openedOrder?.ingredients.forEach((ingredientId) => {
+        if (ingredientId === _id) counter++;
+      });
+      return counter;
+    },
+    [openedOrder?.ingredients]
   );
 
-  const status = openedOrder?.status === 'done' ? 'Выполнен' : 'Готовится';
-
-  console.log(openedOrder);
+  const status: string =
+    openedOrder?.status === 'done' ? 'Выполнен' : 'Готовится';
 
   if (openedOrder) {
     return (
@@ -74,10 +114,10 @@ const FeedItemDetails: FC<IFeedItemDetails> = ({ marginTop = false }) => {
           Состав:
         </h2>
         <ul className={feedItemDetailsStyles.list}>
-          {exampleIngredientsData.map((ingredient) => {
+          {arrOfIngredients.map((ingredient) => {
             return (
               <li
-                key={ingredient._id}
+                key={ingredient?._id}
                 className={feedItemDetailsStyles.listItem}
               >
                 <div className={feedItemDetailsStyles.listItemInfoContainer}>
@@ -85,15 +125,19 @@ const FeedItemDetails: FC<IFeedItemDetails> = ({ marginTop = false }) => {
                     className={`${feedItemDetailsStyles.ingredientIconContainer} mr-4`}
                   >
                     <img
-                      src={ingredient.image_mobile}
-                      alt={ingredient.name}
+                      src={ingredient?.image_mobile}
+                      alt={ingredient?.name}
                       className={feedItemDetailsStyles.ingredientIcon}
                     />
                   </div>
-                  <p className="text text_type_main-small">{ingredient.name}</p>
+                  <p className="text text_type_main-small">
+                    {ingredient?.name}
+                  </p>
                 </div>
                 <div className={feedItemDetailsStyles.listItemPriceContainer}>
-                  <p className="text text_type_digits-default mr-2">{`1 x ${ingredient.price}`}</p>
+                  <p className="text text_type_digits-default mr-2">{`${ingredientCounter(
+                    ingredient?._id
+                  )} x ${ingredient?.price}`}</p>
                   <CurrencyIcon type="primary" />
                 </div>
               </li>
