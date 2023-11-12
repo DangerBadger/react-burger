@@ -19,7 +19,7 @@ const OrdersFeed: FC<IOrdersFeed> = ({ reverse }) => {
     (store) => store.orderData?.orders
   );
 
-  const listOforders = orders?.orders?.map((order) => {
+  const ordersList = orders?.orders?.map((order) => {
     return <OrderItem key={order.number} order={order} />;
   });
 
@@ -35,7 +35,7 @@ const OrdersFeed: FC<IOrdersFeed> = ({ reverse }) => {
             : ordersFeedStyles.orderProfileList
         }
       >
-        {reverse ? listOforders?.reverse() : listOforders}
+        {reverse ? ordersList?.reverse() : ordersList}
       </ul>
     </section>
   );

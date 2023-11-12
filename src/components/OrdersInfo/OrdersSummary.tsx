@@ -14,7 +14,7 @@ const OrdersSummary: FC<IOrdersSummary> = ({ orders }) => {
   const total = orders?.total;
   const totalToday = orders?.totalToday;
 
-  const compliteOrders = useMemo(() => {
+  const completeOrders = useMemo(() => {
     return orders?.orders
       ?.filter((order) => {
         return order.status === 'done';
@@ -22,7 +22,7 @@ const OrdersSummary: FC<IOrdersSummary> = ({ orders }) => {
       .map((order) => order.number);
   }, [orders?.orders]);
 
-  const incompliteOrders = useCallback(() => {
+  const incompleteOrders = useMemo(() => {
     return orders?.orders
       ?.filter((order) => {
         return order.status !== 'done';
@@ -38,7 +38,7 @@ const OrdersSummary: FC<IOrdersSummary> = ({ orders }) => {
           <ul
             className={`${ordersSummaryStyles.numbersListReady} text text_type_digits-default`}
           >
-            {compliteOrders?.map((order, index) => {
+            {completeOrders?.map((order, index) => {
               if (index < 10) return <li key={order}>{order}</li>;
             })}
           </ul>
@@ -48,7 +48,7 @@ const OrdersSummary: FC<IOrdersSummary> = ({ orders }) => {
           <ul
             className={`${ordersSummaryStyles.numbersList} text text_type_digits-default`}
           >
-            {incompliteOrders()?.map((order, index) => {
+            {incompleteOrders?.map((order, index) => {
               if (index < 10) return <li key={order}>{order}</li>;
             })}
           </ul>

@@ -28,6 +28,8 @@ import Feed from '../../pages/feed/feed';
 import FeedItemDetails from '../FeedItemDetails/FeedItemDetails';
 import NotFound from '../../pages/not-found/not-found';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import ProfileInfo from '../ProfileInfo/ProfileInfo';
+import OrdersFeed from '../OrdersFeed/OrdersFeed';
 
 const App: FC = () => {
   const location = useLocation();
@@ -83,10 +85,15 @@ const App: FC = () => {
             element={<ProtectedRoute component={ResetPassword} onlyUnAuth />}
           />
           {/* Защищённый от неавторизованных пользователей рут */}
+
+          {/* Вложенные руты с выводом в Outlet */}
           <Route
-            path={`${Paths.profilePage}/*`}
+            path={Paths.profilePage}
             element={<ProtectedRoute component={Profile} onlyUnAuth={false} />}
-          />
+          >
+            <Route index element={<ProfileInfo />} />
+            <Route path={Paths.orders} element={<OrdersFeed reverse />} />
+          </Route>
           <Route
             path={Paths.orderIdItem}
             element={

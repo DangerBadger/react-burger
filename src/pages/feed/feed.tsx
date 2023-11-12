@@ -36,9 +36,9 @@ const Feed: FC = () => {
             <OrdersSummary orders={orders} />
           </>
         ) : (
-          <h2 className="text text_type_main-large mt-10 mb-5">
+          <h1 className="text text_type_main-large mt-10 mb-5">
             Загрузка ленты заказов...
-          </h2>
+          </h1>
         )}
       </section>
     </main>

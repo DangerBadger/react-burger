@@ -1,6 +1,13 @@
 /* eslint-disable no-nested-ternary */
 import { FC, useEffect } from 'react';
-import { NavLink, useLocation, Routes, Route, Link } from 'react-router-dom';
+import {
+  NavLink,
+  useLocation,
+  Routes,
+  Route,
+  Link,
+  Outlet,
+} from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks/useRedux';
 import { Paths, BASE_WSS } from '../../utils/constants';
 import { logout } from '../../services/reducers/user';
@@ -86,26 +93,20 @@ const Profile: FC = () => {
           </p>
         </nav>
       </div>
-      <Routes>
-        <Route path={Paths.mainPage} element={<ProfileInfo />} />
-        <Route
-          path={Paths.orders}
-          element={
-            !myOrders ? (
-              <p className="text text_type_main-medium mt-3">Загрузка...</p>
-            ) : myOrders.orders.length ? (
-              <OrdersFeed reverse />
-            ) : (
-              <Link
-                to={Paths.mainPage}
-                className={`${profileStyles.link} text text_type_main-medium mt-3`}
-              >
-                Сделайте свой первый заказ
-              </Link>
-            )
-          }
-        />
-      </Routes>
+      {!location.pathname.endsWith('orders/') ? (
+        <Outlet />
+      ) : !myOrders ? (
+        <p className="text text_type_main-medium mt-3">Загрузка...</p>
+      ) : myOrders.orders.length ? (
+        <Outlet />
+      ) : (
+        <Link
+          to={Paths.mainPage}
+          className={`${profileStyles.link} text text_type_main-medium mt-3`}
+        >
+          Сделайте свой первый заказ
+        </Link>
+      )}
     </main>
   );
 };
