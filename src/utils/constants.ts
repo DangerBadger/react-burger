@@ -6,6 +6,8 @@ export const apiSettings = {
   },
 };
 
+export const BASE_WSS = 'wss://norma.nomoreparties.space';
+
 export enum Tabs {
   BUN = 'bun',
   SAUCE = 'sauce',
@@ -14,11 +16,16 @@ export enum Tabs {
 
 export enum PreparationStageTexts {
   cooking = 'Ваш заказ начали готовить',
+  done = 'Ваш заказ готов!',
   error = 'Заказ не удалось обработать',
 }
 
 export enum Paths {
   mainPage = '/',
+  feed = '/feed/',
+  orders = 'orders/',
+  orderIdItem = '/profile/orders/:id',
+  feedDetails = '/feed/:id',
   registerPage = '/register',
   loginPage = '/login',
   profilePage = '/profile',

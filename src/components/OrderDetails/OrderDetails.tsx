@@ -23,7 +23,7 @@ const OrderDetails: FC = () => {
     <div className={stylesOrderDetails.container}>
       {isOrderLoading ? (
         <h3 className="text text_type_main-large mt-4">
-          Загрузка номера заказа...
+          Получение идентификатора...
         </h3>
       ) : orderDetails ? (
         <h3 className="text text_type_digits-large mt-4">
@@ -41,6 +41,8 @@ const OrderDetails: FC = () => {
       <p className="text text_type_main-default mt-15">
         {!orderDetails && orderError
           ? PreparationStageTexts.error
+          : orderDetails?.order.number
+          ? PreparationStageTexts.done
           : PreparationStageTexts.cooking}
       </p>
       {!orderDetails && orderError ? (

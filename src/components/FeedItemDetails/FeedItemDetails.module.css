@@ -1,0 +1,96 @@
+.section {
+  display: flex;
+  width: 640px;
+  margin: 0 auto;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sectionWithMarginTop {
+  composes: section;
+  margin-top: 122px;
+}
+
+.header {
+  align-self: flex-start;
+}
+
+.status {
+  align-self: flex-start;
+  color: #00cccc;
+}
+
+.list {
+  overflow-y: scroll;
+  scroll-snap-type: y proximity;
+  height: 312px;
+  width: 100%;
+  margin: 0;
+  padding: 0 24px 0 0;
+  box-sizing: border-box;
+}
+
+.list::-webkit-scrollbar {
+  width: 8px;
+  height: 664px;
+  background-color: #2f2f37;
+}
+
+.list::-webkit-scrollbar-thumb {
+  background-color: rgb(133, 133, 173);
+  height: 194px;
+}
+
+.list::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(133, 133, 173, 0.6);
+}
+
+.listItem {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 0 0 16px 0;
+  scroll-snap-align: start;
+}
+
+.listItem:last-of-type {
+  margin-bottom: 0;
+}
+
+.listItemInfoContainer {
+  display: flex;
+  align-items: center;
+}
+
+.ingredientIconContainer {
+  border-radius: 50%;
+  border: 2px solid #801ab2;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  background-color: #131316;
+  box-sizing: border-box;
+}
+
+.ingredientIcon {
+  transform: translate(-41px, -5px) scale(0.78);
+}
+
+.listItemPriceContainer {
+  display: flex;
+  align-items: center;
+}
+
+.orderInfoContainer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.date {
+  color: #8585ad;
+}
+
+.sumContainer {
+  display: flex;
+}

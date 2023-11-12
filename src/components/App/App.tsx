@@ -24,8 +24,12 @@ import Login from '../../pages/login/login';
 import ForgotPassword from '../../pages/forgot-password/forgot-password';
 import ResetPassword from '../../pages/reset-password/reset-password';
 import Profile from '../../pages/profile/profile';
+import Feed from '../../pages/feed/feed';
+import FeedItemDetails from '../FeedItemDetails/FeedItemDetails';
 import NotFound from '../../pages/not-found/not-found';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import ProfileInfo from '../ProfileInfo/ProfileInfo';
+import OrdersFeed from '../OrdersFeed/OrdersFeed';
 
 const App: FC = () => {
   const location = useLocation();
@@ -45,7 +49,7 @@ const App: FC = () => {
     }
   }, []);
 
-  const closeIngredientsModal = () => {
+  const closeModal = () => {
     navigate(-1);
   };
 
@@ -63,6 +67,7 @@ const App: FC = () => {
             path={Paths.mainPage}
             element={<Main openOrderDetails={openOrderDetails} />}
           />
+          <Route path={Paths.feed} element={<Feed />} />
           <Route
             path={Paths.registerPage}
             element={<ProtectedRoute component={Register} onlyUnAuth />}
@@ -80,13 +85,28 @@ const App: FC = () => {
             element={<ProtectedRoute component={ResetPassword} onlyUnAuth />}
           />
           {/* Защищённый от неавторизованных пользователей рут */}
+
+          {/* Вложенные руты с выводом в Outlet */}
           <Route
             path={Paths.profilePage}
             element={<ProtectedRoute component={Profile} onlyUnAuth={false} />}
+          >
+            <Route index element={<ProfileInfo />} />
+            <Route path={Paths.orders} element={<OrdersFeed reverse />} />
+          </Route>
+          <Route
+            path={Paths.orderIdItem}
+            element={
+              <ProtectedRoute component={FeedItemDetails} onlyUnAuth={false} />
+            }
           />
           <Route
             path={Paths.ingredientsIdPage}
             element={<IngredientDetails title="Детали ингредиента" />}
+          />
+          <Route
+            path={Paths.feedDetails}
+            element={<FeedItemDetails marginTop />}
           />
           <Route path={Paths.notFoundPage} element={<NotFound />} />
         </Routes>
@@ -100,10 +120,29 @@ const App: FC = () => {
       {background && (
         <Routes>
           <Route
+            path={Paths.feedDetails}
+            element={
+              <Modal onClose={closeModal}>
+                <FeedItemDetails />
+              </Modal>
+            }
+          />
+          <Route
             path={Paths.ingredientsIdPage}
             element={
-              <Modal onClose={closeIngredientsModal} title="Детали ингредиента">
+              <Modal onClose={closeModal} title="Детали ингредиента">
                 <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path={Paths.orderIdItem}
+            element={
+              <Modal onClose={closeModal}>
+                <ProtectedRoute
+                  component={FeedItemDetails}
+                  onlyUnAuth={false}
+                />
               </Modal>
             }
           />

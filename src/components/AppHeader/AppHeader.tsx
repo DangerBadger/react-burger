@@ -30,7 +30,7 @@ const AppHeader: FC = () => {
               </NavLink>
             </li>
             <li className={stylesHeader.navItem}>
-              <NavLink to="feed" className={linkActivator}>
+              <NavLink to={Paths.feed} className={linkActivator}>
                 <ListIcon
                   type={pathname === '/feed' ? 'primary' : 'secondary'}
                 />

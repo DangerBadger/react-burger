@@ -1,6 +1,5 @@
 .main {
   display: flex;
-  width: 100%;
   margin: 120px 0 0 320px;
 }
 
@@ -47,24 +46,14 @@
   border: none;
 }
 
-.input {
-  margin-bottom: 24px;
+.link {
+  text-decoration: none;
+  color: #f2f2f3;
+  transition: all 0.2s linear 0.05s;
+  height: 26px;
 }
 
-.buttonContainer {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.button {
-  padding: 0;
-  background-color: transparent;
-  border: none;
-  color: #4c4cff;
-  cursor: pointer;
-  transition: all 0.4s linear 0.05s;
-}
-
-.button:disabled {
-  color: #3a3a55;
+.link:hover {
+  transform: scale(1.06);
+  color: #38a0c0;
 }

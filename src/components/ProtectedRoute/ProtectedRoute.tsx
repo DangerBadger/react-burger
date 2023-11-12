@@ -2,9 +2,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { FC } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { Paths } from '../../utils/constants';
+import { getCookie } from '../../utils/cookie';
 import { useAppSelector } from '../../utils/hooks/useRedux';
 import { TUserInfo } from '../../utils/types';
-import { Paths } from '../../utils/constants';
 
 interface IProtectedRoute {
   component: FC;
@@ -16,30 +17,32 @@ const ProtectedRoute: FC<IProtectedRoute> = ({
   onlyUnAuth,
   ...props
 }) => {
+  const location = useLocation();
   const userInfo: TUserInfo | null = useAppSelector(
     (store) => store.userData.userInfo
   );
-  const location = useLocation();
+  const accessCookie = getCookie('accessToken');
 
-  return onlyUnAuth ? (
-    userInfo ? (
+  if (onlyUnAuth && accessCookie && userInfo) {
+    return (
       <Navigate
         to={Paths.mainPage}
         state={{ previousLocation: location }}
         replace
       />
-    ) : (
-      <Component {...props} />
-    )
-  ) : userInfo ? (
-    <Component {...props} />
-  ) : (
-    <Navigate
-      to={Paths.loginPage}
-      state={{ previousLocation: location }}
-      replace
-    />
-  );
+    );
+  }
+  if (!onlyUnAuth && !accessCookie && !userInfo) {
+    return (
+      <Navigate
+        to={Paths.loginPage}
+        state={{ previousLocation: location }}
+        replace
+      />
+    );
+  }
+
+  return <Component {...props} />;
 };
 
 export default ProtectedRoute;

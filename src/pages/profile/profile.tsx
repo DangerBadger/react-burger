@@ -1,128 +1,58 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable react/jsx-curly-brace-presence */
+/* eslint-disable no-nested-ternary */
+import { FC, useEffect } from 'react';
 import {
-  useRef,
-  useState,
-  useEffect,
-  FC,
-  Dispatch,
-  SetStateAction,
-  RefObject,
-  FormEvent,
-} from 'react';
-import { NavLink } from 'react-router-dom';
-import {
-  Input,
-  PasswordInput,
-  Button,
-} from '@ya.praktikum/react-developer-burger-ui-components';
+  NavLink,
+  useLocation,
+  Routes,
+  Route,
+  Link,
+  Outlet,
+} from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks/useRedux';
-import { Paths } from '../../utils/constants';
-import { TUserInfo } from '../../utils/types';
-
-import { logout, changeUserData } from '../../services/reducers/user';
+import { Paths, BASE_WSS } from '../../utils/constants';
+import { logout } from '../../services/reducers/user';
 import { getCookie } from '../../utils/cookie';
+import {
+  wsConnectionStart,
+  wsConnectionOffline,
+} from '../../services/reducers/order';
+import { IFeedOrders } from '../../utils/types';
 
 import profileStyles from './profile.module.css';
 
-const Profile: FC = () => {
-  const [nameValue, setNameValue] = useState<string>('Default user');
-  const [emailValue, setEmailValue] = useState<string>('default@mail.space');
-  const [passwordValue, setPasswordValue] = useState<string>('');
-  const [nameReadOnly, setNameReadOnly] = useState<boolean>(true);
-  const [loginReadOnly, setLoginReadOnly] = useState<boolean>(true);
-  const [isDataChanged, setIsDataChanged] = useState<boolean>(false);
+import ProfileInfo from '../../components/ProfileInfo/ProfileInfo';
+import OrdersFeed from '../../components/OrdersFeed/OrdersFeed';
 
-  const userInfo: TUserInfo | null = useAppSelector(
-    (store) => store.userData.userInfo
+const Profile: FC = () => {
+  const profileDescription: string =
+    'В\u00A0этом разделе вы\u00A0можете изменить свои персональные данные';
+  const ordersFeedDescription: string =
+    'В этом разделе вы можете просмотреть свою историю заказов';
+
+  const location = useLocation();
+  const dispatch = useAppDispatch();
+  const accessToken = getCookie('accessToken');
+
+  const myOrders: IFeedOrders | null = useAppSelector(
+    (store) => store.orderData?.orders
   );
 
-  const nameInputRef = useRef<HTMLInputElement>(null);
-  const loginInputRef = useRef<HTMLInputElement>(null);
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
-    nameInputRef.current?.focus();
-  }, [nameReadOnly]);
+    dispatch(wsConnectionStart(`${BASE_WSS}/orders?token=${accessToken}`));
 
-  useEffect(() => {
-    loginInputRef.current?.focus();
-  }, [loginReadOnly]);
-
-  useEffect(() => {
-    if (userInfo) {
-      setNameValue(userInfo.name);
-      setEmailValue(userInfo.email);
-      setPasswordValue('');
-    }
-  }, [userInfo]);
-
-  useEffect(() => {
-    if (userInfo) {
-      setNameValue(userInfo.name);
-      setEmailValue(userInfo.email);
-      setPasswordValue('');
-    }
-  }, [userInfo]);
+    return () => {
+      dispatch(wsConnectionOffline());
+    };
+  }, []);
 
   const linkActivator = ({ isActive }: { isActive: boolean }): string =>
     isActive ? profileStyles.navLinkActive : profileStyles.navLink;
 
-  const onIconClickHandler = (
-    ref: RefObject<HTMLInputElement>,
-    stateSetter: Dispatch<SetStateAction<boolean>>
-  ) => {
-    ref.current?.focus();
-    stateSetter(false);
-  };
-
-  const onBlurHandler = (stateSetter: Dispatch<SetStateAction<boolean>>) => {
-    stateSetter(true);
-  };
-
   const logoutHandler = () => {
     const refreshToken: string | undefined = getCookie('refreshToken');
-    if (refreshToken) dispatch(logout(refreshToken));
-  };
-
-  const changeHandler =
-    (stateSetter: Dispatch<SetStateAction<string>>, propertyName: string) =>
-    (evt: FormEvent<HTMLInputElement> & { target: HTMLInputElement }) => {
-      const { value } = evt.target;
-
-      stateSetter(value);
-
-      if (propertyName === passwordValue) {
-        value === passwordValue
-          ? setIsDataChanged(false)
-          : setIsDataChanged(true);
-      } else if (userInfo !== null) {
-        value === userInfo[propertyName as keyof TUserInfo]
-          ? setIsDataChanged(false)
-          : setIsDataChanged(true);
-      }
-    };
-
-  const cancelHandler = (evt: FormEvent<HTMLButtonElement>) => {
-    evt.preventDefault();
-
-    if (userInfo !== null) {
-      setNameValue(userInfo.name);
-      setEmailValue(userInfo.email);
+    if (refreshToken) {
+      dispatch(logout(refreshToken));
     }
-    setPasswordValue('');
-    setIsDataChanged(false);
-  };
-
-  const submitHandler = (evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
-    const accessToken: string = `Bearer ${getCookie('accessToken')}`;
-
-    dispatch(
-      changeUserData({ nameValue, emailValue, passwordValue, accessToken })
-    );
-
-    setIsDataChanged(false);
   };
 
   return (
@@ -133,14 +63,14 @@ const Profile: FC = () => {
             <li
               className={`text text_type_main-medium ${profileStyles.menuItem}`}
             >
-              <NavLink to={Paths.profilePage} className={linkActivator}>
+              <NavLink end to={Paths.profilePage} className={linkActivator}>
                 Профиль
               </NavLink>
             </li>
             <li
               className={`text text_type_main-medium ${profileStyles.menuItem}`}
             >
-              <NavLink to="orders" className={linkActivator}>
+              <NavLink to={Paths.orders} className={linkActivator}>
                 История заказов
               </NavLink>
             </li>
@@ -157,72 +87,26 @@ const Profile: FC = () => {
             </li>
           </ul>
           <p className="mt-20 text text_type_main-default text_color_inactive">
-            В&nbsp;этом разделе вы&nbsp;можете изменить свои персональные данные
+            {location.pathname === Paths.profilePage
+              ? profileDescription
+              : ordersFeedDescription}
           </p>
         </nav>
       </div>
-      <form className="ml-15" onSubmit={submitHandler}>
-        <Input
-          type={'text'}
-          placeholder={'Имя'}
-          disabled={nameReadOnly}
-          onIconClick={() => onIconClickHandler(nameInputRef, setNameReadOnly)}
-          onBlur={() => onBlurHandler(setNameReadOnly)}
-          icon={'EditIcon'}
-          onChange={changeHandler(setNameValue, 'name')}
-          value={nameValue}
-          name={'name'}
-          error={false}
-          ref={nameInputRef}
-          errorText={'Ошибка'}
-          size={'default'}
-          extraClass={profileStyles.input}
-          autoComplete="on"
-        />
-        <Input
-          type={'email'}
-          disabled={loginReadOnly}
-          onIconClick={() =>
-            onIconClickHandler(loginInputRef, setLoginReadOnly)
-          }
-          onBlur={() => onBlurHandler(setLoginReadOnly)}
-          icon={'EditIcon'}
-          placeholder={'Укажите e-mail'}
-          onChange={changeHandler(setEmailValue, 'email')}
-          value={emailValue}
-          name={'name'}
-          error={false}
-          ref={loginInputRef}
-          errorText={'Ошибка'}
-          size={'default'}
-          extraClass={profileStyles.input}
-          autoComplete="on"
-        />
-        <PasswordInput
-          onChange={changeHandler(setPasswordValue, passwordValue)}
-          value={passwordValue}
-          name={'password'}
-          icon="EditIcon"
-        />
-        <div className={`mt-6 ${profileStyles.buttonContainer}`}>
-          <button
-            type="button"
-            disabled={!isDataChanged}
-            className={`mr-5 text text_type_main-default ${profileStyles.button}`}
-            onClick={cancelHandler}
-          >
-            Отмена
-          </button>
-          <Button
-            disabled={!isDataChanged}
-            htmlType="submit"
-            type="primary"
-            size="medium"
-          >
-            Сохранить
-          </Button>
-        </div>
-      </form>
+      {!location.pathname.endsWith('orders/') ? (
+        <Outlet />
+      ) : !myOrders ? (
+        <p className="text text_type_main-medium mt-3">Загрузка...</p>
+      ) : myOrders.orders.length ? (
+        <Outlet />
+      ) : (
+        <Link
+          to={Paths.mainPage}
+          className={`${profileStyles.link} text text_type_main-medium mt-3`}
+        >
+          Сделайте свой первый заказ
+        </Link>
+      )}
     </main>
   );
 };

@@ -4,12 +4,14 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import api from '../../utils/Api';
 import { IIngredient } from '../../utils/types';
+import { isError } from '../../utils/utils';
 
 type TInitialState = {
   ingredients: Array<IIngredient>;
   addedIngredients: Array<IIngredient>;
   ingredientsRequest: boolean;
   ingredientsFailed: boolean;
+  error: string | null;
 };
 
 export const getIngredients = createAsyncThunk<
@@ -17,18 +19,12 @@ export const getIngredients = createAsyncThunk<
   undefined,
   { rejectValue: string }
 >('ingredients/get', async (_, { rejectWithValue }) => {
-  try {
-    const response = await api.getIngredients();
+  const response = await api.getIngredients();
 
-    if (!response.success) {
-      throw new Error('Ошибка загрузки ингредиентов');
-    }
-    return response.data;
-  } catch (err) {
-    if (err instanceof Error) {
-      return rejectWithValue(err.message);
-    }
+  if (!response.success) {
+    return rejectWithValue(response.message);
   }
+  return response.data;
 });
 
 const initialState: TInitialState = {
@@ -36,6 +32,7 @@ const initialState: TInitialState = {
   addedIngredients: [],
   ingredientsRequest: false,
   ingredientsFailed: false,
+  error: null,
 };
 
 const ingredientsSlice = createSlice({
@@ -67,15 +64,16 @@ const ingredientsSlice = createSlice({
     builder
       .addCase(getIngredients.pending, (state) => {
         state.ingredientsRequest = true;
+        state.error = null;
         state.ingredientsFailed = false;
       })
       .addCase(getIngredients.fulfilled, (state, action) => {
         state.ingredients = action.payload;
         state.ingredientsRequest = false;
       })
-      .addCase(getIngredients.rejected, (state, action) => {
+      .addMatcher(isError, (state, action: PayloadAction<string>) => {
+        state.error = action.payload;
         state.ingredientsRequest = false;
-        state.ingredientsFailed = true;
         console.error(action.payload);
       });
   },
