@@ -27,7 +27,7 @@ export const getIngredients = createAsyncThunk<
   return response.data;
 });
 
-const initialState: TInitialState = {
+export const initialState: TInitialState = {
   ingredients: [],
   addedIngredients: [],
   ingredientsRequest: false,

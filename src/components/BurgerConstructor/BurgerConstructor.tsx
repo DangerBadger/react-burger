@@ -104,7 +104,7 @@ const BurgerConstructor: FC<IBurgerConstructor> = ({
     }
   };
 
-  // Замена ингрилиентов местами
+  // Замена ингридиентов местами
   const moveIngredient = useCallback(
     (draggedIndex: number, hoveredIndex: number) => {
       const draggedFilling: IIngredient = addedIngredients[draggedIndex];
