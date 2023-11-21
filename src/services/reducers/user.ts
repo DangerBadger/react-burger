@@ -220,7 +220,7 @@ export const resetPassword = createAsyncThunk<
   }
 });
 
-const initialState: TUserState = {
+export const initialState: TUserState = {
   forgotPasswordEmailConfirmed: false,
   forgotPasswordRequest: false,
   forgotPasswordSuccess: false,
@@ -264,7 +264,8 @@ const userSlice = createSlice({
           state.error = action.error.message;
         }
         state.registrationRequest = false;
-        console.error(action.payload);
+        state.registrationFailed = true;
+        console.log(action.error.message);
       })
       .addCase(login.pending, (state) => {
         state.loginRequest = true;
@@ -280,7 +281,8 @@ const userSlice = createSlice({
           state.error = action.error.message;
         }
         state.loginRequest = false;
-        console.error(action.payload);
+        state.loginFailed = true;
+        console.log(action.error.message);
       })
       .addCase(logout.pending, (state) => {
         state.logoutRequest = true;
@@ -288,7 +290,7 @@ const userSlice = createSlice({
         state.logoutFailed = false;
       })
       .addCase(logout.fulfilled, (state) => {
-        state.loginRequest = false;
+        state.logoutRequest = false;
         state.userInfo = null;
       })
       .addCase(logout.rejected, (state, action) => {
@@ -296,7 +298,8 @@ const userSlice = createSlice({
           state.error = action.error.message;
         }
         state.logoutRequest = false;
-        console.error(action.payload);
+        state.logoutFailed = true;
+        console.log(action.error.message);
       })
       .addCase(getUserData.pending, (state) => {
         state.getUserDataRequest = true;
@@ -312,7 +315,8 @@ const userSlice = createSlice({
           state.error = action.error.message;
         }
         state.getUserDataRequest = false;
-        console.error(action.payload);
+        state.getUserDataFailed = true;
+        console.log(action.error.message);
       })
       .addCase(changeUserData.pending, (state) => {
         state.changeUserDataRequest = true;
@@ -328,7 +332,8 @@ const userSlice = createSlice({
           state.error = action.error.message;
         }
         state.changeUserDataRequest = false;
-        console.error(action.payload);
+        state.changeUserDataFailed = true;
+        console.log(action.error.message);
       })
       .addCase(sendEmail.pending, (state) => {
         state.forgotPasswordRequest = true;
@@ -346,7 +351,8 @@ const userSlice = createSlice({
           state.error = action.error.message;
         }
         state.forgotPasswordRequest = false;
-        console.error(action.payload);
+        state.forgotPasswordFailed = true;
+        console.log(action.error.message);
       })
       .addCase(resetPassword.pending, (state) => {
         state.resetPasswordRequest = true;
@@ -362,7 +368,8 @@ const userSlice = createSlice({
           state.error = action.error.message;
         }
         state.resetPasswordRequest = false;
-        console.error(action.payload);
+        state.resetPasswordFailed = true;
+        console.log(action.error.message);
       });
   },
 });

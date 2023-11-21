@@ -1,3 +1,27 @@
+export const mockUserState = {
+  forgotPasswordEmailConfirmed: false,
+  forgotPasswordRequest: false,
+  forgotPasswordSuccess: true,
+  forgotPasswordFailed: false,
+  resetPasswordConfirmed: false,
+  resetPasswordRequest: false,
+  resetPasswordFailed: true,
+  registrationRequest: false,
+  registrationFailed: true,
+  loginRequest: false,
+  loginFailed: true,
+  refreshTokenRequest: false,
+  refreshTokenFailed: false,
+  logoutRequest: false,
+  logoutFailed: true,
+  getUserDataRequest: false,
+  getUserDataFailed: true,
+  changeUserDataRequest: false,
+  changeUserDataFailed: false,
+  userInfo: null,
+  error: 'Error',
+};
+
 export const mockUserRegistrationData = {
   email: 'example@mail.com',
   password: '123Qwerty',
