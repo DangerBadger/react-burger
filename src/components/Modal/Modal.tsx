@@ -40,6 +40,7 @@ const Modal: FC<IModal> = ({ onClose, children, title = '' }) => {
             {title}
           </h2>
           <button
+            id="modalCloseButton"
             type="button"
             className={`${stylesModal.closeButton} ml-9`}
             onClick={onClose}

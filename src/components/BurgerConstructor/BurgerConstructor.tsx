@@ -120,6 +120,7 @@ const BurgerConstructor: FC<IBurgerConstructor> = ({
 
   return (
     <div
+      id="constructorTarget"
       ref={dropTarget}
       className={`${
         isHover

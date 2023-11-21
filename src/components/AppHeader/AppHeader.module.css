@@ -59,3 +59,11 @@
 .logoContainer {
   margin: 0 288.85px 0 112px;
 }
+
+.logoLink {
+  transition: all 0.2s linear 0.05s;
+}
+
+.logoLink:hover {
+  opacity: 0.75;
+}
