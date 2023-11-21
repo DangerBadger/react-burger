@@ -145,9 +145,10 @@ describe('order reducer', () => {
   });
 
   it('should REJECT ingredients fetch with getOrderData.rejected action', () => {
-    const result = orderReducer(initialState, getOrderData.rejected('Ошибка получения данных заказа'));
+    const action = 'Ошибка получения данных заказа';
+    const result = orderReducer(initialState, getOrderData.rejected(action));
 
-    expect(result.error).toBe('Ошибка получения данных заказа');
+    expect(result.error).toBe(action);
     expect(result.orderRequest).toBe(false);
   });
 
@@ -211,9 +212,10 @@ describe('order reducer', () => {
   });
 
   it('should REJECT order by number fetch with getOrderByNumber.rejected action', () => {
-    const result = orderReducer(initialState, getOrderByNumber.rejected('Ошибка загрузки заказа'));
+    const action = 'Ошибка загрузки заказа';
+    const result = orderReducer(initialState, getOrderByNumber.rejected(action));
 
-    expect(result.error).toBe('Ошибка загрузки заказа');
+    expect(result.error).toBe(action);
     expect(result.orderRequest).toBe(false);
   });
 });

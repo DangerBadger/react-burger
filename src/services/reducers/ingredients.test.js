@@ -122,9 +122,10 @@ describe('ingredients reducer', () => {
   });
 
   it('should REJECT ingredients fetch with getIngredients.rejected action', () => {
-    const result = ingredientsReducer(initialState, getIngredients.rejected('Ошибка загрузки ингредиентов'));
+    const action = 'Ошибка загрузки ингредиентов';
+    const result = ingredientsReducer(initialState, getIngredients.rejected(action));
 
-    expect(result.error).toBe('Ошибка загрузки ингредиентов');
+    expect(result.error).toBe(action);
     expect(result.ingredientsRequest).toBe(false);
   });
 });
