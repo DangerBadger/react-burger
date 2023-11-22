@@ -34,6 +34,10 @@ npm test
 
 npm run cypress:open
 
+### Сборка проекта на ВМ:
+
+https://react-burger-ck.students.nomoredomainsmonster.ru/feed/
+
 ### Сборка проекта на gh-pages:
 
 https://dangerbadger.github.io/react-burger/
