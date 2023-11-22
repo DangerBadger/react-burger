@@ -36,7 +36,7 @@ npm run cypress:open
 
 ### Сборка проекта на ВМ:
 
-https://react-burger-ck.students.nomoredomainsmonster.ru/feed/
+https://react-burger-ck.students.nomoredomainsmonster.ru
 
 ### Сборка проекта на gh-pages:
 
