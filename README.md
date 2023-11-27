@@ -6,13 +6,13 @@
 
 ### Используемые технологии:
 
-- HTML5
-- TypeScript
-- React.js
-- React D'n'D
-- Redux Toolkit
-- Jest
-- Cypress
+✔️ HTML5
+✔️ TypeScript
+✔️ React.js
+✔️ React D'n'D
+✔️ Redux Toolkit
+✔️ Jest
+✔️ Cypress
 
 ### Запуск проекта:
 
@@ -36,8 +36,8 @@ npm run cypress:open
 
 ### Сборка проекта на ВМ:
 
-https://react-burger-ck.students.nomoredomainsmonster.ru
+[ВМ от Yandex.Cloud](https://react-burger-ck.students.nomoredomainsmonster.ru 'https://react-burger-ck.students.nomoredomainsmonster.ru')
 
 ### Сборка проекта на gh-pages:
 
-https://dangerbadger.github.io/react-burger/
+[Хостинг от gh-pages](https://dangerbadger.github.io/react-burger/ 'https://dangerbadger.github.io/react-burger/')
