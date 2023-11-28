@@ -67,6 +67,7 @@ const BurgerConstructorItem: FC<IBurgerConstructorItem> = ({
 
   return (
     <li
+      id="constructorItem"
       ref={ingredientItemRef}
       data-handler-id={idHandler}
       style={{ opacity }}

@@ -51,6 +51,7 @@ const BurgerIngredientsItem: FC<IBurgerIngredientsItem> = ({
 
   return (
     <li
+      id="ingredient"
       data-id={_id}
       ref={dragRef}
       className={

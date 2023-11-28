@@ -23,6 +23,9 @@
         "sourceType": "module",
         "project": ["./tsconfig.json"]
     },
+    "ignorePatterns": [
+      "cypress.config.ts"
+    ],
     "plugins": [
         "react",
         "@typescript-eslint"

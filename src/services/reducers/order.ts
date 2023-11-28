@@ -3,7 +3,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { IOrder, IFeedOrders } from '../../utils/types';
 import api from '../../utils/Api';
-import { isError } from '../../utils/utils';
 
 type TOrderState = {
   orders: IFeedOrders | null;
@@ -23,12 +22,19 @@ export const getOrderData = createAsyncThunk<
   Array<string>,
   { rejectValue: string }
 >('order/get', async (orderIdArray, { rejectWithValue }) => {
-  const response = await api.sendOrder(orderIdArray);
+  try {
+    const response = await api.sendOrder(orderIdArray);
 
-  if (!response.success) {
-    return rejectWithValue(response.message);
+    if (!response.success) {
+      throw new Error('Ошибка получения данных заказа');
+    }
+
+    return response;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
   }
-  return response;
 });
 
 export const getOrderByNumber = createAsyncThunk<
@@ -36,15 +42,21 @@ export const getOrderByNumber = createAsyncThunk<
   string,
   { rejectValue: string }
 >('order/getBynumber', async (orderNumber, { rejectWithValue }) => {
-  const response = await api.getOrder(orderNumber);
+  try {
+    const response = await api.getOrder(orderNumber);
+    if (!response.success) {
+      throw new Error('Ошибка загрузки заказа');
+    }
 
-  if (!response.success) {
-    return rejectWithValue(response.message);
+    return response;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
   }
-  return response;
 });
 
-const initialState: TOrderState = {
+export const initialState: TOrderState = {
   orders: null,
   orderDetails: null,
   orderRequest: false,
@@ -52,7 +64,7 @@ const initialState: TOrderState = {
   error: null,
   wsOpen: false,
   wsUrl: '',
-  wsConnected: true,
+  wsConnected: false,
   wsError: null,
   wsCloseCode: '',
 };
@@ -68,7 +80,7 @@ const orderSlice = createSlice({
       state.wsOpen = action.payload;
       state.wsError = null;
     },
-    wsConnectionClosed: (state, action: PayloadAction<boolean>) => {
+    wsConnectionClosed: (state) => {
       state.wsOpen = false;
       state.wsUrl = '';
       state.wsError = null;
@@ -99,6 +111,13 @@ const orderSlice = createSlice({
         state.orderDetails = action.payload;
         state.orderRequest = false;
       })
+      .addCase(getOrderData.rejected, (state, action) => {
+        if (typeof action.error.message !== 'undefined') {
+          state.error = action.error.message;
+        }
+        state.orderRequest = false;
+        console.log(action.error.message);
+      })
       .addCase(getOrderByNumber.pending, (state) => {
         state.orderRequest = true;
         state.error = null;
@@ -107,10 +126,12 @@ const orderSlice = createSlice({
         state.orders = action.payload;
         state.orderRequest = false;
       })
-      .addMatcher(isError, (state, action: PayloadAction<string>) => {
-        state.error = action.payload;
+      .addCase(getOrderByNumber.rejected, (state, action) => {
+        if (typeof action.error.message !== 'undefined') {
+          state.error = action.error.message;
+        }
         state.orderRequest = false;
-        console.error(action.payload);
+        console.log(action.error.message);
       });
   },
 });

@@ -12,6 +12,8 @@ const OrderDetails: FC = () => {
   const orderDetails: IOrder | null = useAppSelector(
     (store) => store.orderData.orderDetails
   );
+  console.log(orderDetails);
+
   const orderError: boolean = useAppSelector(
     (store) => store.orderData.orderFailed
   );

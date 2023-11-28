@@ -1,3 +1,5 @@
+export const TEST_URL = 'http://localhost:3000';
+
 export const apiSettings = {
   url: 'https://norma.nomoreparties.space/api',
   headers: {

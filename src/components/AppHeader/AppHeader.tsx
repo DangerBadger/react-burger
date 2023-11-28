@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, Link } from 'react-router-dom';
 import {
   Logo,
   BurgerIcon,
@@ -42,7 +42,9 @@ const AppHeader: FC = () => {
           </ul>
         </nav>
         <div className={stylesHeader.logoContainer}>
-          <Logo />
+          <Link to={Paths.mainPage} className={stylesHeader.logoLink}>
+            <Logo />
+          </Link>
         </div>
         <NavLink to={Paths.profilePage} className={linkActivator}>
           <ProfileIcon
